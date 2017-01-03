@@ -1,0 +1,12 @@
+#ifndef WEBMANAGER_GLOBAL_H
+#define WEBMANAGER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(WEBMANAGER_LIBRARY)
+#  define WEBMANAGERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define WEBMANAGERSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // WEBMANAGER_GLOBAL_H

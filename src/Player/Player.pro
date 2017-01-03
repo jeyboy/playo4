@@ -1,5 +1,4 @@
-include( ../../common.pri )
-include( ../../player.pri )
+include(../../pri/player.pri)
 
 QT += widgets opengl
 
@@ -18,7 +17,7 @@ win32 {
     QMAKE_TARGET_PRODUCT = Player Lib
     QMAKE_TARGET_DESCRIPTION = PLAYER library
 
-    CONFIG += dll
+#    CONFIG += dll
 }
 
 #unix {

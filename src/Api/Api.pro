@@ -1,5 +1,4 @@
-include( ../../common.pri )
-include( ../../api.pri )
+include(../../pri/api.pri)
 
 QT += widgets network
 QT -= gui
