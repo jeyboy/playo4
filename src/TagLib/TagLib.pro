@@ -246,8 +246,6 @@ SOURCES += xm/xmfile.cpp
 SOURCES += xm/xmproperties.cpp
 
 DEFINES += MAKE_TAGLIB_LIB
-DEFINES += WITH_ASF
-DEFINES += WITH_MP4
 
 win32 {
     QMAKE_TARGET_PRODUCT = Tag Lib
