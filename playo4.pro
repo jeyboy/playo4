@@ -7,4 +7,4 @@ SUBDIRS += \
     src/WebManager \
     src/Api \
     src/Player \
-    src/ClientSide
+    src/DesktopInterface
