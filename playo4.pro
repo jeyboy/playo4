@@ -1,9 +1,10 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    src/TagLib \
+    src/Json \
     src/Html \
+    src/WebManager \
     src/Api \
     src/Player \
-    src/ClientSide \
-    src/WebManager \
-    src/Json
+    src/ClientSide
