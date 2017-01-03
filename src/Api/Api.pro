@@ -10,7 +10,8 @@ DEFINES += API_LIBRARY
 
 SOURCES += api.cpp
 
-HEADERS += api.h
+HEADERS += $${INNER_INC_PATH}/defines.h \
+    api.h
 
 win32 {
     QMAKE_TARGET_PRODUCT = Api Lib

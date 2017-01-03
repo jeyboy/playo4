@@ -4,13 +4,14 @@ QT       -= gui
 
 TARGET = Json$${LIB_SUFFIX}
 TEMPLATE = lib
-
+#CONFIG += staticlib # add for static linking
 DEFINES += JSON_LIBRARY
 
 SOURCES += json.cpp
 
-HEADERS += json.h\
-        json_global.h
+HEADERS += $${INNER_INC_PATH}/defines.h \
+    json.h \
+    json_global.h # remove for static linking
 
 win32 {
     QMAKE_TARGET_PRODUCT = Json Lib

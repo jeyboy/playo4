@@ -11,7 +11,8 @@ DEFINES += PLAYER_LIBRARY
 
 SOURCES += player.cpp
 
-HEADERS += player.h
+HEADERS += $${INNER_INC_PATH}/defines.h \
+    player.h
 
 win32 {
     QMAKE_TARGET_PRODUCT = Player Lib
