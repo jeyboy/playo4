@@ -1,3 +1,5 @@
+pathes =
+
 HEADERS_OUTPUT_PATH = $$shell_path($${INC_PATH}/$${TARGET})
 !exists($$HEADERS_OUTPUT_PATH) {
     post_link = $(MKDIR) $$HEADERS_OUTPUT_PATH $$escape_expand(\\n\\t)
