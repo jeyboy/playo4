@@ -7,11 +7,14 @@ TEMPLATE = lib
 #CONFIG += staticlib # add for static linking
 DEFINES += JSON_LIBRARY
 
-SOURCES += json.cpp
+SOURCES += json.cpp \
+    json_obj.cpp
 
 HEADERS += json.h \
-    json_global.h \ # remove for static linking
-    pop/lal.h
+    json_global.h \  # remove for static linking
+    json_obj.h \
+    json_arr.h \
+    json_interface.h
 
 INCLUDEPATH += $${INNER_INC_PATH}
 

@@ -1,4 +1,5 @@
 pathes =
+post_link =
 
 HEADERS_OUTPUT_PATH = $$shell_path($${INC_PATH}/$${TARGET})
 !exists($$HEADERS_OUTPUT_PATH) {
@@ -12,8 +13,10 @@ for(header, HEADERS) {
     hdir = $$dirname(hpath)
 
     !contains(pathes, $$hdir) {
-        post_link += $(MKDIR) "$$hdir" $$escape_expand(\\n\\t)
-        pathes += $$hdir
+        !exists($$hdir) {
+            post_link += $(MKDIR) "$$hdir" $$escape_expand(\\n\\t)
+            pathes += $$hdir
+        }
     }
 
     post_link += $(COPY_FILE) "$$shell_path($$_PRO_FILE_PWD_/$$header)" "$$hpath" $$escape_expand(\\n\\t)

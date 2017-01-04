@@ -1,24 +1,19 @@
-#ifndef JSON_H
-#define JSON_H
+#ifndef JSON_OBJ_H
+#define JSON_OBJ_H
 
 #include "json_interface.h"
+#include "json.h"
 
-#include <qjsonvalue.h>
+#include <qjsonobject.h>
 
-class JsonObj;
-class QJsonObject;
-class JsonArr;
-//class QJsonArray;
+#define JOBJ_KEY2(key1, key2) value(key1).toObject().value(key2)
+#define JOBJ_BINT(val) (qint64)val.toDouble()
 
-class JSONSHARED_EXPORT Json : public QJsonValue, public JsonInterface {
+class JSONSHARED_EXPORT JsonObj : public QJsonObject, public JsonInterface {
 public:
-    static Json fromText(const QString & text);
+    static JsonObj fromText(const QString & text);
 
-    Json(const Type & = Null);
-    Json(const QJsonObject & obj);
-    Json(const JsonObj & obj);
-    Json(const QJsonArray & arr);
-    Json(const JsonArr & arr);
+    JsonObj();
 
     bool hasKey(const QString & key);
 
@@ -51,4 +46,4 @@ public:
     QString stringConv2(const QString & key1, const QString & key2);
 };
 
-#endif // JSON_H
+#endif // JSON_OBJ_H
