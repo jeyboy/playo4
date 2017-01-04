@@ -14,6 +14,10 @@ HEADERS += html.h \
 
 INCLUDEPATH += $${INNER_INC_PATH}
 
+######## setup block
+include(../../pri/headers_preparer.pri)
+####### end setup block
+
 win32 {
     QMAKE_TARGET_PRODUCT = Html Lib
     QMAKE_TARGET_DESCRIPTION = Html library

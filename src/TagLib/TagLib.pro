@@ -48,7 +48,7 @@ HEADERS += ape/apetag.h
 HEADERS += asf/asfattribute.h
 HEADERS += asf/asffile.h
 HEADERS += asf/asfproperties.h
-HEADERS += asf/asfpiscture.h
+HEADERS += asf/asfpicture.h
 HEADERS += asf/asftag.h
 HEADERS += flac/flacfile.h
 HEADERS += flac/flacproperties.h
@@ -246,6 +246,10 @@ SOURCES += xm/xmfile.cpp
 SOURCES += xm/xmproperties.cpp
 
 DEFINES += MAKE_TAGLIB_LIB
+
+######## setup block
+include(../../pri/headers_preparer.pri)
+####### end setup block
 
 win32 {
     QMAKE_TARGET_PRODUCT = Tag Lib
