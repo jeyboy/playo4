@@ -11,6 +11,9 @@ Json::Json(const JsonObj & obj) : QJsonValue(obj) {}
 Json::Json(const QJsonArray & arr) : QJsonValue(arr) {}
 //Json::Json(const JsonArr & arr) : QJsonValue(arr) {}
 
+Json::Json(const QJsonValue & ) {}
+Json & Json::operator=(const QJsonValue & /*x*/) { return *this; }
+Json::operator QJsonValue() { return QJsonValue(); }
 
 Json Json::fromText(const QString & text) { return Json(); }
 
@@ -18,8 +21,7 @@ bool Json::hasKey(const QString & key) { return toObject().contains(key); }
 
 
 QString Json::concatKeys(const QString & key1, const QString & key2, const QString & separator) {
-    QJsonObject qobj = toObject();
-    JsonObj obj = *reinterpret_cast<JsonObj *>(&qobj);
+    JsonObj obj = toObject();
     return obj.concatKeys(key1, key2, separator);
 }
 // concat key from array of objs

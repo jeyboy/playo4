@@ -2,6 +2,10 @@
 
 JsonObj::JsonObj() : QJsonObject() {}
 
+JsonObj::JsonObj(const QJsonObject & ) {}
+JsonObj & JsonObj::operator=(const QJsonObject & /*x*/) { return *this; }
+JsonObj::operator QJsonObject() { return QJsonObject(); }
+
 JsonObj JsonObj::fromText(const QString & text) { return JsonObj(); }
 
 bool JsonObj::hasKey(const QString & key) { return contains(key); }
@@ -13,9 +17,9 @@ QString JsonObj::concatKeys(const QString & key1, const QString & key2, const QS
 // concat key from array of objs
 QString JsonObj::concatKeys(const QString & /*key*/, const QString & /*separator*/) { return QString(); }
 
-Json JsonObj::operator[](const QString & key) { return reinterpret_cast<Json>(value(key)); }
-Json JsonObj::val(const QString & key) { return reinterpret_cast<Json>(value(key)); }
-Json JsonObj::val2(const QString & key1, const QString & key2) { return reinterpret_cast<Json>(JOBJ_KEY2(key1, key2)); }
+Json JsonObj::operator[](const QString & key) { return value(key); }
+Json JsonObj::val(const QString & key) { return value(key); }
+Json JsonObj::val2(const QString & key1, const QString & key2) { return JOBJ_KEY2(key1, key2); }
 
 Json JsonObj::operator[](const int & /*index*/) { return JsonObj(); }
 Json JsonObj::val(const int & /*index*/) { return JsonObj(); }
