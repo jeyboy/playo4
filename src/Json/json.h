@@ -3,9 +3,11 @@
 
 #include "json_global.h"
 
-class JSONSHARED_EXPORT Json
-{
+#include <qjsondocument.h>
+#include <qjsonobject.h>
+#include <qjsonarray.h>
 
+class JSONSHARED_EXPORT Json {
 public:
     Json();
 };

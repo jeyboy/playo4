@@ -11,7 +11,7 @@ DEFINES += PLAYER_LIBRARY
 
 SOURCES += player.cpp
 
-HEADERS += $${INNER_INC_PATH}/defines.h \
+HEADERS += $${INNER_INC_PATH}defines.h \
     player.h
 
 win32 {

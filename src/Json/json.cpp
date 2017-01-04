@@ -1,6 +1,5 @@
 #include "json.h"
 
+Json::Json() {
 
-Json::Json()
-{
 }

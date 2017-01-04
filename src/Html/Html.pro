@@ -9,7 +9,7 @@ DEFINES += HTML_LIBRARY
 
 SOURCES += html.cpp
 
-HEADERS += $${INNER_INC_PATH}/defines.h \
+HEADERS += $${INNER_INC_PATH}defines.h \
     html.h \
     html_global.h # remove for static linking
 

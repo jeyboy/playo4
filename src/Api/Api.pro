@@ -10,7 +10,7 @@ DEFINES += API_LIBRARY
 
 SOURCES += api.cpp
 
-HEADERS += $${INNER_INC_PATH}/defines.h \
+HEADERS += $${INNER_INC_PATH}defines.h \
     api.h
 
 win32 {

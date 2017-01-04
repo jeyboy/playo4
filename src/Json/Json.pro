@@ -9,7 +9,7 @@ DEFINES += JSON_LIBRARY
 
 SOURCES += json.cpp
 
-HEADERS += $${INNER_INC_PATH}/defines.h \
+HEADERS += $${INNER_INC_PATH}defines.h \
     json.h \
     json_global.h # remove for static linking
 
@@ -19,6 +19,14 @@ win32 {
 
 #    CONFIG += dll
 }
+
+mkpath("$$shell_path($${INC_PATH}/$${TARGET})")
+
+for(header, HEADERS) {
+    post_link += $(COPY_FILE) "$$shell_path($$PWD/$$header)" "$$shell_path($${INC_PATH}/$${TARGET}/$$header)" $$escape_expand(\\n\\t)
+}
+
+QMAKE_POST_LINK = $$post_link
 
 #unix {
 #    target.path = /usr/lib

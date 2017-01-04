@@ -10,7 +10,7 @@ DEFINES += WEBMANAGER_LIBRARY
 
 SOURCES += webmanager.cpp
 
-HEADERS += $${INNER_INC_PATH}/defines.h \
+HEADERS += $${INNER_INC_PATH}defines.h \
     webmanager.h \
     webmanager_global.h # remove for static linking
 
