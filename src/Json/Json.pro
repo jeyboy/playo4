@@ -14,7 +14,6 @@ HEADERS += json.h \
 
 INCLUDEPATH += $${INNER_INC_PATH}
 
-
 ######## setup block
 
 HEADERS_OUTPUT_PATH = $$shell_path($${INC_PATH}/$${TARGET})
@@ -23,12 +22,7 @@ HEADERS_OUTPUT_PATH = $$shell_path($${INC_PATH}/$${TARGET})
 }
 
 for(header, HEADERS) {
-    contains($$header, ../) {
-        message($$header)
-        #post_link += $(COPY_FILE) "$$shell_path($$PWD/$$header)" "$$shell_path($$HEADERS_OUTPUT_PATH/$$header)" $$escape_expand(\\n\\t)
-    } else {
-        post_link += $(COPY_FILE) "$$shell_path($$PWD/$$header)" "$$shell_path($$HEADERS_OUTPUT_PATH/$$header)" $$escape_expand(\\n\\t)
-    }
+    post_link += $(COPY_FILE) "$$shell_path($$PWD/$$header)" "$$shell_path($$HEADERS_OUTPUT_PATH/$$header)" $$escape_expand(\\n\\t)
 }
 
 QMAKE_POST_LINK = $$post_link
