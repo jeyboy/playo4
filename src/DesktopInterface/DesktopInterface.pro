@@ -8,11 +8,11 @@ TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp
 
-HEADERS += $${INNER_INC_PATH}defines.h \
-    mainwindow.h
-
+HEADERS += mainwindow.h
 
 FORMS += mainwindow.ui
+
+INCLUDEPATH += $${INNER_INC_PATH}
 
 win32 {
     LIB_VERSION = $${LIB_SUFFIX}$${MAJOR_VERSION}

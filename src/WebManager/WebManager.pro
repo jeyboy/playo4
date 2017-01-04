@@ -10,9 +10,10 @@ DEFINES += WEBMANAGER_LIBRARY
 
 SOURCES += webmanager.cpp
 
-HEADERS += $${INNER_INC_PATH}defines.h \
-    webmanager.h \
+HEADERS += webmanager.h \
     webmanager_global.h # remove for static linking
+
+INCLUDEPATH += $${INNER_INC_PATH}
 
 win32 {
     QMAKE_TARGET_PRODUCT = WebManager Lib

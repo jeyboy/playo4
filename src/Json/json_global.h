@@ -2,6 +2,7 @@
 #define JSON_GLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include "defines.h"
 
 #if defined(JSON_LIBRARY)
 #  define JSONSHARED_EXPORT Q_DECL_EXPORT

@@ -12,16 +12,10 @@ SOURCES += json.cpp
 HEADERS += json.h \
     json_global.h # remove for static linking
 
-    #$${INNER_INC_PATH}defines.h \
+INCLUDEPATH += $${INNER_INC_PATH}
 
-win32 {
-    QMAKE_TARGET_PRODUCT = Json Lib
-    QMAKE_TARGET_DESCRIPTION = Json library
 
-#    CONFIG += dll
-}
-
-#mkpath("$$shell_path($${INC_PATH}/$${TARGET})")
+######## setup block
 
 HEADERS_OUTPUT_PATH = $$shell_path($${INC_PATH}/$${TARGET})
 !exists($$HEADERS_OUTPUT_PATH) {
@@ -29,10 +23,24 @@ HEADERS_OUTPUT_PATH = $$shell_path($${INC_PATH}/$${TARGET})
 }
 
 for(header, HEADERS) {
-    post_link += $(COPY_FILE) "$$shell_path($$PWD/$$header)" "$$shell_path($$HEADERS_OUTPUT_PATH/$$header)" $$escape_expand(\\n\\t)
+    contains($$header, ../) {
+        message($$header)
+        #post_link += $(COPY_FILE) "$$shell_path($$PWD/$$header)" "$$shell_path($$HEADERS_OUTPUT_PATH/$$header)" $$escape_expand(\\n\\t)
+    } else {
+        post_link += $(COPY_FILE) "$$shell_path($$PWD/$$header)" "$$shell_path($$HEADERS_OUTPUT_PATH/$$header)" $$escape_expand(\\n\\t)
+    }
 }
 
 QMAKE_POST_LINK = $$post_link
+
+####### end setup block
+
+win32 {
+    QMAKE_TARGET_PRODUCT = Json Lib
+    QMAKE_TARGET_DESCRIPTION = Json library
+
+#    CONFIG += dll
+}
 
 #unix {
 #    target.path = /usr/lib
