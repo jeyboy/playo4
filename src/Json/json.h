@@ -27,6 +27,8 @@ public:
     Json & operator=(const QJsonValue & x);
     operator QJsonValue();
 
+    virtual ~Json();
+
     bool hasKey(const QString & key);
 
     // concat keys from obj hash

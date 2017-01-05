@@ -1,15 +1,14 @@
 #include "json_arr.h"
+#include "json.h"
 
-JsonArr JsonArr::fromText(const QString & text) {
-
-}
+JsonArr JsonArr::fromText(const QString & text) { return Json::fromText(text).toArray(); }
 
 JsonArr::JsonArr() : QJsonArray() {}
 JsonArr::JsonArr(const QJsonArray &) {}
 JsonArr & JsonArr::operator=(const QJsonArray & /*x*/) { return *this; }
-JsonArr::operator QJsonArray() { return QJsonArray(); }
+JsonArr::operator QJsonArray() { return (QJsonArray) *this; }
 
-QString JsonArrconcatKeys(const QString & key, const QString & separator) {}
+QString JsonArr::concatKeys(const QString & key, const QString & separator) {}
 
 Json JsonArr::operator[](const int & index) {}
 Json JsonArr::val(const int & index) {}

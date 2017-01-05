@@ -1,5 +1,6 @@
 #include "json.h"
 
+#include <qjsonvalue.h>
 #include <qjsondocument.h>
 
 #include "json_obj.h"
@@ -15,6 +16,8 @@ Json::Json(const JsonArr & arr) : QJsonValue(arr) {}
 Json::Json(const QJsonValue & ) {}
 Json & Json::operator=(const QJsonValue & /*x*/) { return *this; }
 Json::operator QJsonValue() { return QJsonValue(); }
+
+Json::~Json() {}
 
 Json Json::fromText(const QString & text) {
     QJsonParseError err;
@@ -40,19 +43,24 @@ Json Json::val2(const QString & key1, const QString & key2) {}
 Json Json::operator[](const int & index) {}
 Json Json::val(const int & index) {}
 
+bool Json::boolean(const int & index) {}
 bool Json::boolean(const QString & key) {}
 bool Json::boolean2(const QString & key1, const QString & key2) {}
 
+int Json::integer(const int & index) {}
 int Json::integer(const QString & key) {}
 int Json::integer2(const QString & key1, const QString & key2) {}
 
+qint64 Json::bigInt(const int & index) {}
 qint64 Json::bigInt(const QString & key) {}
 qint64 Json::bigInt2(const QString & key1, const QString & key2) {}
 
+QString Json::string(const int & index) {}
 QString Json::string(const QString & key) {}
 QString Json::string(const QString & key, const QString & default_val) {}
 QString Json::string2(const QString & key1, const QString & key2) {}
 
+QString Json::stringConv(const int & index) {}
 QString Json::stringConv(const QString & key) {}
 QString Json::stringConv2(const QString & key1, const QString & key2) {}
 
