@@ -1,16 +1,19 @@
-#ifndef JSON_INTERFACE_H
-#define JSON_INTERFACE_H
+#ifndef JSON_OBJ_INTERFACE_H
+#define JSON_OBJ_INTERFACE_H
 
 #include "json_global.h"
 
-class JSONSHARED_EXPORT JsonInterface {
-public:
-    bool hasKey(const QString & key);
+class Json;
 
-    // concat keys from obj hash
+class JSONSHARED_EXPORT JsonObjInterface {
+public:
+    virtual bool hasKey(const QString & key) = 0;
+
     virtual QString concatKeys(const QString & key1, const QString & key2, const QString & separator) = 0;
-    // concat key from array of objs
-    virtual QString concatKeys(const QString & key, const QString & separator) = 0;
+
+    virtual Json operator[](const QString & key) = 0;
+    virtual Json val(const QString & key) = 0;
+    virtual Json val2(const QString & key1, const QString & key2) = 0;
 
     virtual bool boolean(const QString & key) = 0;
     virtual bool boolean2(const QString & key1, const QString & key2) = 0;
@@ -29,4 +32,4 @@ public:
     virtual QString stringConv2(const QString & key1, const QString & key2) = 0;
 };
 
-#endif // JSON_INTERFACE_H
+#endif // JSON_OBJ_INTERFACE_H

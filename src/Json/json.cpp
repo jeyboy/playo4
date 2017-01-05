@@ -6,16 +6,22 @@
 #include "json_arr.h"
 
 Json::Json(const Type & jtype) : QJsonValue(jtype) {}
+Json::Json(const QJsonDocument & doc) : QJsonValue(doc.isArray() ? (QJsonValue)doc.array() : (QJsonValue)doc.object()) {}
 Json::Json(const QJsonObject & obj) : QJsonValue(obj) {}
 Json::Json(const JsonObj & obj) : QJsonValue(obj) {}
 Json::Json(const QJsonArray & arr) : QJsonValue(arr) {}
-//Json::Json(const JsonArr & arr) : QJsonValue(arr) {}
+Json::Json(const JsonArr & arr) : QJsonValue(arr) {}
 
 Json::Json(const QJsonValue & ) {}
 Json & Json::operator=(const QJsonValue & /*x*/) { return *this; }
 Json::operator QJsonValue() { return QJsonValue(); }
 
-Json Json::fromText(const QString & text) { return Json(); }
+Json Json::fromText(const QString & text) {
+    QJsonParseError err;
+    QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8(), &err);
+    if (err.error == QJsonParseError::NoError) return Json();
+    return (Json)doc;
+}
 
 bool Json::hasKey(const QString & key) { return toObject().contains(key); }
 

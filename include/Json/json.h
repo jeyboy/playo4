@@ -5,6 +5,7 @@
 
 #include <qjsonvalue.h>
 
+class QJsonDocument;
 class JsonObj;
 class QJsonObject;
 class JsonArr;
@@ -15,6 +16,7 @@ public:
     static Json fromText(const QString & text);
 
     Json(const Type & = Null);
+    Json(const QJsonDocument & doc);
     Json(const QJsonObject & obj);
     Json(const JsonObj & obj);
     Json(const QJsonArray & arr);
