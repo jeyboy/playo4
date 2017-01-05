@@ -15,8 +15,7 @@ HEADERS += json.h \
     json_global.h \  # remove for static linking
     json_obj.h \
     json_arr.h \
-    json_obj_interface.h \
-    json_arr_interface.h
+    json_interface.h
 
 INCLUDEPATH += $${INNER_INC_PATH}
 

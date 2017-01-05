@@ -1,12 +1,12 @@
 #ifndef JSON_ARR_H
 #define JSON_ARR_H
 
-#include "json_arr_interface.h"
+#include "json_interface.h"
 #include <qjsonarray.h>
 
 class Json;
 
-class JSONSHARED_EXPORT JsonArr : public QJsonArray, public JsonArrInterface {
+class JSONSHARED_EXPORT JsonArr : public QJsonArray/*, public JsonInterface*/ {
 public:
     static JsonArr fromText(const QString & text);
 

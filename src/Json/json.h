@@ -1,8 +1,7 @@
 #ifndef JSON_H
 #define JSON_H
 
-#include "json_obj_interface.h"
-#include "json_arr_interface.h"
+#include "json_interface.h"
 
 #include <qjsonvalue.h>
 
@@ -11,8 +10,14 @@ class JsonObj;
 class QJsonObject;
 class JsonArr;
 class QJsonArray;
+class QJsonValueRef;
 
-class JSONSHARED_EXPORT Json : public QJsonValue, public JsonObjInterface, public JsonArrInterface {
+#define J_KEY2(key1, key2) toObject().value(key1).toObject().value(key2)
+
+#define JOBJ_BINT(val) (qint64)val.toDouble()
+#define JOBJ_STR(jval) jval.isString() ? jval.toString() : QString::number(JOBJ_BINT(jval));
+
+class JSONSHARED_EXPORT Json : public QJsonValue, public JsonInterface {
 public:
     static Json fromText(const QString & text);
 
@@ -22,9 +27,11 @@ public:
     Json(const JsonObj & obj);
     Json(const QJsonArray & arr);
     Json(const JsonArr & arr);
+    Json(const QJsonValueRef & ref);
 
     Json(const QJsonValue &);
     Json & operator=(const QJsonValue & x);
+    Json & operator=(const QJsonValueRef & x);
     operator QJsonValue();
 
     virtual ~Json();
@@ -42,6 +49,9 @@ public:
 
     Json operator[](const int & index);
     Json val(const int & index);
+
+    JsonObj obj();
+    JsonArr arr();
 
     bool boolean(const int & index);
     bool boolean(const QString & key);

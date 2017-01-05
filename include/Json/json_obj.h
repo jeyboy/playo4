@@ -1,16 +1,15 @@
 #ifndef JSON_OBJ_H
 #define JSON_OBJ_H
 
-#include "json_obj_interface.h"
+#include "json_interface.h"
 
 #include <qjsonobject.h>
 
 class Json;
 
 #define JOBJ_KEY2(key1, key2) value(key1).toObject().value(key2)
-#define JOBJ_BINT(val) (qint64)val.toDouble()
 
-class JSONSHARED_EXPORT JsonObj : public QJsonObject, public JsonObjInterface {
+class JSONSHARED_EXPORT JsonObj : public QJsonObject/*, public JsonInterface*/ {
 public:
     static JsonObj fromText(const QString & text);
 
