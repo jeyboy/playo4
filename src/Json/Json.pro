@@ -21,6 +21,7 @@ INCLUDEPATH += $${INNER_INC_PATH}
 
 ######## setup block
 include(../../pri/headers_preparer.pri)
+#include(../../pri/test_compile.pri)
 ####### end setup block
 
 win32 {

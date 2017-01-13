@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+CONFIG += ordered
+
 SUBDIRS += \
     src/TagLib \
     src/Json \
@@ -7,4 +9,5 @@ SUBDIRS += \
     src/WebManager \
     src/Api \
     src/Player \
-    src/DesktopInterface
+    src/DesktopInterface \
+    tests

@@ -14,13 +14,6 @@ FORMS += mainwindow.ui
 
 INCLUDEPATH += $${INNER_INC_PATH}
 
-win32 {
-    LIB_VERSION = $${LIB_SUFFIX}$${MAJOR_VERSION}
-}
-unix {
-    LIB_VERSION = $${LIB_SUFFIX}$${VERSION}
-}
-
 LIBS += -lTagLib$${LIB_VERSION} -lJson$${LIB_VERSION} -lHtml$${LIB_VERSION} -lWebManager$${LIB_VERSION} -lApi$${LIB_VERSION} -lPlayer$${LIB_VERSION}
 #LIBS += -L$$PWD/libs/bass/ -lbass -lbass_fx -lbassmix
 #INCLUDEPATH += $$PWD/libs/bass/include

@@ -20,13 +20,13 @@ QString JsonArr::concatKeys(const QString & key, const QString & separator) {
 Json JsonArr::operator[](const int & index) { return val(index); }
 Json JsonArr::val(const int & index) { return this -> at(index); }
 
-bool JsonArr::boolean(const int & index) {}
+bool JsonArr::boolean(const int & index) { return val(index).toBool(); }
 
-int JsonArr::integer(const int & index) {}
+int JsonArr::integer(const int & index) { return val(index).toInt(); }
 
-qint64 JsonArr::bigInt(const int & index) {}
+qint64 JsonArr::bigInt(const int & index) { return JOBJ_BINT(val(index)); }
 
-QString JsonArr::string(const int & index) {}
+QString JsonArr::string(const int & index) { return val(index).toString(); }
 
-QString JsonArr::stringConv(const int & index) {}
+QString JsonArr::stringConv(const int & index) { return JOBJ_STR(val(index)); }
 
