@@ -5,6 +5,7 @@
 
 #define INT_KEY 'i'
 #define STR_KEY 's'
+#define PAIR_KEY 'p'
 
 class JsonTest : public QObject {
     Q_OBJECT
@@ -87,6 +88,19 @@ void JsonTest::Parsing_data() {
         << (QStringList() << QString(INT_KEY % QString::number(0)) << QString(INT_KEY % QString::number(1)))
         << val
         << false;
+
+    QTest::newRow("Wrong json")
+        << QString(
+            "["
+            "   ["
+            "       \"red\""
+            "       \"" % val % "\""
+            "   ]"
+            "]"
+        )
+        << (QStringList() << QString(INT_KEY % QString::number(0)) << QString(INT_KEY % QString::number(1)))
+        << val
+        << true;
 }
 
 void JsonTest::Parsing() {
@@ -106,7 +120,8 @@ void JsonTest::Parsing() {
             json_obj = json_obj[(*key).mid(1)];
     }
 
-    QVERIFY2((has_error != error_str.isEmpty() && json_obj.toString() == val), "Failure");
+    bool errorable = has_error && !error_str.isEmpty();
+    QVERIFY2(errorable || (!errorable && json_obj.toString() == val), "Failure");
 }
 
 
