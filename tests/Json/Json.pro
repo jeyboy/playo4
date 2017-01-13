@@ -10,7 +10,8 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-INCLUDEPATH += $${INNER_INC_PATH}/Json
+INCLUDEPATH += $${INC_PATH}/Json
+DEPENDPATH += $${INC_PATH}/Json
 LIBS += -lJson$${LIB_VERSION}
 
 SOURCES += main.cpp

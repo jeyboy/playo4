@@ -11,6 +11,7 @@ class QJsonObject;
 class JsonArr;
 class QJsonArray;
 class QJsonValueRef;
+class QJsonParseError;
 
 #define J_KEY2(key1, key2) toObject().value(key1).toObject().value(key2)
 
@@ -18,8 +19,10 @@ class QJsonValueRef;
 #define JOBJ_STR(jval) jval.isString() ? jval.toString() : QString::number(JOBJ_BINT(jval));
 
 class JSONSHARED_EXPORT Json : public QJsonValue, public JsonInterface {
+    bool has_err;
 public:
     static Json fromText(const QString & text);
+    static Json fromText(const QString & text, QString & error);
 
     Json(const Type & = Null);
     Json(const QJsonDocument & doc);
@@ -37,6 +40,7 @@ public:
     virtual ~Json();
 
     bool hasKey(const QString & key);
+    bool hasParseError();
 
     // concat keys from obj hash
     QString concatKeys(const QString & key1, const QString & key2, const QString & separator);

@@ -17,8 +17,6 @@ HEADERS += json.h \
     json_arr.h \
     json_interface.h
 
-INCLUDEPATH += $${INNER_INC_PATH}
-
 ######## setup block
 include(../../pri/headers_preparer.pri)
 #include(../../pri/test_compile.pri)

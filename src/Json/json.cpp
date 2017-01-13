@@ -2,6 +2,7 @@
 
 #include <qjsonvalue.h>
 #include <qjsondocument.h>
+#include <qdebug.h>
 
 #include "json_obj.h"
 #include "json_arr.h"
@@ -22,9 +23,17 @@ Json::operator QJsonValue() { return (QJsonValue)*this; }
 Json::~Json() {}
 
 Json Json::fromText(const QString & text) {
+    QString error;
+    return fromText(text, error);
+}
+
+Json Json::fromText(const QString & text, QString & error) {
     QJsonParseError err;
     QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8(), &err);
-    if (err.error == QJsonParseError::NoError) return Json();
+    if (err.error != QJsonParseError::NoError) {
+        error = err.errorString();
+        return Json();
+    }
     return (Json)doc;
 }
 

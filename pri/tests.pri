@@ -1,3 +1,5 @@
 include(./common.pri)
 
-CONFIG += recheck
+QMAKE_CXXFLAGS += -std=c++11
+
+#DESTDIR = $${LIBS_PATH}/

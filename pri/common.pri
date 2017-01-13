@@ -1,4 +1,4 @@
-PROJECT_ROOT_PATH = $${PWD}/../
+PROJECT_ROOT_PATH = $$absolute_path($${PWD}/../)
 MAJOR_VERSION = 0
 
 win32: OS_SUFFIX = win32
@@ -15,7 +15,7 @@ LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/
 INC_PATH = $${PROJECT_ROOT_PATH}/include/
 IMPORT_PATH = $${PROJECT_ROOT_PATH}/import/
 BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}/
-INNER_INC_PATH = ../include/
+INNER_INC_PATH = $$PROJECT_ROOT_PATH/src/include/
 
 LIBS += -L$${LIBS_PATH}/
 
