@@ -3,12 +3,13 @@
 JsonArr JsonArr::fromJsonStr(const QByteArray & text) { return Json::fromJsonStr(text).toArray(); }
 JsonArr JsonArr::fromJsonStr(const QString & text) { return Json::fromJsonStr(text).toArray(); }
 
-QByteArray JsonArr::toJsonStr() { return Json::toJsonStr(); }
+QByteArray JsonArr::toJsonStr(const JsonFormat & format) { return operator Json().toJsonStr(format); }
 
 JsonArr::JsonArr() : QJsonArray() {}
-JsonArr::JsonArr(const QJsonArray &) {}
-JsonArr & JsonArr::operator=(const QJsonArray & /*x*/) { return *this; }
-JsonArr::operator QJsonArray() { return (QJsonArray) *this; }
+JsonArr::JsonArr(const QJsonArray & oth_arr) : QJsonArray(oth_arr) {}
+JsonArr & JsonArr::operator=(const QJsonArray & x) { QJsonArray::operator=(x); return *this; }
+JsonArr::operator QJsonArray() { return (QJsonArray)*this; }
+JsonArr::operator Json() { return Json(operator QJsonArray()); }
 
 int JsonArr::size() { return QJsonArray::size(); }
 

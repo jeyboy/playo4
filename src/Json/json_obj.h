@@ -10,12 +10,13 @@ public:
     static JsonObj fromJsonStr(const QByteArray & text);
     static JsonObj fromJsonStr(const QString & text);
 
-    QByteArray toJsonStr();
+    QByteArray toJsonStr(const JsonFormat & format = Compact);
 
     JsonObj();
-    JsonObj(const QJsonObject &);
+    JsonObj(const QJsonObject & oth);
     JsonObj & operator=(const QJsonObject & x);
     operator QJsonObject();
+    operator Json();
 
     int size();
 

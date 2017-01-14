@@ -28,12 +28,14 @@ class QJsonParseError;
 
 class JSONSHARED_EXPORT Json : public QJsonValue {
 public:
+    enum JsonFormat { Indented, Compact };
+
     static Json fromJsonStr(const QString & text);
     static Json fromJsonStr(const QString & text, QString & error);
     static Json fromJsonStr(const QByteArray & text);
     static Json fromJsonStr(const QByteArray & text, QString & error);
 
-    virtual QByteArray toJsonStr();
+    virtual QByteArray toJsonStr(const JsonFormat & format = Compact);
 
     Json(const Type & = Null);
     Json(const QJsonDocument & doc);

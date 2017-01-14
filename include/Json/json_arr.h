@@ -9,12 +9,13 @@ public:
     static JsonArr fromJsonStr(const QByteArray & text);
     static JsonArr fromJsonStr(const QString & text);
 
-    QByteArray toJsonStr();
+    QByteArray toJsonStr(const JsonFormat & format = Compact);
 
     JsonArr();
-    JsonArr(const QJsonArray &);
+    JsonArr(const QJsonArray & oth);
     JsonArr & operator=(const QJsonArray & x);
     operator QJsonArray();
+    operator Json();
 
     int size();
 

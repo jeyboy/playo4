@@ -37,7 +37,9 @@ Json Json::fromJsonStr(const QByteArray & text, QString & error) {
     return (Json)doc;
 }
 
-QByteArray Json::toJsonStr() { return (isArray() ? QJsonDocument(toArray()) : QJsonDocument(toObject())).toJson(); }
+QByteArray Json::toJsonStr(const JsonFormat & format) {
+    return (isArray() ? QJsonDocument(toArray()) : QJsonDocument(toObject())).toJson((QJsonDocument::JsonFormat)format);
+}
 
 int Json::size() { return isArray() ? toArray().size() : toObject().size(); }
 
