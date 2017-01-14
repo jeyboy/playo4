@@ -1,13 +1,11 @@
 #ifndef JSON_OBJ_H
 #define JSON_OBJ_H
 
-#include "json_interface.h"
+#include "json.h"
 
 #include <qjsonobject.h>
 
-class Json;
-
-class JSONSHARED_EXPORT JsonObj : public QJsonObject/*, public IJson*/ {
+class JSONSHARED_EXPORT JsonObj : public Json, public QJsonObject {
 public:
     static JsonObj fromText(const QString & text);
 

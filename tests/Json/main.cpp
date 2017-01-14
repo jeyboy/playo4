@@ -19,9 +19,6 @@ private Q_SLOTS:
     void Parsing_data();
     void Parsing();
 
-    void Parsing_data();
-    void Parsing();
-
     void ParsingChains_data();
     void ParsingChains();
 };

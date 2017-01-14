@@ -9,9 +9,9 @@
 Json::Json(const Type & jtype) : QJsonValue(jtype) {}
 Json::Json(const QJsonDocument & doc) : QJsonValue(doc.isArray() ? (QJsonValue)doc.array() : (QJsonValue)doc.object()) {}
 Json::Json(const QJsonObject & obj) : QJsonValue(obj) {}
-Json::Json(const JsonObj & obj) : QJsonValue(obj) {}
+//Json::Json(const JsonObj & obj) : QJsonValue(obj) {}
 Json::Json(const QJsonArray & arr) : QJsonValue(arr) {}
-Json::Json(const JsonArr & arr) : QJsonValue(arr) {}
+//Json::Json(const JsonArr & arr) : QJsonValue(arr) {}
 Json::Json(const QJsonValueRef & ref) : QJsonValue(ref) {}
 
 Json::Json(const QJsonValue & val) : QJsonValue(val) { }

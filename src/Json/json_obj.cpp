@@ -1,5 +1,4 @@
 #include "json_obj.h"
-#include "json.h"
 
 JsonObj::JsonObj() : QJsonObject() {}
 

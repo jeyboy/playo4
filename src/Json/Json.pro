@@ -14,8 +14,7 @@ SOURCES += json.cpp \
 HEADERS += json.h \
     json_global.h \  # remove for static linking
     json_obj.h \
-    json_arr.h \
-    json_interface.h
+    json_arr.h
 
 ######## setup block
 include(../../pri/headers_preparer.pri)

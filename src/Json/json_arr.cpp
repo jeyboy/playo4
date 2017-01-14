@@ -1,5 +1,4 @@
 #include "json_arr.h"
-#include "json.h"
 
 JsonArr JsonArr::fromText(const QString & text) { return Json::fromText(text).toArray(); }
 
