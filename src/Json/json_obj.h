@@ -7,8 +7,10 @@
 
 class JSONSHARED_EXPORT JsonObj : public Json, public QJsonObject {
 public:
-    static JsonObj fromText(const QByteArray & text);
-    static JsonObj fromText(const QString & text);
+    static JsonObj fromJsonStr(const QByteArray & text);
+    static JsonObj fromJsonStr(const QString & text);
+
+    QByteArray toJsonStr();
 
     JsonObj();
     JsonObj(const QJsonObject &);

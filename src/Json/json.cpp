@@ -21,13 +21,13 @@ Json::operator QJsonValue() { return (QJsonValue)*this; }
 
 Json::~Json() {}
 
-Json Json::fromText(const QString & text) { return fromText(text.toUtf8()); }
-Json Json::fromText(const QString & text, QString & error) { return fromText(text.toUtf8(), error); }
-Json Json::fromText(const QByteArray & text) {
+Json Json::fromJsonStr(const QString & text) { return fromJsonStr(text.toUtf8()); }
+Json Json::fromJsonStr(const QString & text, QString & error) { return fromJsonStr(text.toUtf8(), error); }
+Json Json::fromJsonStr(const QByteArray & text) {
     QString error;
-    return fromText(text, error);
+    return fromJsonStr(text, error);
 }
-Json Json::fromText(const QByteArray & text, QString & error) {
+Json Json::fromJsonStr(const QByteArray & text, QString & error) {
     QJsonParseError err;
     QJsonDocument doc = QJsonDocument::fromJson(text, &err);
     if (err.error != QJsonParseError::NoError) {
@@ -36,6 +36,8 @@ Json Json::fromText(const QByteArray & text, QString & error) {
     }
     return (Json)doc;
 }
+
+QByteArray Json::toJsonStr() { return (isArray() ? QJsonDocument(toArray()) : QJsonDocument(toObject())).toJson(); }
 
 int Json::size() { return isArray() ? toArray().size() : toObject().size(); }
 

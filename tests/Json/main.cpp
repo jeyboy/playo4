@@ -112,8 +112,8 @@ void JsonTest::Parsing() {
     QFETCH(QString, val);
     QFETCH(bool, has_error);
 
-    QString error_str;
-    Json json_obj = Json::fromText(json, error_str);
+    QString error_output;
+    Json json_obj = Json::fromJsonStr(json, error_output);
 
     for(QStringList::Iterator key = keys.begin(); key != keys.end(); key++) {
         if ((*key)[0] == INT_KEY)
@@ -122,7 +122,7 @@ void JsonTest::Parsing() {
             json_obj = json_obj[(*key).mid(1)];
     }
 
-    bool errorable = has_error && !error_str.isEmpty();
+    bool errorable = has_error && !error_output.isEmpty();
     QVERIFY2(errorable || (!errorable && json_obj.toString() == val), "Failure");
 }
 

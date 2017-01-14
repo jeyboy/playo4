@@ -1,13 +1,16 @@
 #include "json_obj.h"
+#include <qjsondocument.h>
+
+JsonObj JsonObj::fromJsonStr(const QByteArray & text) { return Json::fromJsonStr(text).toObject(); }
+JsonObj JsonObj::fromJsonStr(const QString & text) { return Json::fromJsonStr(text).toObject(); }
+
+QByteArray JsonObj::toJsonStr() { return QJsonDocument(*this).toJson(); }
 
 JsonObj::JsonObj() : QJsonObject() {}
 
 JsonObj::JsonObj(const QJsonObject & ) {}
 JsonObj & JsonObj::operator=(const QJsonObject & /*x*/) { return *this; }
 JsonObj::operator QJsonObject() { return (QJsonObject)*this; }
-
-JsonObj JsonObj::fromText(const QByteArray & text) { return Json::fromText(text).toObject(); }
-JsonObj JsonObj::fromText(const QString & text) { return Json::fromText(text).toObject(); }
 
 int JsonObj::size() { return QJsonObject::size(); }
 

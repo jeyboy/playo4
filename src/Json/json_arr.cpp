@@ -1,7 +1,10 @@
 #include "json_arr.h"
+#include <qjsondocument.h>
 
-JsonArr JsonArr::fromText(const QByteArray & text) { return Json::fromText(text).toArray(); }
-JsonArr JsonArr::fromText(const QString & text) { return Json::fromText(text).toArray(); }
+JsonArr JsonArr::fromJsonStr(const QByteArray & text) { return Json::fromJsonStr(text).toArray(); }
+JsonArr JsonArr::fromJsonStr(const QString & text) { return Json::fromJsonStr(text).toArray(); }
+
+QByteArray JsonArr::toJsonStr() { return QJsonDocument(*this).toJson(); }
 
 JsonArr::JsonArr() : QJsonArray() {}
 JsonArr::JsonArr(const QJsonArray &) {}
