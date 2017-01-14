@@ -38,11 +38,5 @@ QString JsonObj::string(const QString & key) { return value(key).toString(); }
 QString JsonObj::string(const QString & key, const QString & default_val) { return value(key).toString(default_val); }
 QString JsonObj::string2(const QString & key1, const QString & key2) { return JOBJ_KEY2SS(key1, key2).toString(); }
 
-QString JsonObj::forceString(const QString & key) {
-    QJsonValue val = value(key);
-    return val.isString() ? val.toString() : QString::number(JOBJ_BINT(val));
-}
-QString JsonObj::forceString2(const QString & key1, const QString & key2) {
-    QJsonValue val = JOBJ_KEY2SS(key1, key2);
-    return val.isString() ? val.toString() : QString::number(JOBJ_BINT(val));
-}
+QString JsonObj::forceString(const QString & key) { return J_STR(value(key)); }
+QString JsonObj::forceString2(const QString & key1, const QString & key2) { return J_STR(JOBJ_KEY2SS(key1, key2)); }

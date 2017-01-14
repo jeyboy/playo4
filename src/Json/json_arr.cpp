@@ -32,5 +32,5 @@ qint64 JsonArr::bigInt(const int & index) { return JOBJ_BINT(val(index)); }
 
 QString JsonArr::string(const int & index) { return val(index).toString(); }
 
-QString JsonArr::forceString(const int & index) { return JOBJ_STR(val(index)); }
+QString JsonArr::forceString(const int & index) { return J_STR(val(index)); }
 

@@ -17,13 +17,14 @@ class QJsonParseError;
 #define J_KEY2IS(index1, key2) toArray()[index1].toObject().value(key2)
 #define J_KEY2SI(key1, index2) toObject().value(key1).toArray()[index2]
 
+#define J_STR(jval) jval.isString() ? jval.toString() : QString::number(JOBJ_BINT(jval));
+
 #define JOBJ_KEY2SS(key1, key2) value(key1).toObject().value(key2)
 #define JOBJ_KEY2II(index1, index2) at(index1).toArray()[index2]
 #define JOBJ_KEY2IS(index1, key2) at(index1).toObject().value(key2)
 #define JOBJ_KEY2SI(key1, index2) value(key1).toArray()[index2]
 
 #define JOBJ_BINT(val) (qint64)val.toDouble()
-#define JOBJ_STR(jval) jval.isString() ? jval.toString() : QString::number(JOBJ_BINT(jval));
 
 class JSONSHARED_EXPORT Json : public QJsonValue {
 public:
