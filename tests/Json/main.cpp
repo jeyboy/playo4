@@ -18,6 +18,12 @@ private Q_SLOTS:
     void cleanupTestCase();
     void Parsing_data();
     void Parsing();
+
+    void Parsing_data();
+    void Parsing();
+
+    void ParsingChains_data();
+    void ParsingChains();
 };
 
 JsonTest::JsonTest() {}
@@ -111,7 +117,6 @@ void JsonTest::Parsing() {
 
     QString error_str;
     Json json_obj = Json::fromText(json, error_str);
-    qDebug() << "ERROR" << error_str;
 
     for(QStringList::Iterator key = keys.begin(); key != keys.end(); key++) {
         if ((*key)[0] == INT_KEY)
@@ -123,6 +128,19 @@ void JsonTest::Parsing() {
     bool errorable = has_error && !error_str.isEmpty();
     QVERIFY2(errorable || (!errorable && json_obj.toString() == val), "Failure");
 }
+
+
+void JsonTest::ParsingChains_data() {
+    QTest::addColumn<QString>("json");
+    QTest::addColumn<QStringList>("keys");
+    QTest::addColumn<QString>("val");
+
+
+}
+void JsonTest::ParsingChains() {
+
+}
+
 
 
 QTEST_APPLESS_MAIN(JsonTest)

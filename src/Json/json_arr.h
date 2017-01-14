@@ -6,7 +6,7 @@
 
 class Json;
 
-class JSONSHARED_EXPORT JsonArr : public QJsonArray/*, public JsonInterface*/ {
+class JSONSHARED_EXPORT JsonArr : public QJsonArray/*, public IJson*/ {
 public:
     static JsonArr fromText(const QString & text);
 

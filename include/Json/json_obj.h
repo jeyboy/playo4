@@ -7,9 +7,7 @@
 
 class Json;
 
-#define JOBJ_KEY2(key1, key2) value(key1).toObject().value(key2)
-
-class JSONSHARED_EXPORT JsonObj : public QJsonObject/*, public JsonInterface*/ {
+class JSONSHARED_EXPORT JsonObj : public QJsonObject/*, public IJson*/ {
 public:
     static JsonObj fromText(const QString & text);
 
