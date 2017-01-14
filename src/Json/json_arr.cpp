@@ -1,11 +1,14 @@
 #include "json_arr.h"
 
+JsonArr JsonArr::fromText(const QByteArray & text) { return Json::fromText(text).toArray(); }
 JsonArr JsonArr::fromText(const QString & text) { return Json::fromText(text).toArray(); }
 
 JsonArr::JsonArr() : QJsonArray() {}
 JsonArr::JsonArr(const QJsonArray &) {}
 JsonArr & JsonArr::operator=(const QJsonArray & /*x*/) { return *this; }
 JsonArr::operator QJsonArray() { return (QJsonArray) *this; }
+
+int JsonArr::size() { return QJsonArray::size(); }
 
 QString JsonArr::concatKeys(const QString & key, const QString & separator) {
     QString cat_str;
@@ -27,5 +30,5 @@ qint64 JsonArr::bigInt(const int & index) { return JOBJ_BINT(val(index)); }
 
 QString JsonArr::string(const int & index) { return val(index).toString(); }
 
-QString JsonArr::stringConv(const int & index) { return JOBJ_STR(val(index)); }
+QString JsonArr::forceString(const int & index) { return JOBJ_STR(val(index)); }
 

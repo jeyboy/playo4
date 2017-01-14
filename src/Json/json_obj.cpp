@@ -6,7 +6,10 @@ JsonObj::JsonObj(const QJsonObject & ) {}
 JsonObj & JsonObj::operator=(const QJsonObject & /*x*/) { return *this; }
 JsonObj::operator QJsonObject() { return (QJsonObject)*this; }
 
+JsonObj JsonObj::fromText(const QByteArray & text) { return Json::fromText(text).toObject(); }
 JsonObj JsonObj::fromText(const QString & text) { return Json::fromText(text).toObject(); }
+
+int JsonObj::size() { return QJsonObject::size(); }
 
 bool JsonObj::hasKey(const QString & key) { return contains(key); }
 
@@ -31,11 +34,11 @@ QString JsonObj::string(const QString & key) { return value(key).toString(); }
 QString JsonObj::string(const QString & key, const QString & default_val) { return value(key).toString(default_val); }
 QString JsonObj::string2(const QString & key1, const QString & key2) { return JOBJ_KEY2SS(key1, key2).toString(); }
 
-QString JsonObj::stringConv(const QString & key) {
+QString JsonObj::forceString(const QString & key) {
     QJsonValue val = value(key);
     return val.isString() ? val.toString() : QString::number(JOBJ_BINT(val));
 }
-QString JsonObj::stringConv2(const QString & key1, const QString & key2) {
+QString JsonObj::forceString2(const QString & key1, const QString & key2) {
     QJsonValue val = JOBJ_KEY2SS(key1, key2);
     return val.isString() ? val.toString() : QString::number(JOBJ_BINT(val));
 }

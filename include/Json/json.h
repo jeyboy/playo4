@@ -86,10 +86,10 @@ public:
     virtual QString string(const QString & key, const QString & default_val);
     virtual QString string2(const QString & key1, const QString & key2);
 
-    virtual QString stringConv(const int & index);
-    virtual QString stringConv2(const int & index1, const int & index2);
-    virtual QString stringConv(const QString & key);
-    virtual QString stringConv2(const QString & key1, const QString & key2);
+    virtual QString forceString(const int & index);
+    virtual QString forceString2(const int & index1, const int & index2);
+    virtual QString forceString(const QString & key);
+    virtual QString forceString2(const QString & key1, const QString & key2);
 };
 
 #endif // JSON_H

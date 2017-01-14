@@ -7,12 +7,15 @@
 
 class JSONSHARED_EXPORT JsonObj : public Json, public QJsonObject {
 public:
+    static JsonObj fromText(const QByteArray & text);
     static JsonObj fromText(const QString & text);
 
     JsonObj();
     JsonObj(const QJsonObject &);
     JsonObj & operator=(const QJsonObject & x);
     operator QJsonObject();
+
+    int size();
 
     bool hasKey(const QString & key);
 
@@ -35,8 +38,8 @@ public:
     QString string(const QString & key, const QString & default_val);
     QString string2(const QString & key1, const QString & key2);
 
-    QString stringConv(const QString & key);
-    QString stringConv2(const QString & key1, const QString & key2);
+    QString forceString(const QString & key);
+    QString forceString2(const QString & key1, const QString & key2);
 };
 
 #endif // JSON_OBJ_H

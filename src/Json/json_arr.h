@@ -6,12 +6,15 @@
 
 class JSONSHARED_EXPORT JsonArr : public Json, public QJsonArray {
 public:
+    static JsonArr fromText(const QByteArray & text);
     static JsonArr fromText(const QString & text);
 
     JsonArr();
     JsonArr(const QJsonArray &);
     JsonArr & operator=(const QJsonArray & x);
     operator QJsonArray();
+
+    int size();
 
     QString concatKeys(const QString & key, const QString & separator);
 
@@ -26,7 +29,7 @@ public:
 
     QString string(const int & index);
 
-    QString stringConv(const int & index);
+    QString forceString(const int & index);
 };
 
 #endif // JSON_ARR_H

@@ -82,7 +82,7 @@ QString Json::string(const QString & key) { return this -> operator[](key).toStr
 QString Json::string(const QString & key, const QString & default_val) { return val(key).toString(default_val); }
 QString Json::string2(const QString & key1, const QString & key2) { return val2(key1, key2).toString(); }
 
-QString Json::stringConv(const int & index) { return JOBJ_STR(this -> operator[](index)); }
-QString Json::stringConv2(const int & index1, const int & index2) { return JOBJ_STR(val2(index1, index2)); }
-QString Json::stringConv(const QString & key) { return JOBJ_STR(this -> operator[](key)); }
-QString Json::stringConv2(const QString & key1, const QString & key2) { return JOBJ_STR(val2(key1, key2)); }
+QString Json::forceString(const int & index) { return JOBJ_STR(this -> operator[](index)); }
+QString Json::forceString2(const int & index1, const int & index2) { return JOBJ_STR(val2(index1, index2)); }
+QString Json::forceString(const QString & key) { return JOBJ_STR(this -> operator[](key)); }
+QString Json::forceString2(const QString & key1, const QString & key2) { return JOBJ_STR(val2(key1, key2)); }
