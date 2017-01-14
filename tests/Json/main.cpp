@@ -5,11 +5,10 @@
 
 #define INT_KEY 'i'
 #define STR_KEY 's'
-#define PAIR_KEY 'p'
+//#define PAIR_KEY 'p'
 
 class JsonTest : public QObject {
     Q_OBJECT
-
 public:
     JsonTest();
 
