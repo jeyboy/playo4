@@ -10,12 +10,18 @@ public:
     static JsonArr fromJsonStr(const QString & text);
 
     QByteArray toJsonStr(const JsonFormat & format = Compact);
+    QVariant toVariant() const;
 
     JsonArr();
     JsonArr(const QJsonArray & oth);
     JsonArr & operator=(const QJsonArray & x);
-    operator QJsonArray();
-    operator Json();
+
+    operator QJsonArray() const;
+    operator Json() const;
+
+    Json::Type type() const;
+
+    inline bool isArray() const { return true; }
 
     int size();
 
@@ -23,6 +29,9 @@ public:
 
     Json operator[](const int & index);
     Json val(const int & index);
+
+    JsonArr arr() const;
+    JsonArr toArray() const;
 
     bool boolean(const int & index);
 

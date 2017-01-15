@@ -1,16 +1,21 @@
 #include "json_arr.h"
 #include <qjsonobject.h>
+#include <qvariant.h>
 
 JsonArr JsonArr::fromJsonStr(const QByteArray & text) { return Json::fromJsonStr(text).toArray(); }
 JsonArr JsonArr::fromJsonStr(const QString & text) { return Json::fromJsonStr(text).toArray(); }
 
 QByteArray JsonArr::toJsonStr(const JsonFormat & format) { return operator Json().toJsonStr(format); }
+QVariant JsonArr::toVariant() const { return operator Json().toVariant(); }
 
 JsonArr::JsonArr() : QJsonArray() {}
 JsonArr::JsonArr(const QJsonArray & oth_arr) : QJsonArray(oth_arr) {}
 JsonArr & JsonArr::operator=(const QJsonArray & x) { QJsonArray::operator=(x); return *this; }
-JsonArr::operator QJsonArray() { return (QJsonArray)*this; }
-JsonArr::operator Json() { return Json(operator QJsonArray()); }
+
+JsonArr::operator QJsonArray() const { return (QJsonArray)*this; }
+JsonArr::operator Json() const { return Json(operator QJsonArray()); }
+
+Json::Type JsonArr::type() const { return Json::Array; }
 
 int JsonArr::size() { return QJsonArray::size(); }
 
@@ -25,6 +30,9 @@ QString JsonArr::concatKeys(const QString & key, const QString & separator) {
 
 Json JsonArr::operator[](const int & index) { return val(index); }
 Json JsonArr::val(const int & index) { return this -> at(index); }
+
+JsonArr JsonArr::arr() const { return *this; }
+JsonArr JsonArr::toArray() const { return *this; }
 
 bool JsonArr::boolean(const int & index) { return val(index).toBool(); }
 

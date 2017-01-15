@@ -30,14 +30,34 @@ class JSONSHARED_EXPORT Json : public QJsonValue {
 public:
     enum JsonFormat { Indented, Compact };
 
+    static Json fromVariant(const QVariant & variant);
+
     static Json fromJsonStr(const QString & text);
     static Json fromJsonStr(const QString & text, QString & error);
     static Json fromJsonStr(const QByteArray & text);
     static Json fromJsonStr(const QByteArray & text, QString & error);
 
+    virtual QVariant toVariant() const;
     virtual QByteArray toJsonStr(const JsonFormat & format = Compact);
 
-    Json(const Type & = Null);
+    virtual bool isArray() const { return type() == Array; }
+    virtual bool isObject() const { return type() == Object; }
+
+
+//    inline bool isNull() const { return type() == Null; }
+//    inline bool isBool() const { return type() == Bool; }
+//    inline bool isDouble() const { return type() == Double; }
+//    inline bool isString() const { return type() == String; }
+//    inline bool isUndefined() const { return type() == Undefined; }
+
+//    bool toBool(bool defaultValue = false) const;
+//    int toInt(int defaultValue = 0) const;
+//    double toDouble(double defaultValue = 0) const;
+//    QString toString() const;
+//    QString toString(const QString &defaultValue) const;
+
+
+    Json(const Json::Type & = Null);
     Json(const QJsonDocument & doc);
     explicit Json(const JsonObj & obj);
     Json(const QJsonObject & obj);
@@ -51,6 +71,9 @@ public:
     operator QJsonValue();
 
     virtual ~Json();
+
+    virtual Json::Type type() const;
+
 
     virtual int size();
 
@@ -71,8 +94,13 @@ public:
     virtual Json val2(const QString & key1, const QString & key2);
     virtual Json val2(const QString & key1, const int & index2);
 
-    JsonObj obj();
-    JsonArr arr();
+    virtual JsonObj obj() const;
+    virtual JsonObj toObject() const;
+    virtual JsonObj toObject(const QJsonObject & default_value) const;
+
+    virtual JsonArr arr() const;
+    virtual JsonArr toArray() const;
+    virtual JsonArr toArray(const QJsonArray & default_value) const;
 
     virtual bool boolean();
     virtual bool boolean(const int & index);

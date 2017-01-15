@@ -11,12 +11,18 @@ public:
     static JsonObj fromJsonStr(const QString & text);
 
     QByteArray toJsonStr(const JsonFormat & format = Compact);
+    QVariant toVariant() const;
 
     JsonObj();
     JsonObj(const QJsonObject & oth);
     JsonObj & operator=(const QJsonObject & x);
-    operator QJsonObject();
-    operator Json();
+
+    operator QJsonObject() const;
+    operator Json() const;
+
+    Json::Type type() const;
+
+    inline bool isObject() const { return true; }
 
     int size();
 
@@ -28,6 +34,9 @@ public:
     Json val(const QString & key);
     Json val2(const QString & key1, const QString & key2);
     Json val2(const QString & key1, const int & index2);
+
+    JsonObj obj() const;
+    JsonObj toObject() const;
 
     bool boolean(const QString & key);
     bool boolean2(const QString & key1, const QString & key2);
