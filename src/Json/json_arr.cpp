@@ -1,4 +1,5 @@
 #include "json_arr.h"
+#include <qjsonobject.h>
 
 JsonArr JsonArr::fromJsonStr(const QByteArray & text) { return Json::fromJsonStr(text).toArray(); }
 JsonArr JsonArr::fromJsonStr(const QString & text) { return Json::fromJsonStr(text).toArray(); }

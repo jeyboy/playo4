@@ -65,36 +65,49 @@ public:
     virtual Json val(const int & index);
     virtual Json val(const QString & key);
     virtual Json val2(const int & index1, const int & index2);
+    virtual Json val2(const int & index1, const QString & key2);
     virtual Json val2(const QString & key1, const QString & key2);
+    virtual Json val2(const QString & key1, const int & index2);
 
     JsonObj obj();
     JsonArr arr();
 
     virtual bool boolean(const int & index);
-    virtual bool boolean2(const int & index1, const int & index2);
     virtual bool boolean(const QString & key);
+    virtual bool boolean2(const int & index1, const int & index2);
+    virtual bool boolean2(const int & index1, const QString & key2);
     virtual bool boolean2(const QString & key1, const QString & key2);
+    virtual bool boolean2(const QString & key1, const int & index2);
+
 
     virtual int integer(const int & index);
-    virtual int integer2(const int & index1, const int & index2);
     virtual int integer(const QString & key);
+    virtual int integer2(const int & index1, const int & index2);
+    virtual int integer2(const int & index1, const QString & key2);
     virtual int integer2(const QString & key1, const QString & key2);
+    virtual int integer2(const QString & key1, const int & index2);
 
     virtual qint64 bigInt(const int & index);
-    virtual qint64 bigInt2(const int & index1, const int & index2);
     virtual qint64 bigInt(const QString & key);
+    virtual qint64 bigInt2(const int & index1, const int & index2);
+    virtual qint64 bigInt2(const int & index1, const QString & key2);
     virtual qint64 bigInt2(const QString & key1, const QString & key2);
+    virtual qint64 bigInt2(const QString & key1, const int & index2);
 
     virtual QString string(const int & index);
-    virtual QString string2(const int & index1, const int & index2);
     virtual QString string(const QString & key);
     virtual QString string(const QString & key, const QString & default_val);
+    virtual QString string2(const int & index1, const int & index2);
+    virtual QString string2(const int & index1, const QString & key2);
     virtual QString string2(const QString & key1, const QString & key2);
+    virtual QString string2(const QString & key1, const int & index2);
 
     virtual QString forceString(const int & index);
-    virtual QString forceString2(const int & index1, const int & index2);
     virtual QString forceString(const QString & key);
+    virtual QString forceString2(const int & index1, const int & index2);
+    virtual QString forceString2(const int & index1, const QString & key2);
     virtual QString forceString2(const QString & key1, const QString & key2);
+    virtual QString forceString2(const QString & key1, const int & index2);
 };
 
 #endif // JSON_H

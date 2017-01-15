@@ -27,6 +27,7 @@ public:
     Json operator[](const QString & key);
     Json val(const QString & key);
     Json val2(const QString & key1, const QString & key2);
+    Json val2(const QString & key1, const int & index2);
 
     bool boolean(const QString & key);
     bool boolean2(const QString & key1, const QString & key2);
@@ -40,6 +41,7 @@ public:
     QString string(const QString & key);
     QString string(const QString & key, const QString & default_val);
     QString string2(const QString & key1, const QString & key2);
+    QString string2(const QString & key1, const int & index2);
 
     QString forceString(const QString & key);
     QString forceString2(const QString & key1, const QString & key2);
