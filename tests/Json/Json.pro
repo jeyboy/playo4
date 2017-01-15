@@ -16,3 +16,6 @@ LIBS += -lJson$${LIB_VERSION}
 
 SOURCES += main.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+HEADERS += \
+    test_data.h

@@ -5,65 +5,7 @@
 #include <json_obj.h>
 #include <json_arr.h>
 
-#define INT_KEY 'i'
-#define STR_KEY 's'
-
-
-#define TJSON_OBJ(key, val) \
-    QString(\
-        "{"\
-        "   \"colorName\":\"red\","\
-        "   \"" % key % "\":\"" % val % "\""\
-        "}"\
-    )
-
-#define TJSON_SUB_OBJ(root_key, key, val) \
-    QString(\
-        "{"\
-        "   \"" % root_key % "\":{"\
-        "       \"colorName\":\"red\","\
-        "       \"" % key % "\":\"" % val % "\""\
-        "   }"\
-        "}"\
-    )
-
-#define TJSON_ARR(val) \
-    QString(\
-        "["\
-        "   \"" % val % "\""\
-        "]"\
-    )
-
-#define TJSON_SUB_ARR(key, val) \
-    QString(\
-        "["\
-        "   ["\
-        "       \"red\","\
-        "       \"" % val % "\""\
-        "   ]"\
-        "]"\
-    )
-
-#define TJSON_OBJ_SUB_ARR(root_key, val) \
-    QString(\
-        "{"\
-        "   \"" % root_key % "\":["\
-        "       \"red\","\
-        "       \"" % val % "\""\
-        "   ]"\
-        "}"\
-    )
-
-#define TJSON_ARR_SUB_OBJ(key, val) \
-    QString(\
-        "["\
-        "   {"\
-        "       \"colorName\":\"red\","\
-        "       \"" % key % "\":\"" % val % "\""\
-        "   }"\
-        "]"\
-    )
-
+#include "test_data.h"
 
 class JsonTest : public QObject {
     Q_OBJECT
@@ -74,8 +16,14 @@ private Q_SLOTS:
     void parsing_data();
     void parsing();
 
-    void parsingChains_data();
-    void parsingChains();
+    void valIndex();
+    void valKey();
+
+    void val2Index();
+    void val2Key();
+
+    void parsingObjChainsStr();
+    void parsingArrChainsStr();
 
     void jsonToString();
     void jsonObjToString();
@@ -96,26 +44,26 @@ void JsonTest::parsing_data() {
 
     QTest::newRow("Usuall obj")
         << TJSON_OBJ(key, val)
-        << (QStringList() << QString(STR_KEY % key))
+        << TJSON_OBJ_KEY(key)
         << val
         << false;
 
     QTest::newRow("Sub obj")
         << TJSON_SUB_OBJ(root_key, key, val)
-        << (QStringList() << QString(STR_KEY % root_key) << QString(STR_KEY % key))
+        << TJSON_SUB_OBJ_KEY(root_key, key)
         << val
         << false;
 
     QTest::newRow("Usuall arr")
         << TJSON_ARR(val)
-        << (QStringList() << QString(INT_KEY % QString::number(0)))
+        << TJSON_ARR_KEY
         << val
         << false;
 
 
     QTest::newRow("Sub arr")
-        << TJSON_SUB_ARR(key, val)
-        << (QStringList() << QString(INT_KEY % QString::number(0)) << QString(INT_KEY % QString::number(1)))
+        << TJSON_SUB_ARR(val)
+        << TJSON_SUB_ARR_KEY
         << val
         << false;
 
@@ -128,7 +76,7 @@ void JsonTest::parsing_data() {
             "   ]"
             "]"
         )
-        << (QStringList() << QString(INT_KEY % QString::number(0)) << QString(INT_KEY % QString::number(1)))
+        << QStringList()
         << val
         << true;
 }
@@ -152,15 +100,49 @@ void JsonTest::parsing() {
     QVERIFY2(errorable || (!errorable && json_obj.toString() == val), "Failure");
 }
 
-void JsonTest::parsingChains_data() {
-    QTest::addColumn<QString>("json");
-    QTest::addColumn<QStringList>("keys");
-    QTest::addColumn<QString>("val");
+void JsonTest::parsingObjChainsStr() {
+    QString root_key = LSTR("colors");
+    QString key = LSTR("colorVal");
+    QString val = LSTR("#f00");
 
-
+    Json json_obj = Json::fromJsonStr(TJSON_SUB_OBJ(root_key, key, val));
+    QVERIFY2(json_obj.string2(root_key, key) == val, "Failure");
 }
-void JsonTest::parsingChains() {
 
+void JsonTest::parsingArrChainsStr() {
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_SUB_ARR(val));
+    QVERIFY2(json_obj.string2(TJSON_SUB_ARR_KEY_ARGS) == val, "Failure");
+}
+
+void JsonTest::valIndex() {
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_ARR(val));
+    QVERIFY2(json_obj.val(0).string() == val, "Failure");
+}
+void JsonTest::valKey() {
+    QString key = LSTR("colorVal");
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_OBJ(key, val));
+    QVERIFY2(json_obj.val(key).string() == val, "Failure");
+}
+
+void JsonTest::val2Index() {
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_SUB_ARR(val));
+    QVERIFY2(json_obj.val2(TJSON_SUB_ARR_KEY_ARGS).string() == val, "Failure");
+}
+void JsonTest::val2Key() {
+    QString root_key = LSTR("colors");
+    QString key = LSTR("colorVal");
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_SUB_OBJ(root_key, key, val));
+    QVERIFY2(json_obj.val2(root_key, key).string() == val, "Failure");
 }
 
 void JsonTest::jsonToString() {
@@ -168,23 +150,14 @@ void JsonTest::jsonToString() {
     Json json_obj = Json::fromJsonStr(json_str);
     QVERIFY2(json_str == json_obj.toJsonStr(), "Failure");
 }
-
 void JsonTest::jsonObjToString() {
     QByteArray json_str = TJSON_OBJ(LSTR("genre"), LSTR("pop")).remove(' ').toUtf8();
     JsonObj json_obj = JsonObj::fromJsonStr(json_str);
-
-    qDebug() << json_str;
-    qDebug() << json_obj.toJsonStr();
-
     QVERIFY2(json_str == json_obj.toJsonStr(), "Failure");
 }
 void JsonTest::jsonArrToString() {
     QByteArray json_str = TJSON_ARR(LSTR("pop")).remove(' ').toUtf8();
     JsonArr json_arr = JsonArr::fromJsonStr(json_str);
-
-    qDebug() << json_str;
-    qDebug() << json_arr.toJsonStr();
-
     QVERIFY2(json_str == json_arr.toJsonStr(), "Failure");
 }
 
