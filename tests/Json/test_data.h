@@ -13,6 +13,13 @@
         "   \"" % key % "\":\"" % val % "\""\
         "}"\
     )
+#define TJSON_OBJ2(key, val) \
+    QString(\
+        "{"\
+        "   \"colorName\":\"red\","\
+        "   \"" % key % "\":" % val % ""\
+        "}"\
+    )
 
 #define TJSON_SUB_OBJ_KEY(root_key, key) (QStringList() << QString(STR_KEY % root_key) << QString(STR_KEY % key))
 #define TJSON_SUB_OBJ(root_key, key, val) \
