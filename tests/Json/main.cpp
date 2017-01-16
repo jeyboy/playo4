@@ -16,6 +16,13 @@ private Q_SLOTS:
     void parsing_data();
     void parsing();
 
+    void sizeJson();
+    void sizeObj();
+    void sizeArr();
+
+    void bracketsIndex();
+    void bracketsKey();
+
     void valIndex();
     void valKey();
 
@@ -115,6 +122,35 @@ void JsonTest::parsingArrChainsStr() {
     Json json_obj = Json::fromJsonStr(TJSON_SUB_ARR(val));
     QVERIFY2(json_obj.string2(TJSON_SUB_ARR_KEY_ARGS) == val, "Failure");
 }
+
+
+void JsonTest::sizeJson() {
+    Json json_obj = Json::fromJsonStr(TJSON_OBJ(LSTR("colorVal"), LSTR("#f00")));
+    QVERIFY2(json_obj.size() == 2, "Failure");
+}
+void JsonTest::sizeObj() {
+    Json json_obj = Json::fromJsonStr(TJSON_OBJ(LSTR("colorVal"), LSTR("#f00")));
+    QVERIFY2(json_obj.obj().size() == 2, "Failure");
+}
+void JsonTest::sizeArr() {
+    Json json_obj = Json::fromJsonStr(TJSON_ARR(LSTR("#f00")));
+    QVERIFY2(json_obj.arr().size() == 3, "Failure");
+}
+
+void JsonTest::bracketsIndex() {
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_ARR(val));
+    QVERIFY2(json_obj[0].string() == val, "Failure");
+}
+void JsonTest::bracketsKey() {
+    QString key = LSTR("colorVal");
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_OBJ(key, val));
+    QVERIFY2(json_obj[key].string() == val, "Failure");
+}
+
 
 void JsonTest::valIndex() {
     QString val = LSTR("#f00");
