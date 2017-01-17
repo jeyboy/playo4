@@ -55,6 +55,13 @@ private Q_SLOTS:
     void jsonDouble();
     void jsonFStr();
 
+    void jsonObjStr();
+    void jsonObjBool();
+    void jsonObjInt();
+    void jsonObjInt64();
+    void jsonObjDouble();
+    void jsonObjFStr();
+
     void jsonObjConcatKeys();
     void jsonArrObjConcatKeys();
     void jsonArrListConcatKeys();
@@ -138,7 +145,6 @@ void JsonTest::parsingObjChainsStr() {
     Json json_obj = Json::fromJsonStr(TJSON_SUB_OBJ(root_key, key, val));
     QVERIFY2(json_obj.string2(root_key, key) == val, "Failure");
 }
-
 void JsonTest::parsingArrChainsStr() {
     QString val = LSTR("#f00");
 
@@ -325,6 +331,48 @@ void JsonTest::jsonFStr() {
     int val = 123;
 
     Json json_obj = Json::fromJsonStr(TJSON_OBJ(key, QString::number(val)));
+    QVERIFY2(json_obj.forceString(key) ==QString::number(val), "Failure");
+}
+
+void JsonTest::jsonObjStr() {
+    QString key = LSTR("color");
+    QString val = LSTR("#f00");
+
+    JsonObj json_obj = JsonObj::fromJsonStr(TJSON_OBJ(key, val));
+    QVERIFY2(json_obj.string(key) == val, "Failure");
+}
+void JsonTest::jsonObjBool() {
+    QString key = LSTR("color");
+    QString val = LSTR("false");
+
+    JsonObj json_obj = JsonObj::fromJsonStr(TJSON_OBJ2(key, val));
+    QVERIFY2(!json_obj.boolean(key), "Failure");
+}
+void JsonTest::jsonObjInt() {
+    QString key = LSTR("color");
+    int val = 5;
+
+    JsonObj json_obj = JsonObj::fromJsonStr(TJSON_OBJ2(key, QString::number(val)));
+    QVERIFY2(json_obj.integer(key) == val, "Failure");
+}
+void JsonTest::jsonObjInt64() {
+    QString key = LSTR("color");
+    qint64 val = 92233720368547760;
+    JsonObj json_obj = JsonObj::fromJsonStr(TJSON_OBJ2(key, QString::number(val)));
+    QVERIFY2(json_obj.bigInt(key) == val, "Failure");
+}
+void JsonTest::jsonObjDouble() {
+    QString key = LSTR("color");
+    double val = 123.23342445354756765;
+    QString val_str = QString::number(val, 'g', 32);
+    JsonObj json_obj = JsonObj::fromJsonStr(TJSON_OBJ2(key, val_str));
+    QVERIFY2(json_obj.rational(key) == val, "Failure");
+}
+void JsonTest::jsonObjFStr() {
+    QString key = LSTR("color");
+    int val = 123;
+
+    JsonObj json_obj = JsonObj::fromJsonStr(TJSON_OBJ(key, QString::number(val)));
     QVERIFY2(json_obj.forceString(key) ==QString::number(val), "Failure");
 }
 
