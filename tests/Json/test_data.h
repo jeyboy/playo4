@@ -5,18 +5,24 @@
 #define STR_KEY 's'
 
 
+#define TJSON_OBJ_DEFAULT_KEY QStringLiteral("colorName")
+#define TJSON_DEFAULT_VAL QStringLiteral("red")
+#define TJSON_DEFAULT_VAL2 QStringLiteral("green")
+#define TJSON_DEFAULT_VAL3 QStringLiteral("yellow")
+
 #define TJSON_OBJ_KEY(key) (QStringList() << QString(STR_KEY % key))
 #define TJSON_OBJ(key, val) \
     QString(\
         "{"\
-        "   \"colorName\":\"red\","\
+        "   \"" % TJSON_OBJ_DEFAULT_KEY % "\":\"" % TJSON_DEFAULT_VAL % "\","\
         "   \"" % key % "\":\"" % val % "\""\
         "}"\
     )
+
 #define TJSON_OBJ2(key, val) \
     QString(\
         "{"\
-        "   \"colorName\":\"red\","\
+        "   \"" % TJSON_OBJ_DEFAULT_KEY % "\":\"" % TJSON_DEFAULT_VAL % "\","\
         "   \"" % key % "\":" % val % ""\
         "}"\
     )
@@ -26,7 +32,7 @@
     QString(\
         "{"\
         "   \"" % root_key % "\":{"\
-        "       \"colorName\":\"red\","\
+        "       \"" % TJSON_OBJ_DEFAULT_KEY % "\":\"" % TJSON_DEFAULT_VAL % "\","\
         "       \"" % key % "\":\"" % val % "\""\
         "   }"\
         "}"\
@@ -37,8 +43,8 @@
     QString(\
         "["\
         "   \"" % val % "\","\
-        "   \"red\","\
-        "   \"green\""\
+        "   \"" % TJSON_DEFAULT_VAL % "\","\
+        "   \"" % TJSON_DEFAULT_VAL2 % "\""\
         "]"\
     )
 
@@ -48,7 +54,7 @@
     QString(\
         "["\
         "   ["\
-        "       \"red\","\
+        "       \"" % TJSON_DEFAULT_VAL % "\","\
         "       \"" % val % "\""\
         "   ]"\
         "]"\
@@ -58,7 +64,7 @@
     QString(\
         "{"\
         "   \"" % root_key % "\":["\
-        "       \"red\","\
+        "       \"" % TJSON_DEFAULT_VAL % "\","\
         "       \"" % val % "\""\
         "   ]"\
         "}"\
@@ -68,8 +74,12 @@
     QString(\
         "["\
         "   {"\
-        "       \"colorName\":\"red\","\
+        "       \"" % TJSON_OBJ_DEFAULT_KEY % "\":\"" % TJSON_DEFAULT_VAL % "\","\
         "       \"" % key % "\":\"" % val % "\""\
+        "   },"\
+        "   {"\
+        "       \"" % TJSON_OBJ_DEFAULT_KEY % "\":\"" % TJSON_DEFAULT_VAL2 % "\","\
+        "       \"" % key % "\":\"" % TJSON_DEFAULT_VAL3 % "\""\
         "   }"\
         "]"\
     )

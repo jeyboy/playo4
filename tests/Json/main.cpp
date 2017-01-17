@@ -54,6 +54,10 @@ private Q_SLOTS:
     void jsonInt64();
     void jsonDouble();
     void jsonFStr();
+
+    void jsonObjConcatKeys();
+    void jsonArrObjConcatKeys();
+    void jsonArrListConcatKeys();
 };
 
 JsonTest::JsonTest() {}
@@ -322,6 +326,27 @@ void JsonTest::jsonFStr() {
 
     Json json_obj = Json::fromJsonStr(TJSON_OBJ(key, QString::number(val)));
     QVERIFY2(json_obj.forceString(key) ==QString::number(val), "Failure");
+}
+
+void JsonTest::jsonObjConcatKeys() {
+    QString key = LSTR("color");
+    QString val = LSTR("#f00");
+
+    Json json_obj = Json::fromJsonStr(TJSON_OBJ(key, val));
+    QVERIFY2(json_obj.concatKeys(TJSON_OBJ_DEFAULT_KEY, key, LSTR(":")) == QString("%1:%2").arg(TJSON_DEFAULT_VAL, val), "Failure");
+}
+void JsonTest::jsonArrObjConcatKeys() {
+    QString key = LSTR("color");
+    QString val = LSTR("#f00");
+
+    Json json_arr = Json::fromJsonStr(TJSON_ARR_SUB_OBJ(key, val));
+    QVERIFY2(json_arr.concatKeys(key, LSTR(":")) == QString("%1:%2").arg(val, TJSON_DEFAULT_VAL3), "Failure");
+}
+void JsonTest::jsonArrListConcatKeys() {
+    QString val = LSTR("#f00");
+
+    Json json_arr = Json::fromJsonStr(TJSON_ARR(val));
+    QVERIFY2(json_arr.concatKeys(LSTR(":")) == QString("%1:%2:%3").arg(val, TJSON_DEFAULT_VAL, TJSON_DEFAULT_VAL2), "Failure");
 }
 
 //----------------------------

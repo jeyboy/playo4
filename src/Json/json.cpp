@@ -52,12 +52,18 @@ int Json::size() { return isArray() ? QJsonValue::toArray().size() : QJsonValue:
 bool Json::hasKey(const QString & key) { return QJsonValue::toObject().contains(key); }
 bool Json::hasIndex(const int & index) { return QJsonValue::toArray().size() > index; }
 
+// only object
 QString Json::concatKeys(const QString & key1, const QString & key2, const QString & separator) {
     return ((JsonObj)toObject()).concatKeys(key1, key2, separator);
 }
 
+// only array
 QString Json::concatKeys(const QString & key, const QString & separator) {
     return ((JsonArr)QJsonValue::toArray()).concatKeys(key, separator);
+}
+
+QString Json::concatKeys(const QString & separator) {
+    return ((JsonArr)QJsonValue::toArray()).concatKeys(separator);
 }
 
 Json Json::operator[](const int & index) { return val(index); }

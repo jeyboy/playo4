@@ -69,6 +69,7 @@ public:
     virtual QString concatKeys(const QString & key1, const QString & key2, const QString & separator);
     // concat key from array of objs
     virtual QString concatKeys(const QString & key, const QString & separator);
+    virtual QString concatKeys(const QString & separator);
 
     virtual Json operator[](const int & index);
     virtual Json operator[](const QString & key);

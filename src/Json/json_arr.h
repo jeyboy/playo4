@@ -26,6 +26,7 @@ public:
     int size();
 
     QString concatKeys(const QString & key, const QString & separator);
+    QString concatKeys(const QString & separator);
 
     Json operator[](const int & index);
     Json val(const int & index);

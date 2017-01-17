@@ -28,6 +28,15 @@ QString JsonArr::concatKeys(const QString & key, const QString & separator) {
     return cat_str;
 }
 
+QString JsonArr::concatKeys(const QString & separator) {
+    QString cat_str;
+    for(QJsonArray::Iterator item = begin(); item != end(); item++) {
+        Json item_obj = *item;
+        cat_str = cat_str % (cat_str.isEmpty() ? QString() : separator) % item_obj.forceString();
+    }
+    return cat_str;
+}
+
 Json JsonArr::operator[](const int & index) { return val(index); }
 Json JsonArr::val(const int & index) { return this -> at(index); }
 Json JsonArr::val2(const int & index1, const int & index2) { return J_KEY2II(index1, index2); }
