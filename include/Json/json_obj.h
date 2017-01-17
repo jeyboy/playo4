@@ -40,12 +40,19 @@ public:
 
     bool boolean(const QString & key);
     bool boolean2(const QString & key1, const QString & key2);
+    bool boolean2(const QString & key1, const int & index2);
 
     int integer(const QString & key);
     int integer2(const QString & key1, const QString & key2);
+    int integer2(const QString & key1, const int & index2);
 
     qint64 bigInt(const QString & key);
     qint64 bigInt2(const QString & key1, const QString & key2);
+    qint64 bigInt2(const QString & key1, const int & index2);
+
+    double rational(const QString & key);
+    double rational2(const QString & key1, const QString & key2);
+    double rational2(const QString & key1, const int & index2);
 
     QString string(const QString & key);
     QString string(const QString & key, const QString & default_val);
@@ -54,6 +61,7 @@ public:
 
     QString forceString(const QString & key);
     QString forceString2(const QString & key1, const QString & key2);
+    QString forceString2(const QString & key1, const int & index2);
 };
 
 #endif // JSON_OBJ_H

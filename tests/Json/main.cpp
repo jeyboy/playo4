@@ -16,6 +16,12 @@ private Q_SLOTS:
     void parsing_data();
     void parsing();
 
+    void jsonType_data();
+    void jsonType();
+
+    void jsonObjType();
+    void jsonArrType();
+
     void sizeJson();
     void sizeObj();
     void sizeArr();
@@ -134,6 +140,46 @@ void JsonTest::parsingArrChainsStr() {
 
     Json json_obj = Json::fromJsonStr(TJSON_SUB_ARR(val));
     QVERIFY2(json_obj.string2(TJSON_SUB_ARR_KEY_ARGS) == val, "Failure");
+}
+
+
+void JsonTest::jsonType_data() {
+    QTest::addColumn<QString>("json");
+    QTest::addColumn<int>("jtype");
+
+    QString key = LSTR("colorVal");
+    QString val = LSTR("#f00");
+
+    QTest::newRow("Obj type")
+        << TJSON_OBJ(key, val)
+        << (int)Json::Object;
+
+    QTest::newRow("Arr type")
+        << TJSON_ARR(val)
+        << (int)Json::Array;
+}
+void JsonTest::jsonType() {
+    QFETCH(QString, json);
+    QFETCH(int, jtype);
+
+    Json json_obj = Json::fromJsonStr(json);
+    QVERIFY2(
+        json_obj.type() == jtype &&
+            (
+                (jtype == Json::Array && json_obj.isArray()) ||
+                (jtype == Json::Object && json_obj.isObject())
+            ),
+            "Failure"
+    );
+}
+
+void JsonTest::jsonObjType() {
+    Json json_obj = Json::fromJsonStr(TJSON_OBJ(LSTR("colorVal"), LSTR("#f00")));
+    QVERIFY2(json_obj.obj().isObject(), "Failure");
+}
+void JsonTest::jsonArrType() {
+    Json json_obj = Json::fromJsonStr(TJSON_ARR(LSTR("#f00")));
+    QVERIFY2(json_obj.arr().isArray(), "Failure");
 }
 
 
