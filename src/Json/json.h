@@ -13,16 +13,16 @@ class QJsonValueRef;
 class QJsonParseError;
 
 #define J_KEY2SS(key1, key2) toObject().value(key1).toObject().value(key2)
-#define J_KEY2II(index1, index2) toArray()[index1].toArray()[index2]
-#define J_KEY2IS(index1, key2) toArray()[index1].toObject().value(key2)
-#define J_KEY2SI(key1, index2) toObject().value(key1).toArray()[index2]
+#define J_KEY2II(index1, index2) toArray().at(index1).toArray()[index2]
+#define J_KEY2IS(index1, key2) toArray().at(index1).toObject().value(key2)
+#define J_KEY2SI(key1, index2) toObject().value(key1).toArray().at(index2)
 
 #define J_STR(jval) jval.isString() ? jval.toString() : QString::number(JOBJ_BINT(jval));
 
 #define JOBJ_KEY2SS(key1, key2) value(key1).toObject().value(key2)
-#define JOBJ_KEY2II(index1, index2) at(index1).toArray()[index2]
+#define JOBJ_KEY2II(index1, index2) at(index1).toArray().at(index2)
 #define JOBJ_KEY2IS(index1, key2) at(index1).toObject().value(key2)
-#define JOBJ_KEY2SI(key1, index2) value(key1).toArray()[index2]
+#define JOBJ_KEY2SI(key1, index2) value(key1).toArray().at(index2)
 
 #define JOBJ_BINT(val) (qint64)val.toDouble()
 
@@ -43,20 +43,6 @@ public:
     virtual bool isArray() const { return type() == Array; }
     virtual bool isObject() const { return type() == Object; }
 
-
-//    inline bool isNull() const { return type() == Null; }
-//    inline bool isBool() const { return type() == Bool; }
-//    inline bool isDouble() const { return type() == Double; }
-//    inline bool isString() const { return type() == String; }
-//    inline bool isUndefined() const { return type() == Undefined; }
-
-//    bool toBool(bool defaultValue = false) const;
-//    int toInt(int defaultValue = 0) const;
-//    double toDouble(double defaultValue = 0) const;
-//    QString toString() const;
-//    QString toString(const QString &defaultValue) const;
-
-
     Json(const Json::Type & = Null);
     Json(const QJsonDocument & doc);
     explicit Json(const JsonObj & obj);
@@ -73,7 +59,6 @@ public:
     virtual ~Json();
 
     virtual Json::Type type() const;
-
 
     virtual int size();
 
