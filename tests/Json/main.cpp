@@ -62,6 +62,13 @@ private Q_SLOTS:
     void jsonObjDouble();
     void jsonObjFStr();
 
+    void jsonArrStr();
+    void jsonArrBool();
+    void jsonArrInt();
+    void jsonArrInt64();
+    void jsonArrDouble();
+    void jsonArrFStr();
+
     void jsonObjConcatKeys();
     void jsonArrObjConcatKeys();
     void jsonArrListConcatKeys();
@@ -373,7 +380,42 @@ void JsonTest::jsonObjFStr() {
     int val = 123;
 
     JsonObj json_obj = JsonObj::fromJsonStr(TJSON_OBJ(key, QString::number(val)));
-    QVERIFY2(json_obj.forceString(key) ==QString::number(val), "Failure");
+    QVERIFY2(json_obj.forceString(key) == QString::number(val), "Failure");
+}
+
+
+void JsonTest::jsonArrStr() {
+    QString val = LSTR("#f00");
+    JsonArr json_obj = JsonArr::fromJsonStr(TJSON_ARR(val));
+    QVERIFY2(json_obj.string(0) == val, "Failure");
+}
+void JsonTest::jsonArrBool() {
+    QString val = LSTR("false");
+    JsonArr json_obj = JsonArr::fromJsonStr(TJSON_ARR2(val));
+    QVERIFY2(!json_obj.boolean(0), "Failure");
+}
+void JsonTest::jsonArrInt() {
+    int val = 5;
+
+    JsonArr json_obj = JsonArr::fromJsonStr(TJSON_ARR2(QString::number(val)));
+    QVERIFY2(json_obj.integer(0) == val, "Failure");
+}
+void JsonTest::jsonArrInt64() {
+    qint64 val = 92233720368547760;
+    JsonArr json_obj = JsonArr::fromJsonStr(TJSON_ARR2(QString::number(val)));
+    QVERIFY2(json_obj.bigInt(0) == val, "Failure");
+}
+void JsonTest::jsonArrDouble() {
+    double val = 123.23342445354756765;
+    QString val_str = QString::number(val, 'g', 32);
+    JsonArr json_obj = JsonArr::fromJsonStr(TJSON_ARR2(val_str));
+    QVERIFY2(json_obj.rational(0) == val, "Failure");
+}
+void JsonTest::jsonArrFStr() {
+    int val = 123;
+
+    JsonArr json_obj = JsonArr::fromJsonStr(TJSON_ARR(QString::number(val)));
+    QVERIFY2(json_obj.forceString(0) == QString::number(val), "Failure");
 }
 
 void JsonTest::jsonObjConcatKeys() {
