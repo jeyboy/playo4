@@ -7,7 +7,9 @@
 class JSONSHARED_EXPORT JsonArr : public Json, public QJsonArray {
 public:
     static JsonArr fromJsonStr(const QByteArray & text);
+    static JsonArr fromJsonStr(const QByteArray & text, QString & error);
     static JsonArr fromJsonStr(const QString & text);
+    static JsonArr fromJsonStr(const QString & text, QString & error);
 
     QByteArray toJsonStr(const JsonFormat & format = Compact);
     QVariant toVariant() const;

@@ -396,7 +396,6 @@ void JsonTest::jsonArrBool() {
 }
 void JsonTest::jsonArrInt() {
     int val = 5;
-
     JsonArr json_obj = JsonArr::fromJsonStr(TJSON_ARR2(QString::number(val)));
     QVERIFY2(json_obj.integer(0) == val, "Failure");
 }

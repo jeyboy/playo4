@@ -52,7 +52,7 @@
     QString(\
         "["\
         "   " % val % ","\
-        "   \"" % TJSON_DEFAULT_VAL % "\","\
+        "   \"" % TJSON_DEFAULT_VAL % "\""\
         "]"\
     )
 

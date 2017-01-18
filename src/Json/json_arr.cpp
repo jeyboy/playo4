@@ -3,7 +3,9 @@
 #include <qvariant.h>
 
 JsonArr JsonArr::fromJsonStr(const QByteArray & text) { return Json::fromJsonStr(text).toArray(); }
+JsonArr JsonArr::fromJsonStr(const QByteArray & text, QString & error) { return Json::fromJsonStr(text, error).toArray(); }
 JsonArr JsonArr::fromJsonStr(const QString & text) { return Json::fromJsonStr(text).toArray(); }
+JsonArr JsonArr::fromJsonStr(const QString & text, QString & error) { return Json::fromJsonStr(text, error).toArray(); }
 
 QByteArray JsonArr::toJsonStr(const JsonFormat & format) { return operator Json().toJsonStr(format); }
 QVariant JsonArr::toVariant() const { return operator Json().toVariant(); }
