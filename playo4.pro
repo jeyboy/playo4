@@ -10,4 +10,5 @@ SUBDIRS += \
     src/Api \
     src/Player \
     src/DesktopInterface \
-    tests
+    tests \
+    src/Js
