@@ -15,7 +15,7 @@ HEADERS += js.h\
 SOURCES += js.cpp \
     pizduck/duktape.c
 
-ADDITIONAL_HEADERS += variant_convertor.h
+registerInnerInclusion('variant_convertor')
 
 ######## setup block
 include(../../pri/headers_preparer.pri)

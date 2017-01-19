@@ -27,3 +27,18 @@ win32 {
 unix {
     LIB_VERSION = $${LIB_SUFFIX}#$${VERSION}
 }
+
+#$$absolute_path("$${INNER_INC_PATH}/defines.h")
+defineTest(registerInnerInclusion){
+    ADDITIONAL_HEADERS += $${1}.h
+    export(ADDITIONAL_HEADERS)
+
+    cpp_path = $${INNER_INC_PATH}$${1}.cpp
+
+    exists($$cpp_path) {
+        SOURCES += $${cpp_path}
+        export(SOURCES)
+    }
+
+    return(true)
+}
