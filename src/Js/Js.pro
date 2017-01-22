@@ -34,5 +34,5 @@ win32 {
 #    INSTALLS += target
 #}
 
-DISTFILES += \
-    pizduck/metadata.json
+#DISTFILES += \
+#    pizduck/metadata.json

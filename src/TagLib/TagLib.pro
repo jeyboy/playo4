@@ -4,6 +4,7 @@ QT -= core gui
 
 TARGET = TagLib$${LIB_SUFFIX}
 TEMPLATE = lib
+#CONFIG += staticlib
 
 DEFINES += TAGLIB_LIBRARY
 

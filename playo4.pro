@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
+    src/CurlLib \
     src/TagLib \
     src/Js \
     src/Json \
@@ -12,4 +13,3 @@ SUBDIRS += \
     src/Player \
     src/DesktopInterface \
     tests
-

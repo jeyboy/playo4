@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     Json \
-    Js
+    Js \
+    WebManager

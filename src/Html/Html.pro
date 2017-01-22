@@ -7,10 +7,20 @@ TEMPLATE = lib
 #CONFIG += staticlib # add for static linking
 DEFINES += HTML_LIBRARY
 
-SOURCES += html.cpp
+SOURCES += html.cpp \
+    unicode_decoding.cpp \
+    html_keys.cpp \
+    html_selector.cpp \
+    html_set.cpp \
+    html_tag.cpp
 
 HEADERS += html.h \
-    html_global.h # remove for static linking
+    html_global.h \ # remove for static linking
+    unicode_decoding.h \
+    html_keys.h \
+    html_selector.h \
+    html_set.h \
+    html_tag.h
 
 INCLUDEPATH += $${INNER_INC_PATH}
 
