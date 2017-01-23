@@ -8,7 +8,7 @@ HEADERS_OUTPUT_PATH = $$shell_path($${INC_PATH}/$${TARGET})
 
 pathes += $$HEADERS_OUTPUT_PATH
 
-for(header, HEADERS) {
+for(header, INCLUDE_HEADERS) {
     hpath = $$shell_path($$HEADERS_OUTPUT_PATH/$$header)
     hdir = $$dirname(hpath)
 

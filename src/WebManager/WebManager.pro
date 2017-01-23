@@ -5,28 +5,28 @@ QT -= gui
 
 TARGET = WebManager$${LIB_SUFFIX}
 TEMPLATE = lib
-#CONFIG += staticlib # add for static linking
 DEFINES += WEBMANAGER_LIBRARY
 
-SOURCES += webmanager.cpp
+defined(STATIC_BUILD) {
+    CONFIG += staticlib
+}
 
-HEADERS += webmanager.h \
-    webmanager_global.h # remove for static linking
+INCLUDE_HEADERS = \
+    webmanager_global.h \ # remove for static linking
+    webmanager.h
 
-INCLUDEPATH += $${INNER_INC_PATH}
+HEADERS += \
+    $${INCLUDE_HEADERS}
+
+
+SOURCES += \
+    webmanager.cpp
 
 ######## setup block
-include(../../pri/headers_preparer.pri)
+include($${PROJECT_ROOT_PATH}/pri/headers_preparer.pri)
 ####### end setup block
 
 win32 {
     QMAKE_TARGET_PRODUCT = WebManager Lib
     QMAKE_TARGET_DESCRIPTION = WebManager library
-
-#    CONFIG += dll
 }
-
-#unix {
-#    target.path = /usr/lib
-#    INSTALLS += target
-#}

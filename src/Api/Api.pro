@@ -6,26 +6,22 @@ QT -= gui
 TARGET = Api$${LIB_SUFFIX}
 TEMPLATE = lib
 DEFINES += API_LIBRARY
-#CONFIG += staticlib
+
+defined(STATIC_BUILD) {
+    CONFIG += staticlib
+}
+
+INCLUDE_HEADERS =
+
+HEADERS += \
+    $${INCLUDE_HEADERS} \
+    api.h
 
 SOURCES += api.cpp
 
-HEADERS += api.h
-
-INCLUDEPATH += $${INNER_INC_PATH}
-
-######## setup block
-include(../../pri/headers_preparer.pri)
-####### end setup block
+include($${PROJECT_ROOT_PATH}/pri/headers_preparer.pri)
 
 win32 {
     QMAKE_TARGET_PRODUCT = Api Lib
     QMAKE_TARGET_DESCRIPTION = API library
-
-#    CONFIG += dll
 }
-
-#unix {
-#    target.path = /usr/lib
-#    INSTALLS += target
-#}

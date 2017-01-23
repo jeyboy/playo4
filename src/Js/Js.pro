@@ -4,35 +4,37 @@ QT       -= gui
 
 TARGET = Js$${LIB_SUFFIX}
 TEMPLATE = lib
-#CONFIG += staticlib # add for static linking
 DEFINES += JS_LIBRARY
 
-HEADERS += js.h\
-        js_global.h \ # remove for static linking
+defined(STATIC_BUILD) {
+    CONFIG += staticlib
+}
+
+INCLUDE_HEADERS = \
+    js_global.h \ # remove for static linking
+    js.h\
     pizduck/duk_config.h \
     pizduck/duktape.h
 
-SOURCES += js.cpp \
+HEADERS += \
+    $${INCLUDE_HEADERS}
+
+
+SOURCES += \
+    js.cpp \
     pizduck/duktape.c
 
 registerInnerInclusion('variant_convertor')
 
 ######## setup block
-include(../../pri/headers_preparer.pri)
-#include(../../pri/test_compile.pri)
+include($${PROJECT_ROOT_PATH}/pri/headers_preparer.pri)
+#include($${PROJECT_ROOT_PATH}/pri/test_compile.pri)
 ####### end setup block
 
 win32 {
     QMAKE_TARGET_PRODUCT = Js Lib
     QMAKE_TARGET_DESCRIPTION = Js library
-
-#    CONFIG += dll
 }
-
-#unix {
-#    target.path = /usr/lib
-#    INSTALLS += target
-#}
 
 #DISTFILES += \
 #    pizduck/metadata.json

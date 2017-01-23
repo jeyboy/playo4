@@ -1,6 +1,9 @@
 PROJECT_ROOT_PATH = $$absolute_path($${PWD}/../)
 MAJOR_VERSION = 0
 
+#STATIC_BUILD = 1
+
+
 win32: OS_SUFFIX = win32
 linux-g++: OS_SUFFIX = linux
 
@@ -23,9 +26,12 @@ linux-g++: QMAKE_CXXFLAGS += -std=c++11
 
 win32 {
     LIB_VERSION = $${LIB_SUFFIX}$${MAJOR_VERSION}
+#    CONFIG += dll
 }
 unix {
     LIB_VERSION = $${LIB_SUFFIX}#$${VERSION}
+#    target.path = /usr/lib
+#    INSTALLS += target
 }
 
 #$$absolute_path("$${INNER_INC_PATH}/defines.h")
