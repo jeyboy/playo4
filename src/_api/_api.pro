@@ -11,11 +11,13 @@ defined(STATIC_BUILD) {
     CONFIG += staticlib
 }
 
-INCLUDE_HEADERS =
+INCLUDE_HEADERS = \
+    api_global.h \
+    api.h
 
 HEADERS += \
-    $${INCLUDE_HEADERS} \
-    api.h
+    $${INCLUDE_HEADERS}
+
 
 SOURCES += api.cpp
 

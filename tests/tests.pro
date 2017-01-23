@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    Json \
-    Js \
-    WebManager
+    json \
+    js \
+    web_manager \
+    html

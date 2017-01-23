@@ -1,9 +1,9 @@
 #ifndef API_H
 #define API_H
 
+#include "api_global.h"
 
-class Api
-{
+class APISHARED_EXPORT Api {
 
 public:
     Api();

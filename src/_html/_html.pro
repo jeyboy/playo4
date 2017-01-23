@@ -11,8 +11,8 @@ defined(STATIC_BUILD) {
 }
 
 INCLUDE_HEADERS = \
-    html_global.h \ # remove for static linking
-    html.h \
+    html_global.h \
+    html_page.h \
     unicode_decoding.h \
     html_keys.h \
     html_selector.h \
@@ -24,7 +24,7 @@ HEADERS += \
 
 
 SOURCES += \
-    html.cpp \
+    html_page.cpp \
     unicode_decoding.cpp \
     html_keys.cpp \
     html_selector.cpp \

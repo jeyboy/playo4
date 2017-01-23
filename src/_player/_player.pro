@@ -12,6 +12,7 @@ defined(STATIC_BUILD) {
 }
 
 INCLUDE_HEADERS = \
+    player_global.h \
     player.h
 
 HEADERS += \

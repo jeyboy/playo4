@@ -3,6 +3,6 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    zlib \
-    CurlLib \
-    libss2
+    __zlib \
+    __libss2 \
+    _curl_lib

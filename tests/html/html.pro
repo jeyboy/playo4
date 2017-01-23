@@ -11,11 +11,8 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 TEMPLATE = app
 
-INCLUDEPATH += $${INC_PATH}/Json
-DEPENDPATH += $${INC_PATH}/Json
-LIBS += -lJson$${LIB_VERSION}
-
-HEADERS += \
-    test_data.h
+INCLUDEPATH += $${INC_PATH}/Html
+DEPENDPATH += $${INC_PATH}/Html
+LIBS += -lHtml$${LIB_VERSION}
 
 SOURCES += main.cpp
