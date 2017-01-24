@@ -4,6 +4,8 @@
 #include <html_global.h>
 
 #include <qpair.h>
+#include <qlist.h>
+#include <qhash.h>
 
 namespace Html {
     struct HTMLSHARED_EXPORT Selector {

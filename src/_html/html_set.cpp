@@ -1,12 +1,15 @@
 #include "html_set.h"
 
+#include <html_tag.h>
+#include <html_selector.h>
+
 using namespace Html;
 
 QString Set::link() { return (isEmpty()) ? QString() : first() -> link(); }
 QString Set::text() { return (isEmpty()) ? QString() : first() -> text(); }
 QString Set::value(const QString & name) { return (isEmpty()) ? QString() : first() -> value(name); }
 
-Set Set::find(const char * predicate, const bool & findFirst = false) const {
+Set Set::find(const char * predicate, const bool & findFirst) const {
     Selector selector(predicate);
     return find(&selector, findFirst);
 }

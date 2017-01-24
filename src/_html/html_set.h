@@ -3,11 +3,15 @@
 
 #include <html_global.h>
 
+#include <qlist.h>
+
 namespace Html {
     class Tag;
     class Selector;
 
     class HTMLSHARED_EXPORT Set : public QList<Tag *> {
+        Set & find(const Selector * selector, Set & set, const bool & findFirst = false) const;
+        friend class Tag;
     public:
         QString link();
         QString text();
@@ -30,9 +34,6 @@ namespace Html {
         //TODO: rewrite on using of usuall find
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links) const;
         inline Set & operator <<(const Set & l) { *this += l; return *this; }
-    private:
-        Set & find(const Selector * selector, Set & set, const bool & findFirst = false) const;
-        friend class Tag;
     };
 }
 

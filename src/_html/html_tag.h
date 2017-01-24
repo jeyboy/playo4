@@ -2,12 +2,17 @@
 #define HTML_TAG_H
 
 #include <html_global.h>
+#include <html_set.h>
+
+#include <qhash.h>
+#include <qdebug.h>
+
+#define DEBUG_LIMIT_OUTPUT 10000
 
 class QUrl;
 class QDebug;
 
 namespace Html {
-    class Set;
     class Selector;
 
     class HTMLSHARED_EXPORT Tag {
@@ -49,7 +54,7 @@ namespace Html {
 
         inline Tag * parentTag() { return parent; }
         inline Tag * childTag(int pos) const { return tags[pos]; }
-        Tag * childTag(const QString & name_predicate, int pos = 0) const;
+        Tag * childTag(const QString & name_predicate, const int & pos = 0) const;
         inline int childrenCount() { return tags.size(); }
 
         inline bool has(const char * predicate) const { return !find(predicate).isEmpty(); }
@@ -58,7 +63,8 @@ namespace Html {
         Tag * findFirst(const char * predicate) const;
         Tag * findFirst(const Selector * selector) const;
 
-        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
+        //TODO: rewrite
+//        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
 
         void addAttr(QString & name, QString & val);
         Tag * appendTag(QString & tname);
@@ -75,7 +81,23 @@ namespace Html {
         Set & backwardFind(Selector * selector, Set & set);
         QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
 
-        friend QDebug operator<< (QDebug debug, const Tag & c);
+        friend QDebug operator<< (QDebug debug, const Tag & c) {
+            QString attrStr;
+            QHash<QString, QString> vals = c.attributes();
+
+            for (QHash<QString, QString>::iterator it = vals.begin(); it != vals.end(); ++it)
+                attrStr.append("(" + it.key() + " : " + (it.value().size() > DEBUG_LIMIT_OUTPUT ? (it.value().mid(0, DEBUG_LIMIT_OUTPUT / 2) % "..." % it.value().mid(it.value().size() - DEBUG_LIMIT_OUTPUT / 2, DEBUG_LIMIT_OUTPUT / 2)) : it.value()) + ")");
+
+            if (attrStr.isEmpty())
+                qDebug("%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData());
+            else
+                qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData(), " ||| [", attrStr.toUtf8().constData(), "]");
+
+            foreach(Tag * it, c.children())
+                qDebug() << (*it);
+
+            return debug;
+        }
     };
 }
 

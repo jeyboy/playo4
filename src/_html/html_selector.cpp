@@ -2,7 +2,7 @@
 
 using namespace Html;
 
-void Selector::addToken(SState & tType, QString & token, char & rel) {
+void Selector::addToken(const SState & tType, QString & token, char & rel) {
     switch(tType) {
         case attr: {
             QStringList parts = token.split(rel, QString::SkipEmptyParts);

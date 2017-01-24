@@ -1,12 +1,13 @@
 #include "html_tag.h"
 
 #include <qurl.h>
+#include <qurlquery.h>
 
 #include <html_selector.h>
 
 using namespace Html;
 
-QString Tag::value(const QString & name = attr_default) const {
+QString Tag::value(const QString & name) const {
     if (name != attr_default || (name == attr_default && _name != tag_select))
         return attrs.value(name);
     else {
@@ -121,7 +122,7 @@ QString Tag::toHtml() const {
     }
 }
 
-Tag * Tag::childTag(const QString & name_predicate, int pos = 0) const {
+Tag * Tag::childTag(const QString & name_predicate, const int & pos) const {
     Set::ConstIterator tag = tags.cbegin();
     for(int i = 0; tag != tags.cend(); tag++) {
         if ((*tag) -> name() == name_predicate)
@@ -144,9 +145,9 @@ Tag * Tag::findFirst(const Selector * selector) const {
     return set.isEmpty() ? 0 : set.first();
 }
 
-QHash<QString, QString> & Tag::findLinks(const Selector * selector, QHash<QString, QString> & links) {
-    return tags.findLinks(selector, links);
-}
+//QHash<QString, QString> & Tag::findLinks(const Selector * selector, QHash<QString, QString> & links) {
+//    return tags.findLinks(selector, links);
+//}
 
 
 void Tag::addAttr(QString & name, QString & val) {
@@ -274,22 +275,4 @@ QHash<QString, QString> & Tag::backwardFindLinks(Selector * selector, QHash<QStr
         parent -> backwardFindLinks(selector, links);
 
     return links;
-}
-
-QDebug Tag::operator<<(QDebug debug, const Tag & c) {
-    QString attrStr;
-    QHash<QString, QString> vals = c.attributes();
-
-    for (QHash<QString, QString>::iterator it = vals.begin(); it != vals.end(); ++it)
-        attrStr.append("(" + it.key() + " : " + (it.value().size() > DEBUG_LIMIT_OUTPUT ? (it.value().mid(0, DEBUG_LIMIT_OUTPUT / 2) % "..." % it.value().mid(it.value().size() - DEBUG_LIMIT_OUTPUT / 2, DEBUG_LIMIT_OUTPUT / 2)) : it.value()) + ")");
-
-    if (attrStr.isEmpty())
-        qDebug("%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData());
-    else
-        qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData(), " ||| [", attrStr.toUtf8().constData(), "]");
-
-    foreach(Tag * it, c.children())
-        qDebug() << (*it);
-
-    return debug;
 }
