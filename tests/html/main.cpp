@@ -1,6 +1,8 @@
 #include <QString>
 #include <QtTest>
 
+#include "test_data.h"
+
 class HtmlTest : public QObject {
     Q_OBJECT
 

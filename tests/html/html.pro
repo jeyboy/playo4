@@ -16,3 +16,6 @@ DEPENDPATH += $${INC_PATH}/Html
 LIBS += -lHtml$${LIB_VERSION}
 
 SOURCES += main.cpp
+
+HEADERS += \
+    test_data.h
