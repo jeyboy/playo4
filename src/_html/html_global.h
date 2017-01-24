@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 #include <html_keys.h>
+#include <defines.h>
 
 #if defined(HTML_LIBRARY)
 #  define HTMLSHARED_EXPORT Q_DECL_EXPORT

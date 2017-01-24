@@ -1,6 +1,24 @@
 #include "html_tag.h"
 
+#include <qurl.h>
+
+#include <html_selector.h>
+
 using namespace Html;
+
+QString Tag::value(const QString & name = attr_default) const {
+    if (name != attr_default || (name == attr_default && _name != tag_select))
+        return attrs.value(name);
+    else {
+        Html::Set options = find("option[selected]");
+        return options.value();
+    }
+}
+
+QString Tag::text() const {
+    const Tag * text = (_name == tkn_text_block ? this : childTag(tkn_text_block));
+    return text ? text -> attrs.value(tkn_text_block) : QString();
+}
 
 //INFO: some servers very sensitive to params part and payload part separation ...
 // appendable - appends inputs from vals, which not finded in form
@@ -103,6 +121,67 @@ QString Tag::toHtml() const {
     }
 }
 
+Tag * Tag::childTag(const QString & name_predicate, int pos = 0) const {
+    Set::ConstIterator tag = tags.cbegin();
+    for(int i = 0; tag != tags.cend(); tag++) {
+        if ((*tag) -> name() == name_predicate)
+            if (i++ == pos) return (*tag);
+    }
+
+    return 0;
+}
+
+Set Tag::find(const char * predicate) const {
+    Selector selector(predicate);
+    return tags.find(&selector);
+}
+Tag * Tag::findFirst(const char * predicate) const {
+    Selector selector(predicate);
+    return findFirst(&selector);
+}
+Tag * Tag::findFirst(const Selector * selector) const {
+    Set set = tags.find(selector, true);
+    return set.isEmpty() ? 0 : set.first();
+}
+
+QHash<QString, QString> & Tag::findLinks(const Selector * selector, QHash<QString, QString> & links) {
+    return tags.findLinks(selector, links);
+}
+
+
+void Tag::addAttr(QString & name, QString & val) {
+    attrs.insert(name, val);
+    name.clear();
+    val.clear();
+}
+Tag * Tag::appendTag(QString & tname) {
+    Tag * newTag = new Tag(tname, this); tname.clear();
+    tags.append(newTag);
+    return newTag;
+}
+void Tag::appendText(QString & val) {
+    QString tnm(tkn_text_block);
+    Tag * newTag = appendTag(tnm);
+    QString nm(tkn_text_block);
+    newTag -> addAttr(nm, val); val.clear();
+}
+void Tag::appendComment(QString & val) {
+    QString tnm(tkn_comment_block);
+    Tag * newTag = appendTag(tnm);
+    QString nm(tkn_comment_block);
+    val = val.mid(2, val.length() - 4);
+    newTag -> addAttr(nm, val); val.clear();
+}
+
+void Tag::appendService(QString & val) {
+    QString tnm(tkn_service_block);
+    Tag * newTag = appendTag(tnm);
+    QString nm(tkn_service_block);
+    newTag -> addAttr(nm, val); val.clear();
+}
+
+
+
 bool Tag::validTo(const Selector * selector) {
     for(QHash<Selector::SState, QString>::ConstIterator it = selector -> _tokens.cbegin(); it != selector -> _tokens.cend(); it++) {
         switch(it.key()) {
@@ -195,4 +274,22 @@ QHash<QString, QString> & Tag::backwardFindLinks(Selector * selector, QHash<QStr
         parent -> backwardFindLinks(selector, links);
 
     return links;
+}
+
+QDebug Tag::operator<<(QDebug debug, const Tag & c) {
+    QString attrStr;
+    QHash<QString, QString> vals = c.attributes();
+
+    for (QHash<QString, QString>::iterator it = vals.begin(); it != vals.end(); ++it)
+        attrStr.append("(" + it.key() + " : " + (it.value().size() > DEBUG_LIMIT_OUTPUT ? (it.value().mid(0, DEBUG_LIMIT_OUTPUT / 2) % "..." % it.value().mid(it.value().size() - DEBUG_LIMIT_OUTPUT / 2, DEBUG_LIMIT_OUTPUT / 2)) : it.value()) + ")");
+
+    if (attrStr.isEmpty())
+        qDebug("%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData());
+    else
+        qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData(), " ||| [", attrStr.toUtf8().constData(), "]");
+
+    foreach(Tag * it, c.children())
+        qDebug() << (*it);
+
+    return debug;
 }

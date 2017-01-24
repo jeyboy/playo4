@@ -3,8 +3,12 @@
 
 #include <html_global.h>
 
+class QUrl;
+class QDebug;
+
 namespace Html {
     class Set;
+    class Selector;
 
     class HTMLSHARED_EXPORT Tag {
         int _level;
@@ -26,22 +30,12 @@ namespace Html {
         inline int level() const { return _level; }
         inline QHash<QString, QString> attributes() const { return attrs; }
         inline Set children() const { return tags; }
-        inline QString data(const QString & name) const { return value(QStringLiteral("data-") % name); }
-        inline QString value(const QString & name = attr_default) const {
-            if (name != attr_default || (name == attr_default && _name != tag_select))
-                return attrs.value(name);
-            else {
-                Html::Set options = find("option[selected]");
-                return options.value();
-            }
-        }
-        inline QString text() const {
-            const Tag * text = (_name == tkn_text_block ? this : childTag(tkn_text_block));
-            return text ? text -> attrs.value(tkn_text_block) : QString();
-        }
+        inline QString data(const QString & name) const { return value(LSTR("data-") % name); }
         inline QString src() const { return value(attr_src); }
         inline QString link() const { return attrs.value(attr_href); }
 
+        QString value(const QString & name = attr_default) const;
+        QString text() const;
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QUrl serializeFormToUrl(const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QString toText() const;
@@ -55,63 +49,24 @@ namespace Html {
 
         inline Tag * parentTag() { return parent; }
         inline Tag * childTag(int pos) const { return tags[pos]; }
-        inline Tag * childTag(const QString & name_predicate, int pos = 0) const {
-            Set::ConstIterator tag = tags.cbegin();
-            for(int i = 0; tag != tags.cend(); tag++) {
-                if ((*tag) -> name() == name_predicate)
-                    if (i++ == pos) return (*tag);
-            }
-
-            return 0;
-        }
+        Tag * childTag(const QString & name_predicate, int pos = 0) const;
         inline int childrenCount() { return tags.size(); }
 
         inline bool has(const char * predicate) const { return !find(predicate).isEmpty(); }
         inline Set find(const Selector * selector) const { return tags.find(selector); }
-        inline Set find(const char * predicate) const {
-            Selector selector(predicate);
-            return tags.find(&selector);
-        }
-        inline Tag * findFirst(const char * predicate) const {
-            Selector selector(predicate);
-            return findFirst(&selector);
-        }
-        inline Tag * findFirst(const Selector * selector) const {
-            Set set = tags.find(selector, true);
-            return set.isEmpty() ? 0 : set.first();
-        }
+        Set find(const char * predicate) const;
+        Tag * findFirst(const char * predicate) const;
+        Tag * findFirst(const Selector * selector) const;
 
-        inline QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links) {
-            return tags.findLinks(selector, links);
-        }
+        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
 
-        inline void addAttr(QString & name, QString & val) { attrs.insert(name, val);  name.clear(); val.clear(); }
-        inline Tag * appendTag(QString & tname) {
-            Tag * newTag = new Tag(tname, this); tname.clear();
-            tags.append(newTag);
-            return newTag;
-        }
-        inline void appendText(QString & val) {
-            QString tnm(tkn_text_block);
-            Tag * newTag = appendTag(tnm);
-            QString nm(tkn_text_block);
-            newTag -> addAttr(nm, val); val.clear();
-        }
-        inline void appendComment(QString & val) {
-            QString tnm(tkn_comment_block);
-            Tag * newTag = appendTag(tnm);
-            QString nm(tkn_comment_block);
-            val = val.mid(2, val.length() - 4);
-            newTag -> addAttr(nm, val); val.clear();
-        }
+        void addAttr(QString & name, QString & val);
+        Tag * appendTag(QString & tname);
+        void appendText(QString & val);
+        void appendComment(QString & val);
+        void appendService(QString & val);
 
-        inline void appendService(QString & val) {
-            QString tnm(tkn_service_block);
-            Tag * newTag = appendTag(tnm);
-            QString nm(tkn_service_block);
-            newTag -> addAttr(nm, val); val.clear();
-        }
-
+        //TODO: store classes in hash
         inline bool hasClass(const QString & class_name) {
             return attrs[attr_class].split(tkn_split, QString::SkipEmptyParts).contains(class_name);
         }
@@ -120,23 +75,7 @@ namespace Html {
         Set & backwardFind(Selector * selector, Set & set);
         QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
 
-        friend QDebug operator<< (QDebug debug, const Tag & c) {
-            QString attrStr;
-            QHash<QString, QString> vals = c.attributes();
-
-            for (QHash<QString, QString>::iterator it = vals.begin(); it != vals.end(); ++it)
-                attrStr.append("(" + it.key() + " : " + (it.value().size() > DEBUG_LIMIT_OUTPUT ? (it.value().mid(0, DEBUG_LIMIT_OUTPUT / 2) % "..." % it.value().mid(it.value().size() - DEBUG_LIMIT_OUTPUT / 2, DEBUG_LIMIT_OUTPUT / 2)) : it.value()) + ")");
-
-            if (attrStr.isEmpty())
-                qDebug("%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData());
-            else
-                qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData(), " ||| [", attrStr.toUtf8().constData(), "]");
-
-            foreach(Tag * it, c.children())
-                qDebug() << (*it);
-
-            return debug;
-        }
+        friend QDebug operator<< (QDebug debug, const Tag & c);
     };
 }
 

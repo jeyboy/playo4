@@ -17,10 +17,7 @@ namespace Html {
             Set set;
             return find(selector, set, findFirst);
         }
-        inline Set find(const char * predicate, bool findFirst = false) const {
-            Selector selector(predicate);
-            return find(&selector, findFirst);
-        }
+        Set find(const char * predicate, const bool & findFirst = false) const;
         inline Tag * findFirst(const char * predicate) const {
             Set set = find(predicate, true);
             return set.isEmpty() ? 0 : set.first();
@@ -30,10 +27,11 @@ namespace Html {
             return set.isEmpty() ? 0 : set.first();
         }
 
-        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
+        //TODO: rewrite on using of usuall find
+//        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links) const;
         inline Set & operator <<(const Set & l) { *this += l; return *this; }
     private:
-        Set & find(const Selector * selector, Set & set, bool findFirst = false) const;
+        Set & find(const Selector * selector, Set & set, const bool & findFirst = false) const;
         friend class Tag;
     };
 }

@@ -45,7 +45,7 @@ protected:
     public:
         static CharsetType toCharsetType(const QString & ch_name);
 
-        static QString decodeHtmlEntites(const QString & string);
+        static void decodeHtmlEntites(QString & string);
 };
 
 #endif // UNICODE_DECODING

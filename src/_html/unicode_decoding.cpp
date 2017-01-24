@@ -109,7 +109,7 @@ void UnicodeDecoding::scanUtf8Char(QIODevice * io, QString & result, char & in) 
 //        else result.append(QChar(uc));
 //    }
 
-CharsetType UnicodeDecoding::toCharsetType(const QString & ch_name) {
+UnicodeDecoding::CharsetType UnicodeDecoding::toCharsetType(const QString & ch_name) {
     QString l_name = ch_name.toLower();
 
     if (l_name == QStringLiteral("utf-8"))
@@ -120,7 +120,7 @@ CharsetType UnicodeDecoding::toCharsetType(const QString & ch_name) {
     return charset_unknown;
 }
 
-QString UnicodeDecoding::decodeHtmlEntites(const QString & string) {
+void UnicodeDecoding::decodeHtmlEntites(QString & string) {
     QRegularExpression reg("&([#\\w]+);");
     QRegularExpressionMatch match;
     int index = 0;
@@ -147,6 +147,4 @@ QString UnicodeDecoding::decodeHtmlEntites(const QString & string) {
 
         string.replace(match.capturedStart(0), match.capturedLength(0), res);
     }
-
-    return string;
 }

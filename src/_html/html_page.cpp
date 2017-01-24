@@ -1,5 +1,8 @@
 #include "html_page.h"
 
+#include <qbuffer.h>
+#include <qdebug.h>
+
 using namespace Html;
 
 QHash<QString, bool> Page::solo = {
@@ -30,7 +33,9 @@ bool Page::isXml() {
     return name.contains(tag_xml, Qt::CaseInsensitive);
 }
 
-Set Page::find(const Selector * selector, bool findFirst = false) const { return root -> children().find(selector, findFirst); }
+Set Page::find(const Selector * selector, bool findFirst) const {
+    return root -> children().find(selector, findFirst);
+}
 Set Page::find(const char * predicate) const {
     Selector selector(predicate);
     return find(&selector);
@@ -264,3 +269,5 @@ void Page::proceedCharset(Tag * tag) {
         }
     }
 }
+
+void Page::output() { qDebug() << (*root); }

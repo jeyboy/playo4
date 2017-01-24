@@ -9,6 +9,7 @@
 #include <html_selector.h>
 
 class QIODevice;
+class QDebug;
 
 namespace Html {
     class HTMLSHARED_EXPORT Page : public UnicodeDecoding {
@@ -69,7 +70,9 @@ namespace Html {
 
 //        void dump();
 
-        inline void output() { qDebug() << (*root); }
+        void output();
 
         static QHash<QString, bool> solo;
+    };
+}
 #endif // HTML_PAGE_H
