@@ -7,6 +7,11 @@
 
 using namespace Html;
 
+QHash<QString, bool> Tag::solo = {
+    {tag_br, true}, {tag_meta, true}, {tag_link, true}, {tag_img, true},
+    {tag_doctype, true}, {tag_xml, true}, {tag_input, true}
+};
+
 QString Tag::value(const QString & name) const {
     if (name != attr_default || (name == attr_default && _name != tag_select))
         return attrs.value(name);
@@ -111,14 +116,14 @@ QString Tag::toHtml() const {
         QString result = QString(_level * 2, ' ') % '<' % _name;
 
         for(QHash<QString, QString>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
-            result = result % ' ' % attr.key() % QStringLiteral("=\"") % attr.value() % '"';
+            result = result % ' ' % attr.key() % LSTR("=\"") % attr.value() % '"';
 
         result = result % '>';
 
         for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
             result += (*tag) -> toHtml();
 
-        return Document::solo.contains(_name) && tags.isEmpty() ? result : QString(result % QStringLiteral("</") % _name % '>');
+        return solo.contains(_name) && tags.isEmpty() ? result : QString(result % LSTR("</") % _name % '>');
     }
 }
 
@@ -189,7 +194,7 @@ bool Tag::validTo(const Selector * selector) {
             case Selector::tag: { if (!(it.value() == tkn_any_elem || _name == it.value())) return false; break; }
             case Selector::attr: {
                 for(QHash<QString, QPair<char, QString> >::ConstIterator it = selector -> _attrs.cbegin(); it != selector -> _attrs.cend(); it++) {
-                    QString tag_value = it.key() == QStringLiteral("text") ? text() : attrs.value(it.key());
+                    QString tag_value = it.key() == LSTR("text") ? text() : attrs.value(it.key());
                     QString selector_value = it.value().second;
 
                     switch(it.value().first) {

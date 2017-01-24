@@ -5,10 +5,6 @@
 
 using namespace Html;
 
-QHash<QString, bool> Page::solo = {
-    {tag_br, true}, {tag_meta, true}, {tag_link, true}, {tag_img, true}, {tag_doctype, true}, {tag_xml, true}, {tag_input, true}
-};
-
 Page::Page(QIODevice * device, const CharsetType & doc_charset, const Flags & parse_flags)
     : flags(parse_flags), charset(doc_charset), charset_finded(false), using_default_charset(false)
 {
@@ -186,18 +182,18 @@ void Page::parse(QIODevice * device) {
                                 if (name[0] != '?') // ignore ?>
                                     elem -> addAttr(name, value); // proceed attrs without value // if (isSolo(elem)) elem = elem -> parentTag();
 
-                                if (isSolo(elem)) elem = elem -> parentTag();
+                                if ((elem) -> isSolo()) elem = elem -> parentTag();
                             } else {
                                 if (is_closed) {
                                     if (elem -> name() == name) elem = elem -> parentTag();// add ignoring of the close tag for solo tags
                                     name.clear(); is_closed = false;
                                 } else {
-                                    if (last != close_tag_predicate && !isSolo(name)) elem = elem -> appendTag(name);
+                                    if (last != close_tag_predicate && !Tag::isSolo(name)) elem = elem -> appendTag(name);
                                     else elem -> appendTag(name);
                                 }
                             }
                         } else {
-                            if (isSolo(elem) || last == close_tag_predicate) elem = elem -> parentTag();
+                            if (elem -> isSolo() || last == close_tag_predicate) elem = elem -> parentTag();
                         }
 
                         state = content;
