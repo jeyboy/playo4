@@ -1,7 +1,7 @@
 #include <QString>
 #include <QtTest>
 
-#include <html_page.h>
+#include "../../src/_html/html_page.h"
 
 #include "test_data.h"
 

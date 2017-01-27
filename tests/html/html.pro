@@ -7,7 +7,7 @@ TARGET = main
 CONFIG   += console
 CONFIG   -= app_bundle
 
-DEFINES += SRCDIR=\\\"$$PWD/\\\"
+DEFINES += SRCDIR=\\\"$$PWD/\\\" HTML_LIBRARY
 
 TEMPLATE = app
 
@@ -17,25 +17,24 @@ TEMPLATE = app
 
 
 ### test
-TEST_PATH = $${INNER_INC_PATH}/../_html/
 
 HEADERS += \
-    $${TEST_PATH}html_global.h \
-    $${TEST_PATH}html_page.h \
-    $${TEST_PATH}unicode_decoding.h \
-    $${TEST_PATH}html_keys.h \
-    $${TEST_PATH}html_selector.h \
-    $${TEST_PATH}html_set.h \
-    $${TEST_PATH}html_tag.h \
-    ../../src/include/defines.h
+    html_global.h \
+    html_page.h \
+    unicode_decoding.h \
+    html_keys.h \
+    html_selector.h \
+    html_set.h \
+    html_tag.h \
+    defines.h
 
 SOURCES += \
-    $${TEST_PATH}html_page.cpp \
-    $${TEST_PATH}unicode_decoding.cpp \
-    $${TEST_PATH}html_keys.cpp \
-    $${TEST_PATH}html_selector.cpp \
-    $${TEST_PATH}html_set.cpp \
-    $${TEST_PATH}html_tag.cpp
+    html_page.cpp \
+    unicode_decoding.cpp \
+    html_keys.cpp \
+    html_selector.cpp \
+    html_set.cpp \
+    html_tag.cpp
 ### test
 
 

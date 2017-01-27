@@ -33,8 +33,8 @@ namespace Html {
         Selector(const char * predicate);
 
         inline Selector(const SType & selector_type = forward, Selector * prev_selector = 0) :
-            sType(selector_type), prev(prev_selector), next(0)
-        {
+            sType(selector_type), prev(prev_selector), next(0) {
+
             if (prev_selector) prev_selector -> next = this;
         }
         inline ~Selector() { delete next; }
