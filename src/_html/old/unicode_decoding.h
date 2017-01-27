@@ -6,13 +6,13 @@
 class QIODevice;
 
 class UnicodeDecoding {
-protected:
+public:
     enum CharsetType {
         charset_unknown,
         charset_utf8,
         charset_cp1251
     };
-
+protected:
     const int cp1251_table[64] = {
       0x0402, 0x0403, 0x201A, 0x0453, 0x201E, 0x2026, 0x2020, 0x2021,
       0x20AC, 0x2030, 0x0409, 0x2039, 0x040A, 0x040C, 0x040B, 0x040F,

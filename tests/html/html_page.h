@@ -44,7 +44,7 @@ namespace Html {
         Tag * root;
         Flags flags;
         CharsetType charset;
-        bool charset_finded, using_default_charset;
+        bool charset_finded, using_default_charset; // use using_default_charset for determination of rule - finded charset or not
         QString text;
 
     public:
@@ -54,6 +54,8 @@ namespace Html {
         inline ~Page() { delete root; }
 
         bool isXml();
+
+        inline CharsetType charsetType() const { return charset; }
 
         //FIXME: output of tags without close pair
         inline QString toHtml() { return root -> toHtml(); }

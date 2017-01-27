@@ -1,7 +1,7 @@
 #include <QString>
 #include <QtTest>
 
-#include "../../src/_html/html_page.h"
+#include "html_page.h"
 
 #include "test_data.h"
 
@@ -25,8 +25,8 @@ public:
 private Q_SLOTS:
     void testCoding1251();
     void testCodingUtf8();
-    void testElementAttrsExtraction();
-    void testElementAttrsWtoutQuotasExtraction();
+//    void testElementAttrsExtraction();
+//    void testElementAttrsWtoutQuotasExtraction();
 };
 
 using namespace Html;
@@ -39,27 +39,34 @@ void HtmlTest::testCoding1251() {
 
     Page page(data);
     Tag * title_tag = page.findFirst("title");
-
-    QVERIFY2(title_tag && title_tag -> text() == QStringLiteral("Кодировка"), "Failure");
+    QVERIFY2(
+        page.charsetType() == Page::charset_cp1251 &&
+        title_tag && title_tag -> text() == QStringLiteral("Кодировка"), "Failure"
+    );
 }
 
 void HtmlTest::testCodingUtf8() {
-    qDebug() << loadData(TEST_CODING_UTF8_PATH);
+    QString data = loadData(TEST_CODING_UTF8_PATH);
 
-    QVERIFY2(true, "Failure");
+    Page page(data);
+    Tag * title_tag = page.findFirst("title");
+    QVERIFY2(
+        page.charsetType() == Page::charset_utf8 &&
+        title_tag && title_tag -> text() == QStringLiteral("My First HTML"), "Failure"
+    );
 }
 
-void HtmlTest::testElementAttrsExtraction() {
-    qDebug() << loadData(TEST_ELEM_ATTRS_PATH);
+//void HtmlTest::testElementAttrsExtraction() {
+//    qDebug() << loadData(TEST_ELEM_ATTRS_PATH);
 
-    QVERIFY2(true, "Failure");
-}
+//    QVERIFY2(true, "Failure");
+//}
 
-void HtmlTest::testElementAttrsWtoutQuotasExtraction() {
-    qDebug() << loadData(TEST_ELEM_ATTRS_WITOUT_QUOTAS_PATH);
+//void HtmlTest::testElementAttrsWtoutQuotasExtraction() {
+//    qDebug() << loadData(TEST_ELEM_ATTRS_WITOUT_QUOTAS_PATH);
 
-    QVERIFY2(true, "Failure");
-}
+//    QVERIFY2(true, "Failure");
+//}
 
 
 
