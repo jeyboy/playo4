@@ -3,6 +3,14 @@
 
 #include "defines.h"
 
+#define HTML_BR_TAG LSTR("br")
+#define HTML_META_TAG LSTR("meta")
+#define HTML_LINK_TAG LSTR("link")
+#define HTML_IMG_TAG LSTR("img")
+#define HTML_DOCTYPE_TAG LSTR("!DOCTYPE")
+#define HTML_XML_TAG LSTR("?xml")
+#define HTML_INPUT_TAG LSTR("input")
+
 namespace Html {
     extern const QString tag_doctype;
     extern const QString tag_input;

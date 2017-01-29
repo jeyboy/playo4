@@ -22,8 +22,10 @@ namespace Html {
         Set tags;
         Tag * parent;
     protected:
-        static QHash<QString, bool>  soloTags();
+
     public:
+        const static QHash<QString, bool> solo;
+
         enum FormSerializationFlags {
             fsf_none,
             fsf_append_vals_from_hash = 1,
@@ -48,8 +50,8 @@ namespace Html {
         QString toText() const;
         QString toHtml() const;
 
-        inline bool isSolo() { return soloTags().contains(name()); }
-        static inline bool isSolo(const QString & tag_name) { return soloTags().contains(tag_name); }
+        inline bool isSolo() { return solo.contains(name()); }
+        static inline bool isSolo(const QString & tag_name) { return solo.contains(tag_name); }
 
         inline bool is_link() { return _name == tag_a; }
         inline bool is_script() { return _name == tag_script; }

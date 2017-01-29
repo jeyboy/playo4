@@ -2,11 +2,8 @@
 <html>
 <body>
 
-<h2 class="cl1 cl2">The title attribute</h2>
-
-<p class="cl2 cl3" title="I'm a tooltip">
-Mouse over this paragraph, to display the title attribute as a tooltip.
-</p>
+<p class="cl1 cl2">cl1 cl2 classes</p>
+<p class="cl2 cl3" title="I'm a tooltip">cl2 cl3 classes</p>
 
 </body>
 </html>

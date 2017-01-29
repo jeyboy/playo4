@@ -7,13 +7,10 @@
 
 using namespace Html;
 
-QHash<QString, bool> Tag::soloTags() {
-    static const auto solo_tags = QHash<QString, bool>{
-        {tag_br, true}, {tag_meta, true}, {tag_link, true}, {tag_img, true},
-        {tag_doctype, true}, {tag_xml, true}, {tag_input, true}
-    };
-    return solo_tags;
-}
+const QHash<QString, bool> Tag::solo = QHash<QString, bool>{
+    {HTML_BR_TAG, true}, {HTML_META_TAG, true}, {HTML_LINK_TAG, true}, {HTML_IMG_TAG, true},
+    {HTML_DOCTYPE_TAG, true}, {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}
+};
 
 QString Tag::value(const QString & name) const {
     if (name != attr_default || (name == attr_default && _name != tag_select))
@@ -126,7 +123,7 @@ QString Tag::toHtml() const {
         for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
             result += (*tag) -> toHtml();
 
-        return soloTags().contains(_name) && tags.isEmpty() ? result : QString(result % LSTR("</") % _name % '>');
+        return solo.contains(_name) && tags.isEmpty() ? result : QString(result % LSTR("</") % _name % '>');
     }
 }
 

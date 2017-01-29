@@ -1,17 +1,17 @@
 #include "html_keys.h"
 
 namespace Html {
-    extern const QString tag_doctype            = LSTR("!DOCTYPE");
-    extern const QString tag_input              = LSTR("input");
+    extern const QString tag_doctype            = HTML_DOCTYPE_TAG;
+    extern const QString tag_input              = HTML_INPUT_TAG;
     extern const QString tag_select             = LSTR("select");
-    extern const QString tag_img                = LSTR("img");
-    extern const QString tag_br                 = LSTR("br");
+    extern const QString tag_img                = HTML_IMG_TAG;
+    extern const QString tag_br                 = HTML_BR_TAG;
     extern const QString tag_a                  = LSTR("a");
     extern const QString tag_script             = LSTR("script");
     extern const QString tag_head               = LSTR("head");
-    extern const QString tag_meta               = LSTR("meta");
-    extern const QString tag_xml                = LSTR("?xml");
-    extern const QString tag_link               = LSTR("link");
+    extern const QString tag_meta               = HTML_META_TAG;
+    extern const QString tag_xml                = HTML_XML_TAG;
+    extern const QString tag_link               = HTML_LINK_TAG;
 
     extern const QString tkn_split              = LSTR(" ");
     extern const QString tkn_any_elem           = LSTR("*");

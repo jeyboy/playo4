@@ -26,15 +26,23 @@ private Q_SLOTS:
     void testHtmlDoctype();
     void testXmlDoctype();
 
+    void testHtmlBaseTemplate();
+    void testHtmlShortTemplate();
+
     void testCoding1251();
     void testCoding1251Decode();
 
     void testCodingUtf8();
     void testCodingUtf8Decode();
 
+    void testJS();
+    void testCDATA();
+
     void testElementTextExtraction();
     void testElementAttrsExtraction();
     void testElementAttrsWithoutQuotasExtraction();
+
+    void testElementClasses();
 };
 
 using namespace Html;
@@ -48,6 +56,31 @@ void HtmlTest::testHtmlDoctype() {
 void HtmlTest::testXmlDoctype() {
     Page page(loadData(TEST_XML_PATH));
     QVERIFY2(page.isXml(), "Failure");
+}
+
+void HtmlTest::testHtmlBaseTemplate() {
+    Page page(loadData(TEST_BASE_TEMPLATE_PATH));
+    Tag * h1_tag = page.findFirst("h1");
+    Tag * p_tag = page.findFirst("p");
+
+    QVERIFY2(
+        h1_tag -> text() == QStringLiteral("My First Heading") &&
+            p_tag -> text() == QStringLiteral("My first paragraph."),
+        "Failure"
+    );
+}
+void HtmlTest::testHtmlShortTemplate() {
+    Page page(loadData(TEST_BASE_SHORT_TEMPLATE_PATH));
+    Tag * title_tag = page.findFirst("title");
+    Tag * h1_tag = page.findFirst("h1");
+    Tag * p_tag = page.findFirst("p");
+
+    QVERIFY2(
+        title_tag -> text() == QStringLiteral("Page Title") &&
+            h1_tag -> text() == QStringLiteral("This is a heading") &&
+            p_tag -> text() == QStringLiteral("This is a paragraph."),
+        "Failure"
+    );
 }
 
 void HtmlTest::testCoding1251() {
@@ -77,6 +110,13 @@ void HtmlTest::testCodingUtf8Decode() {
     );
 }
 
+void HtmlTest::testJS() {
+
+}
+void HtmlTest::testCDATA() {
+
+}
+
 void HtmlTest::testElementTextExtraction() {
     Page page(loadData(TEST_ELEM_ATTRS_PATH));
     Tag * h2_tag = page.findFirst("h2");
@@ -96,6 +136,8 @@ void HtmlTest::testElementAttrsWithoutQuotasExtraction() {
     Page page(loadData(TEST_ELEM_ATTRS_WITOUT_QUOTAS_PATH));
     Tag * a_tag = page.findFirst("a");
 
+    qDebug() << a_tag;
+
     QVERIFY2(
         a_tag &&
             a_tag -> link() == QStringLiteral("http://www.w3schools.com") &&
@@ -103,8 +145,24 @@ void HtmlTest::testElementAttrsWithoutQuotasExtraction() {
         "Failure"
     );
 }
+void HtmlTest::testElementClasses() {
+    Page page(loadData(TEST_CLASSES_PATH));
+    QString cl1_cl2("cl1 cl2 classes");
+    QString cl2_cl3("cl2 cl3 classes");
 
+    Set cl1_tags = page.find("cl1");
+    Set cl2_tags = page.find("cl2");
+    Set cl3_tags = page.find("cl3");
 
+    bool cl1_tags_valid = cl1_tags.size() == 1 && cl1_tags.first() -> text() == cl1_cl2;
+    bool cl2_tags_valid = cl2_tags.size() == 2 && cl2_tags.first() -> text() == cl1_cl2 && cl2_tags.last() -> text() == cl2_cl3;
+    bool cl3_tags_valid = cl3_tags.size() == 1 && cl3_tags.first() -> text() == cl2_cl3;
+
+    QVERIFY2(
+        cl1_tags_valid && cl2_tags_valid && cl3_tags_valid,
+        "Failure"
+    );
+}
 
 
 

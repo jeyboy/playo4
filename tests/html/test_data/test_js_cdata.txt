@@ -1,0 +1,6 @@
+<script language="javascript" type="text/javascript">
+function allow() {}
+// <![CDATA[
+function cancel() {}
+// ]]>
+</script>
