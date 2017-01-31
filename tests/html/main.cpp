@@ -36,7 +36,8 @@ private Q_SLOTS:
     void testCodingUtf8Decode();
 
     void testJS();
-    void testCDATA();
+//    void testCDATAJs();
+    void testCDATAHtml();
 
     void testElementTextExtraction();
     void testElementAttrsExtraction();
@@ -111,10 +112,28 @@ void HtmlTest::testCodingUtf8Decode() {
 }
 
 void HtmlTest::testJS() {
+    Page page(loadData(TEST_JS_PATH));
+    Set script_tags = page.find("script");
 
+    QVERIFY2(
+        script_tags.size() == 1 &&
+        script_tags.first() -> text() == QStringLiteral("function myFunction() {document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";}"),
+        "Failure"
+    );
 }
-void HtmlTest::testCDATA() {
+//void HtmlTest::testCDATAJs() {
+//    Page page(loadData(TEST_CDATA_JS_PATH));
 
+//}
+void HtmlTest::testCDATAHtml() {
+    Page page(loadData(TEST_CDATA_HTML_PATH));
+    Tag * div = page.findFirst("div");
+
+    QVERIFY2(
+        div &&
+        div -> childrenCount() == 0,
+        "Failure"
+    );
 }
 
 void HtmlTest::testElementTextExtraction() {

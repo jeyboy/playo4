@@ -27,7 +27,8 @@
 #define TEST_HIDDEN_COMMENTS_PATH DATA_PATH(QStringLiteral("test_hidden_comments.txt"))
 
 #define TEST_JS_PATH DATA_PATH(QStringLiteral("test_js.txt"))
-#define TEST_JS_CDATA_PATH DATA_PATH(QStringLiteral("test_js_cdata.txt"))
+#define TEST_CDATA_JS_PATH DATA_PATH(QStringLiteral("test_cdata_js.txt"))
+#define TEST_CDATA_HTML_PATH DATA_PATH(QStringLiteral("test_cdata_html.txt"))
 
 #define TEST_EMAIL_FORM_PATH DATA_PATH(QStringLiteral("test_email_form.txt"))
 #define TEST_POST_FORM_DATALIST_PATH DATA_PATH(QStringLiteral("test_post_form_datalist.txt"))

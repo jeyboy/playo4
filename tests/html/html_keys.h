@@ -10,6 +10,7 @@
 #define HTML_DOCTYPE_TAG LSTR("!DOCTYPE")
 #define HTML_XML_TAG LSTR("?xml")
 #define HTML_INPUT_TAG LSTR("input")
+#define HTML_BASE_TAG LSTR("base")
 
 namespace Html {
     extern const QString tag_doctype;

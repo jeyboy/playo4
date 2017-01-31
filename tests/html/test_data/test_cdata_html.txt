@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page Title</title>
+</head>
+<body>
+
+<div>
+<![CDATA[
+<h1>My Web Page</h1>
+<p id="demo">A Paragraph</p>
+]]>
+</div>
+</body>
+</html>
