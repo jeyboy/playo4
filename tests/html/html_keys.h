@@ -48,8 +48,10 @@ namespace Html {
     extern const QString attr_type;
     extern const QString attr_default;
     extern const QString attr_checked;
+    extern const QString attr_disabled;
 
     extern const QString type_radio;
+    extern const QString type_checkbox;
 }
 
 #endif // HTML_PARSER_KEYS

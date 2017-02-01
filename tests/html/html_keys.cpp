@@ -36,7 +36,9 @@ namespace Html {
     extern const QString attr_type              = LSTR("type");
     extern const QString attr_default           = LSTR("value");
     extern const QString attr_checked           = LSTR("checked");
+    extern const QString attr_disabled          = LSTR("disabled");
 
 
     extern const QString type_radio             = LSTR("radio");
+    extern const QString type_checkbox            = LSTR("checkbox");
 }

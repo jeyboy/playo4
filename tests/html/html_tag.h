@@ -31,7 +31,8 @@ namespace Html {
         enum FormSerializationFlags {
             fsf_none,
             fsf_append_vals_from_hash = 1,
-            fsf_percent_encoding
+            fsf_percent_encoding,
+            fsf_ignore_empty
         };
 
         inline Tag(QString tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> level() + 1 : 0), _name(tag), parent(parent_tag) {}
@@ -55,11 +56,26 @@ namespace Html {
         inline bool isSolo() { return solo.contains(name()); }
         static inline bool isSolo(const QString & tag_name) { return solo.contains(tag_name); }
 
-        inline bool is_link() { return _name == tag_a; }
-        inline bool is_script() { return _name == tag_script; }
-        inline bool is_head() { return _name == tag_head; }
-        inline bool is_meta() { return _name == tag_meta; }
-        inline bool is_xml_head() { return _name == tag_xml; }
+        inline bool isLink() { return _name == tag_a; }
+        inline bool isScript() { return _name == tag_script; }
+        inline bool isHead() { return _name == tag_head; }
+        inline bool isMeta() { return _name == tag_meta; }
+        inline bool isXmlHead() { return _name == tag_xml; }
+
+        inline bool isFormProceable() const {
+            if (hasAttr(attr_disabled)) return false;
+
+            if (_name == tag_select || _name == tag_textarea) return true;
+
+            if (_name == tag_input) {
+                bool is_radio = attrs.value(attr_type) == type_radio;
+                bool is_checkbox = attrs.value(attr_type) == type_checkbox;
+
+                return !is_radio && !is_checkbox || hasAttr(attr_checked);
+            }
+
+            return false;
+        }
 
         inline Tag * parentTag() { return parent; }
         inline Tag * childTag(int pos) const { return tags[pos]; }

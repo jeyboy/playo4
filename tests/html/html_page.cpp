@@ -94,7 +94,7 @@ void Page::parse(QIODevice * device) {
                 case content: {
                     switch(*ch) {
                         case open_tag: {
-                            if (last == close_tag_predicate && elem -> is_script())
+                            if (last == close_tag_predicate && elem -> isScript())
                                 name.append(*ch); // javascript comments
                             else {
                                 if (!(flags & skip_text) && !name.isEmpty()) elem -> appendText(name);
@@ -235,14 +235,14 @@ QString Page::parseCode(QIODevice * device, char * ch) {
 }
 
 void Page::checkCharset(Tag * tag) {
-    if (tag -> is_meta() || tag -> is_xml_head())
+    if (tag -> isMeta() || tag -> isXmlHead())
         proceedCharset(tag);
-    else if (tag -> is_head())
+    else if (tag -> isHead())
         using_default_charset = true;
 }
 
 void Page::proceedCharset(Tag * tag) {
-    if (tag -> is_xml_head()) {
+    if (tag -> isXmlHead()) {
         QString xml_encoding = tag -> value(tkn_encoding);
         qDebug() << xml_encoding;
         if (!xml_encoding.isEmpty()) {

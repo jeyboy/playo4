@@ -76,8 +76,8 @@ void HtmlTest::testHtmlBaseTemplate() {
     Tag * p_tag = page.findFirst("p");
 
     QVERIFY2(
-        h1_tag -> text() == QStringLiteral("My First Heading") &&
-            p_tag -> text() == QStringLiteral("My first paragraph."),
+        h1_tag -> text() == LSTR("My First Heading") &&
+            p_tag -> text() == LSTR("My first paragraph."),
         "Failure"
     );
 }
@@ -88,9 +88,9 @@ void HtmlTest::testHtmlShortTemplate() {
     Tag * p_tag = page.findFirst("p");
 
     QVERIFY2(
-        title_tag -> text() == QStringLiteral("Page Title") &&
-            h1_tag -> text() == QStringLiteral("This is a heading") &&
-            p_tag -> text() == QStringLiteral("This is a paragraph."),
+        title_tag -> text() == LSTR("Page Title") &&
+            h1_tag -> text() == LSTR("This is a heading") &&
+            p_tag -> text() == LSTR("This is a paragraph."),
         "Failure"
     );
 }
@@ -104,7 +104,7 @@ void HtmlTest::testCoding1251Decode() {
     Tag * title_tag = page.findFirst("title");
 
     QVERIFY2(
-        title_tag && title_tag -> text() == QStringLiteral("Кодировка"),
+        title_tag && title_tag -> text() == LSTR("Кодировка"),
         "Failure"
     );
 }
@@ -117,7 +117,7 @@ void HtmlTest::testCodingUtf8Decode() {
     Page page(loadData(TEST_CODING_UTF8_PATH));
     Tag * title_tag = page.findFirst("title");
     QVERIFY2(
-        title_tag && title_tag -> text() == QStringLiteral("My First HTML"),
+        title_tag && title_tag -> text() == LSTR("My First HTML"),
         "Failure"
     );
 }
@@ -128,7 +128,7 @@ void HtmlTest::testJS() {
 
     QVERIFY2(
         script_tags.size() == 1 &&
-        script_tags.first() -> text() == QStringLiteral("function myFunction() {document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";}"),
+        script_tags.first() -> text() == LSTR("function myFunction() {document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";}"),
         "Failure"
     );
 }
@@ -151,14 +151,14 @@ void HtmlTest::testElementTextExtraction() {
     Page page(loadData(TEST_ELEM_ATTRS_PATH));
     Tag * h2_tag = page.findFirst("h2");
 
-    QVERIFY2(h2_tag && h2_tag -> text() == QStringLiteral("The title attribute"), "Failure");
+    QVERIFY2(h2_tag && h2_tag -> text() == LSTR("The title attribute"), "Failure");
 }
 void HtmlTest::testElementAttrsExtraction() {
     Page page(loadData(TEST_ELEM_ATTRS_PATH));
     Tag * p_tag = page.findFirst("p");
 
     QVERIFY2(
-        p_tag && p_tag -> value(QStringLiteral("title")) == QStringLiteral("I'm a tooltip"),
+        p_tag && p_tag -> value(LSTR("title")) == LSTR("I'm a tooltip"),
         "Failure"
     );
 }
@@ -170,8 +170,8 @@ void HtmlTest::testElementAttrsWithoutQuotasExtraction() {
 
     QVERIFY2(
         a_tag &&
-            a_tag -> link() == QStringLiteral("http://www.w3schools.com") &&
-            a_tag -> text() == QStringLiteral("This is a link"),
+            a_tag -> link() == LSTR("http://www.w3schools.com") &&
+            a_tag -> text() == LSTR("This is a link"),
         "Failure"
     );
 }
@@ -199,7 +199,7 @@ void HtmlTest::testElementId() {
     Set tags = page.find("#blia");
 
     QVERIFY2(
-        tags.size() == 1 && tags.first() -> name() == QStringLiteral("p"),
+        tags.size() == 1 && tags.first() -> name() == LSTR("p"),
         "Failure"
     );
 }
@@ -212,11 +212,10 @@ void HtmlTest::testFormCheckboxes() {
     QUrl url = form_tag -> serializeFormToUrl();
     QUrlQuery query(url.query());
 
-    QString vehicles = query.queryItemValue(QStringLiteral("vehicle"));
-    qDebug() << vehicles;
-
+    QStringList vehicles = query.allQueryItemValues(LSTR("vehicle"));
     QVERIFY2(
-        vehicles.contains(QStringLiteral("Bike")) && vehicles.contains(QStringLiteral("Ship")),
+        vehicles.size() == 2 &&
+        vehicles.first() == LSTR("Bike") && vehicles.last() == LSTR("Ship"),
         "Failure"
     );
 }
@@ -227,11 +226,10 @@ void HtmlTest::testFormRadio() {
     QUrl url = form_tag -> serializeFormToUrl();
     QUrlQuery query(url.query());
 
-    QString browser = query.queryItemValue(QStringLiteral("browser"));
-    qDebug() << browser;
-
+    QStringList browsers = query.allQueryItemValues(LSTR("browser"));
     QVERIFY2(
-        browser == QStringLiteral("opera"),
+        browsers.size() == 1 &&
+        browsers.first() == LSTR("opera"),
         "Failure"
     );
 }
@@ -242,10 +240,10 @@ void HtmlTest::testFormSelect() {
     QUrl url = form_tag -> serializeFormToUrl();
     QUrlQuery query(url.query());
 
-    QString car = query.queryItemValue(QStringLiteral("cars"));
+    QString car = query.queryItemValue(LSTR("cars"));
 
     QVERIFY2(
-        car == QStringLiteral("fiat"),
+        car == LSTR("fiat"),
         "Failure"
     );
 }
@@ -256,10 +254,10 @@ void HtmlTest::testFormText() {
     QUrl url = form_tag -> serializeFormToUrl();
     QUrlQuery query(url.query());
 
-    QString name = query.queryItemValue(QStringLiteral("lastname"));
+    QString name = query.queryItemValue(LSTR("lastname"));
 
     QVERIFY2(
-        name == QStringLiteral("Mouse"),
+        name == LSTR("Mouse"),
         "Failure"
     );
 }
@@ -270,11 +268,9 @@ void HtmlTest::testFormTextArea() {
     QUrl url = form_tag -> serializeFormToUrl();
     QUrlQuery query(url.query());
 
-    QString comment = query.queryItemValue(QStringLiteral("comment"));
-    qDebug() << comment;
-
+    QString comment = query.queryItemValue(LSTR("comment"));
     QVERIFY2(
-        comment == QStringLiteral("Some sheety text"),
+        comment == LSTR("Some sheety text"),
         "Failure"
     );
 }

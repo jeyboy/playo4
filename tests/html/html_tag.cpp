@@ -58,8 +58,12 @@ void Tag::serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, Q
             QString inp_name = (*input) -> value(attr_name);
             if (inp_name.isEmpty()) continue;
 
+            if (!(*input) -> isFormProceable()) continue; // ignore disabled and not checked inputs
+
             QString inp_val = url_vals.take(inp_name);
             if (inp_val.isEmpty()) inp_val = (*input) -> value();
+
+            if (flags & fsf_ignore_empty && inp_val.isEmpty()) continue;
 
             query.addQueryItem(
                 inp_name,
@@ -291,7 +295,7 @@ QHash<QString, QString> & Tag::backwardFindLinks(Selector * selector, QHash<QStr
         selector = selector -> next;
 
     if (!selector) {
-        if (parent -> is_link())
+        if (parent -> isLink())
             links.insert(parent -> link(), parent -> text());
     } else if (selector -> isBackward() && parent -> parent)
         parent -> backwardFindLinks(selector, links);
