@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form action="action_page.php">
+  <p><b> аким браузером в основном пользуетесь:</b><Br>
+   <input type="radio" name="browser" value="ie"> Internet Explorer<Br>
+   <input type="radio" name="browser" value="opera"> Opera<Br>
+   <input type="radio" name="browser" value="firefox"> Firefox<Br>
+  </p>
+  <br>
+  <input type="submit" value="Submit">
+</form> 
+
+<p>If you click the "Submit" button, the form-data will be sent to a page called "action_page.php".</p>
+
+</body>
+</html>

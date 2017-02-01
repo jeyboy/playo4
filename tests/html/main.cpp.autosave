@@ -210,9 +210,13 @@ void HtmlTest::testFormCheckboxes() {
     Tag * form_tag = page.find("form");
 
     QUrl url = form_tag -> serializeFormToUrl();
+    QUrlQuery query(url.query());
+    
+    QString vehicles = query.queryItemValue(QSL("vehicle"));
+    qDebug() << vehicles;
 
     QVERIFY2(
-        false,
+        vehicles.contains(),
         "Failure"
     );
 }

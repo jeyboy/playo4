@@ -30,8 +30,8 @@
 #define TEST_CDATA_JS_PATH DATA_PATH(QStringLiteral("test_cdata_js.txt"))
 #define TEST_CDATA_HTML_PATH DATA_PATH(QStringLiteral("test_cdata_html.txt"))
 
-#define TEST_EMAIL_FORM_PATH DATA_PATH(QStringLiteral("test_email_form.txt"))
-#define TEST_POST_FORM_DATALIST_PATH DATA_PATH(QStringLiteral("test_post_form_datalist.txt"))
+#define TEST_POST_FORM_CHECKBOX_PATH DATA_PATH(QStringLiteral("test_post_form_checkbox.txt"))
+#define TEST_POST_FORM_RADIO_PATH DATA_PATH(QStringLiteral("test_post_form_radio.txt"))
 #define TEST_POST_FORM_SELECT_PATH DATA_PATH(QStringLiteral("test_post_form_select.txt"))
 #define TEST_POST_FORM_TEXT_PATH DATA_PATH(QStringLiteral("test_post_form_text.txt"))
 

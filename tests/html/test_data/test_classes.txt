@@ -2,8 +2,9 @@
 <html>
 <body>
 
-<p class="cl1 cl2">cl1 cl2 classes</p>
-<p class="cl2 cl3" title="I'm a tooltip">cl2 cl3 classes</p>
+<p id='blia' class="cl1 cl2">cl1 cl2 classes</p>
+<span class="cl2 cl3" title="I'm a tooltip">cl2 cl3 classes</p>
+<div id='bli'>some sheet</div>
 
 </body>
 </html>

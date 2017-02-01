@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+ <form action="demo_form.asp">
+  <input type="checkbox" name="vehicle" value="Bike" checked> I have a bike<br>
+  <input type="checkbox" name="vehicle" value="Car> I have a car<br>
+  <input type="checkbox" name="vehicle" value="Ship" checked> I have a ship<br>
+  <input type="submit" value="Submit">
+</form> 
+
+</body>
+</html>
