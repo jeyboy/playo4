@@ -4,6 +4,7 @@ namespace Html {
     extern const QString tag_doctype            = HTML_DOCTYPE_TAG;
     extern const QString tag_input              = HTML_INPUT_TAG;
     extern const QString tag_select             = LSTR("select");
+    extern const QString tag_textarea           = LSTR("textarea");
     extern const QString tag_img                = HTML_IMG_TAG;
     extern const QString tag_br                 = HTML_BR_TAG;
     extern const QString tag_a                  = LSTR("a");
@@ -34,4 +35,8 @@ namespace Html {
     extern const QString attr_class             = LSTR("class");
     extern const QString attr_type              = LSTR("type");
     extern const QString attr_default           = LSTR("value");
+    extern const QString attr_checked           = LSTR("checked");
+
+
+    extern const QString type_radio             = LSTR("radio");
 }

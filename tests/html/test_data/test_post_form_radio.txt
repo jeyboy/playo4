@@ -5,7 +5,7 @@
 <form action="action_page.php">
   <p><b> аким браузером в основном пользуетесь:</b><Br>
    <input type="radio" name="browser" value="ie"> Internet Explorer<Br>
-   <input type="radio" name="browser" value="opera"> Opera<Br>
+   <input type="radio" name="browser" value="opera" checked> Opera<Br>
    <input type="radio" name="browser" value="firefox"> Firefox<Br>
   </p>
   <br>

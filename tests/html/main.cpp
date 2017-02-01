@@ -199,7 +199,7 @@ void HtmlTest::testElementId() {
     Set tags = page.find("#blia");
 
     QVERIFY2(
-        tags.size() == 1 && tags.first() -> name() == QSL("p"),
+        tags.size() == 1 && tags.first() -> name() == QStringLiteral("p"),
         "Failure"
     );
 }
@@ -207,44 +207,74 @@ void HtmlTest::testElementId() {
 
 void HtmlTest::testFormCheckboxes() {
     Page page(loadData(TEST_POST_FORM_CHECKBOX_PATH));
-    Tag * form_tag = page.find("form");
+    Tag * form_tag = page.findFirst("form");
 
     QUrl url = form_tag -> serializeFormToUrl();
+    QUrlQuery query(url.query());
+
+    QString vehicles = query.queryItemValue(QStringLiteral("vehicle"));
+    qDebug() << vehicles;
 
     QVERIFY2(
-        false,
+        vehicles.contains(QStringLiteral("Bike")) && vehicles.contains(QStringLiteral("Ship")),
         "Failure"
     );
 }
 void HtmlTest::testFormRadio() {
     Page page(loadData(TEST_POST_FORM_RADIO_PATH));
+    Tag * form_tag = page.findFirst("form");
+
+    QUrl url = form_tag -> serializeFormToUrl();
+    QUrlQuery query(url.query());
+
+    QString browser = query.queryItemValue(QStringLiteral("browser"));
+    qDebug() << browser;
 
     QVERIFY2(
-        false,
+        browser == QStringLiteral("opera"),
         "Failure"
     );
 }
 void HtmlTest::testFormSelect() {
     Page page(loadData(TEST_POST_FORM_SELECT_PATH));
+    Tag * form_tag = page.findFirst("form");
+
+    QUrl url = form_tag -> serializeFormToUrl();
+    QUrlQuery query(url.query());
+
+    QString car = query.queryItemValue(QStringLiteral("cars"));
 
     QVERIFY2(
-        false,
+        car == QStringLiteral("fiat"),
         "Failure"
     );
 }
 void HtmlTest::testFormText() {
     Page page(loadData(TEST_POST_FORM_TEXT_PATH));
+    Tag * form_tag = page.findFirst("form");
+
+    QUrl url = form_tag -> serializeFormToUrl();
+    QUrlQuery query(url.query());
+
+    QString name = query.queryItemValue(QStringLiteral("lastname"));
 
     QVERIFY2(
-        false,
+        name == QStringLiteral("Mouse"),
         "Failure"
     );
 }
 void HtmlTest::testFormTextArea() {
     Page page(loadData(TEST_POST_FORM_TEXT_PATH));
+    Tag * form_tag = page.findFirst("form");
+
+    QUrl url = form_tag -> serializeFormToUrl();
+    QUrlQuery query(url.query());
+
+    QString comment = query.queryItemValue(QStringLiteral("comment"));
+    qDebug() << comment;
 
     QVERIFY2(
-        false,
+        comment == QStringLiteral("Some sheety text"),
         "Failure"
     );
 }

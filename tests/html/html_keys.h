@@ -16,6 +16,7 @@ namespace Html {
     extern const QString tag_doctype;
     extern const QString tag_input;
     extern const QString tag_select;
+    extern const QString tag_textarea;
     extern const QString tag_img;
     extern const QString tag_br;
     extern const QString tag_a;
@@ -46,6 +47,9 @@ namespace Html {
     extern const QString attr_class;
     extern const QString attr_type;
     extern const QString attr_default;
+    extern const QString attr_checked;
+
+    extern const QString type_radio;
 }
 
 #endif // HTML_PARSER_KEYS

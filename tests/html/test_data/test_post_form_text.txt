@@ -9,7 +9,7 @@
   Last name:<br>
   <input type="text" name="lastname" value="Mouse">
   <br>
-  <textarea name="comment" cols="40" rows="3"></textarea>
+  <textarea name="comment" cols="40" rows="3">Some sheety text</textarea>
   <br>
   <input type="submit" value="Submit">
 </form> 

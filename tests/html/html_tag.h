@@ -22,10 +22,12 @@ namespace Html {
         Set tags;
         Tag * parent;
     protected:
-
-    public:
         const static QHash<QString, bool> solo;
 
+        QString selectValue() const;
+        QString radioValue() const;
+        QString textareaValue() const;
+    public:
         enum FormSerializationFlags {
             fsf_none,
             fsf_append_vals_from_hash = 1,
@@ -64,6 +66,7 @@ namespace Html {
         Tag * childTag(const QString & name_predicate, const int & pos = 0) const;
         inline int childrenCount() { return tags.size(); }
 
+        inline bool hasAttr(const QString & attr_name = attr_checked) const { return attrs.contains(attr_name); }
         inline bool has(const char * predicate) const { return !find(predicate).isEmpty(); }
         inline Set find(const Selector * selector) const { return tags.find(selector); }
         Set find(const char * predicate) const;

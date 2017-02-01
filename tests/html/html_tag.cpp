@@ -12,13 +12,28 @@ const QHash<QString, bool> Tag::solo = QHash<QString, bool>{
     {HTML_DOCTYPE_TAG, true}, {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}, {HTML_BASE_TAG, true}
 };
 
+QString Tag::selectValue() const {
+    Html::Set options = find("option[selected]");
+    return options.value();
+}
+QString Tag::radioValue() const { return hasAttr(attr_checked) ? attrs[attr_default] : QString(); }
+QString Tag::textareaValue() const { return text(); }
+
 QString Tag::value(const QString & name) const {
-    if (name != attr_default || (name == attr_default && _name != tag_select))
-        return attrs.value(name);
-    else {
-        Html::Set options = find("option[selected]");
-        return options.value();
+    bool is_default_val = name == attr_default;
+
+    if (is_default_val) {
+        if (_name == tag_select)
+            return selectValue();
+
+        if (_name == tag_textarea)
+            return textareaValue();
+
+        if (attrs.value(attr_type) == type_radio)
+            return radioValue();
     }
+
+    return attrs.value(name);
 }
 
 QString Tag::text() const {
@@ -33,7 +48,7 @@ void Tag::serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, Q
     QString action = value(attr_action);
     url = QUrl(action.isEmpty() ? default_url : action);
 
-    Set inputs = find("input") << find("select");
+    Set inputs = find("input") << find("select") << find("textarea");
     QHash<QString, QString> url_vals(vals);
 
     if (!inputs.isEmpty()) {
@@ -41,6 +56,8 @@ void Tag::serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, Q
 
         for(Set::Iterator input = inputs.begin(); input != inputs.end(); input++) {
             QString inp_name = (*input) -> value(attr_name);
+            if (inp_name.isEmpty()) continue;
+
             QString inp_val = url_vals.take(inp_name);
             if (inp_val.isEmpty()) inp_val = (*input) -> value();
 
