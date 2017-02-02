@@ -32,6 +32,7 @@ namespace Html {
             in_val = 32,
             comment = 64,
             service = 128,
+            tag_closing = 256,
             attr_val = attr | val
         };
 
@@ -41,8 +42,9 @@ namespace Html {
             close_tag = 62, // >
             space = 32,
             service_token = 33, // !
+            service_start_token = 133, // [
             service_end_token = 135, // ]
-            comment_post_token = 45, // -
+            comment_token = 45, // -
             attr_rel = 61, // =
             content_del1 = 34, // "
             content_del2 = 39, // '

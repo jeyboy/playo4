@@ -49,9 +49,6 @@ void Page::parse(const char * data) {
     PState state = content;
 
     char *pdata = data, *sname = 0, *sval = 0;
-    char last = 0, del = 0;
-
-//    bool is_closed = false;
 //    QString name, value; name.reserve(1024); value.reserve(1024);
 
     while(pdata) {
@@ -77,6 +74,15 @@ void Page::parse(const char * data) {
                         }
 
                         state = tag;
+
+                        if (*(pdata + 1) == service_token) {
+                            char chr = *(pdata + 2);
+
+                            if (chr == service_start_token)
+                                state = service;
+                            else if (chr == comment_token)
+                                state = comment;
+                        }
                     break;}
 
 //                    case code_start: {
@@ -85,7 +91,7 @@ void Page::parse(const char * data) {
 
 //                    case space: if (!sname) continue;
 
-                    default: last = *pdata;
+//                    default: last = *pdata;
                 }
             break;}
 
@@ -97,11 +103,11 @@ void Page::parse(const char * data) {
                         switch(state) {
                             case val: {
                                 state = in_val;
-                                sval = pdata;
                             break;}
                             case in_val: {
                                 if (*sval == *pdata) {
                                     elem -> addAttr(name, value);
+                                    sname = 0; sval = 0;
                                     state = attr;
                                 }
 //                                else value.append(*pdata);
@@ -112,77 +118,13 @@ void Page::parse(const char * data) {
 //                    case code_start: { value.append(parseCode(pdata)); break; }
 //                    default:
 //                        if (*pdata > 0) value.append(*pdata);
-//                        else toUtf8(charset, device, value, ch[0]);
+//                        else toUtf8(charset, device, value, pdata[0]);
                 }
             break;}
 
-            case service: {
-            //                switch(*ch) {
-            //                    case close_tag: {
-            //                        // block closing on > in middle of text
-            //                        bool closed_correctly = last == ']';
-            //                        bool started_correctly = name[0] == '[';
-
-            //                        if (started_correctly == closed_correctly) { // <![CDATA[ */ @import url(/css/al/ie6.css?26); /*
-            ]]>
-            //                            elem -> appendService(name);
-            //                            state = content;
-            //                            continue;
-            //                        }
-            //                    }
-
-            //                    default:
-            //                        if (*ch > 0) name.append(*ch);
-            //                        else toUtf8(charset, device, name, ch[0]);
-            //                }
-            //                last = *ch;
-            break;}
-
-            case comment: {
-            //                switch(*ch) {
-            ////                                        case comment_post_token: break; // skip -
-            //                    case close_tag: {
-            //                        if (last == comment_post_token) {
-            //                            if (flags & skip_comment) name.clear();
-            //                            else elem -> appendComment(name);
-            //                            state = content;
-            //                            break;
-            //                        }
-            //                    }
-            //                    default:
-            //                        if ((last = *ch) > 0) name.append(*ch);
-            //                        else toUtf8(charset, device, name, ch[0]);
-            //                }
-            break;}
-
-            default: {
-            //            switch(*ch) {
-            //                case space: {
-            //                    switch(state) {
-            //                        case attr:
-            //                        case val: { if (!name.isEmpty()) elem -> addAttr(name, value); state = attr; break; } // proceed attrs without value
-            //                        case tag: {
-            //                            if (last != close_tag_predicate) {
-            //                                elem = elem -> appendTag(name);
-            //                                state = attr;
-            //                            }
-            //                        break;}
-            //                        default: /*continue*/; // else skip spaces
-            //                    }
-            //                break;}
-
-            //                case attr_rel: state = val; break;
-
-            //                case close_tag_predicate: {
-            //                    last = *ch;
-            //                    switch (state) {
-            //                        case tag: is_closed = true; break;
-            //                        case attr: state = tag;
-            //                        default: ;
-            //                    }
-            //                break; }
-
-            //                case close_tag: {
+            case tag_closing: {
+                switch(*pdata) {
+                    case close_tag: {
             //                    if (!(charset_finded || using_default_charset))
             //                        checkCharset(elem);
 
@@ -205,24 +147,92 @@ void Page::parse(const char * data) {
             //                        if (elem -> isSolo() || last == close_tag_predicate) elem = elem -> parentTag();
             //                    }
 
-            //                    state = content;
+                        state = content;
+                    break;}
+                }
+            break;}
 
-            //                    break;}
+            case service: {
+                switch(*pdata) {
+                    case close_tag: {
+                        if (*(pdata - 1) == service_end_token && *(pdata - 2) == service_end_token) {
+                            // extract cdata from str
+                            state = content;
+                        }
+                    break;}
 
-            //                default: {
-            //                    if (state == tag && last == service_token) {
-            //                        name.clear();
-            //                        state = (*ch == comment_post_token) ? comment : service;
-            //                        name.append((last = *ch));
-            //                    continue;}
+                    default:;
+            //                        if (*pdata > 0) name.append(*pdata);
+            //                        else toUtf8(charset, device, name, pdata[0]);
+                }
+            break;}
 
-            //                    name.append((last = *ch));
-            //                }
-            //            }
+            case comment: {
+                switch(*pdata) {
+
+                    case close_tag: {
+                    if (*(pdata - 1) == comment_token && *(pdata - 2) == comment_token) {
+                        if (!flags & skip_comment)
+                            elem -> appendComment(name);
+
+                        sname = 0;
+                        state = content;
+                    }
+
+
+            //                        if (last == comment_post_token) {
+            //                            if (flags & skip_comment) name.clear();
+            //                            else elem -> appendComment(name);
+            //                            state = content;
+            //                            break;
+            //                        }
+                    }
+                    default:;
+            //                        if ((last = *pdata) > 0) name.append(*pdata);
+            //                        else toUtf8(charset, device, name, pdata[0]);
+                }
+            break;}
+
+            default: {
+                switch(*pdata) {
+                    case space: {
+                        switch(state) {
+                            case attr:
+                            case val: {
+                                if (sname) elem -> addAttr(name, value);
+                                state = attr;
+                            break; } // proceed attrs without value
+
+                            case tag: {
+                                if (*(pdata - 1) != close_tag_predicate) {
+                                    elem = elem -> appendTag(name);
+                                    sname = 0;
+                                    state = attr;
+                                }
+                            break;}
+                            default: /*continue*/; // else skip spaces
+                        }
+                    break;}
+
+                    case attr_rel: {
+                        state = val;
+                        sval = pdata;
+                    break;}
+
+                    case close_tag_predicate: {
+                        switch (state) {
+                            case tag: {state = tag_closing; break;}
+                            case attr: state = tag;
+                            default: ;
+                        }
+                    break; }
+
+                    default:;
+                }
             }
         }
 
-        ch++;
+        pdata++;
     }
 }
 
