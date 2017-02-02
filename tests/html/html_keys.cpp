@@ -10,6 +10,7 @@ namespace Html {
     extern const QString tag_a                  = LSTR("a");
     extern const QString tag_script             = LSTR("script");
     extern const QString tag_head               = LSTR("head");
+    extern const QString tag_body               = LSTR("body");
     extern const QString tag_meta               = HTML_META_TAG;
     extern const QString tag_xml                = HTML_XML_TAG;
     extern const QString tag_link               = HTML_LINK_TAG;

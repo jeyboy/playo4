@@ -237,7 +237,7 @@ QString Page::parseCode(QIODevice * device, char * ch) {
 void Page::checkCharset(Tag * tag) {
     if (tag -> isMeta() || tag -> isXmlHead())
         proceedCharset(tag);
-    else if (tag -> isHead())
+    else if (tag -> isBody())
         using_default_charset = true;
 }
 

@@ -59,6 +59,7 @@ namespace Html {
         inline bool isLink() { return _name == tag_a; }
         inline bool isScript() { return _name == tag_script; }
         inline bool isHead() { return _name == tag_head; }
+        inline bool isBody() { return _name == tag_body; }
         inline bool isMeta() { return _name == tag_meta; }
         inline bool isXmlHead() { return _name == tag_xml; }
 
@@ -71,7 +72,7 @@ namespace Html {
                 bool is_radio = attrs.value(attr_type) == type_radio;
                 bool is_checkbox = attrs.value(attr_type) == type_checkbox;
 
-                return !is_radio && !is_checkbox || hasAttr(attr_checked);
+                return (!is_radio && !is_checkbox) || hasAttr(attr_checked);
             }
 
             return false;

@@ -22,6 +22,7 @@ namespace Html {
     extern const QString tag_a;
     extern const QString tag_script;
     extern const QString tag_head;
+    extern const QString tag_body;
     extern const QString tag_xml;
     extern const QString tag_meta;
     extern const QString tag_link;
