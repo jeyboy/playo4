@@ -41,6 +41,7 @@ namespace Html {
             close_tag = 62, // >
             space = 32,
             service_token = 33, // !
+            service_end_token = 135, // ]
             comment_post_token = 45, // -
             attr_rel = 61, // =
             content_del1 = 34, // "

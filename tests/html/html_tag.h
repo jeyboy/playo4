@@ -21,6 +21,7 @@ namespace Html {
         QHash<QString, QString> attrs;
         Set tags;
         Tag * parent;
+//        bool proceeded;
     protected:
         const static QHash<QString, bool> solo;
 

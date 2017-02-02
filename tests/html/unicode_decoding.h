@@ -28,7 +28,7 @@ protected:
       0x0451, 0x2116, 0x0454, 0x00BB, 0x0458, 0x0405, 0x0455, 0x0457
     };
 
-    static QHash<QString, QChar> html_entities;
+    static QHash<QString, int> html_entities;
 
     inline bool isUnicodeNonCharacter(uint ucs4) {
         // Unicode has a couple of "non-characters" that one can use internally,
