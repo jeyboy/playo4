@@ -35,7 +35,9 @@ namespace Html {
             fsf_ignore_empty
         };
 
-        inline Tag(QString tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> level() + 1 : 0), _name(tag), parent(parent_tag) {}
+        static Tag * stub() { return new Tag(tkn_any_elem); }
+
+        inline Tag(const QString & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> level() + 1 : 0), _name(tag), parent(parent_tag) {}
         inline ~Tag() { qDeleteAll(tags); }
 
         inline QString name() const { return _name; }
@@ -48,14 +50,16 @@ namespace Html {
 
         QString value(const QString & name = attr_default) const;
         QString text() const;
+
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QUrl serializeFormToUrl(const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QString toText() const;
-        QString toHtml() const;
+        QString toString() const;
 
         inline bool isSolo() { return solo.contains(name()); }
         static inline bool isSolo(const QString & tag_name) { return solo.contains(tag_name); }
 
+        inline bool isStub() { return _name == tkn_any_elem; }
         inline bool isLink() { return _name == tag_a; }
         inline bool isScript() { return _name == tag_script; }
         inline bool isHead() { return _name == tag_head; }
@@ -83,30 +87,30 @@ namespace Html {
         Tag * childTag(const QString & name_predicate, const int & pos = 0) const;
         inline int childrenCount() { return tags.size(); }
 
-        inline bool hasAttr(const QString & attr_name = attr_checked) const { return attrs.contains(attr_name); }
-        inline bool has(const char * predicate) const { return !find(predicate).isEmpty(); }
-        inline Set find(const Selector * selector) const { return tags.find(selector); }
-        Set find(const char * predicate) const;
-        Tag * findFirst(const char * predicate) const;
-        Tag * findFirst(const Selector * selector) const;
-
-        //TODO: rewrite
-//        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
-
-        void addAttr(QString & name, QString & val);
-        Tag * appendTag(QString & tname);
-        void appendText(QString & val);
-        void appendComment(QString & val);
-        void appendService(QString & val);
-
         //TODO: store classes in hash
         inline bool hasClass(const QString & class_name) {
             return attrs[attr_class].split(tkn_split, QString::SkipEmptyParts).contains(class_name);
         }
+        inline bool hasAttr(const QString & attr_name = attr_checked) const { return attrs.contains(attr_name); }
+        inline bool hasChilds(const char * predicate) const { return !find(predicate).isEmpty(); }
+
+        inline Set find(const Selector * selector) const { return tags.find(selector); }
+        Set find(const char * predicate) const;
+        Set & backwardFind(Selector * selector, Set & set);
+        Tag * findFirst(const char * predicate) const;
+        Tag * findFirst(const Selector * selector) const;
 
         bool validTo(const Selector * selector);
-        Set & backwardFind(Selector * selector, Set & set);
-        QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
+
+        //TODO: rewrite
+//        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
+//        QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
+
+        inline void addAttr(const QString & name, const QString & val) { attrs.insert(name, val); }
+        Tag * appendTag(const QString & tname);
+        void appendText(const QString & val);
+        void appendComment(const QString & val);
+        void appendService(const QString & val);
 
         friend QDebug operator<< (QDebug debug, const Tag & c) {
             QString attrStr;

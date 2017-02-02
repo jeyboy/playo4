@@ -13,10 +13,26 @@ class QDebug;
 
 namespace Html {
     class HTMLSHARED_EXPORT Page : public UnicodeDecoding {
-        enum Flags { none = 0, skip_text = 1, skip_comment = 2, skip_service = 4 };
+        enum StateFlags {
+            sf_none = 0,
+            sf_html = 1,
+            sf_xml = 2,
+            sf_use_doc_charset = 4,
+            sf_use_default_charset = 8,
+            sf_use_user_charset = 16
+        };
+        enum ParseFlags { pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2 };
 
         enum PState {
-            content = 1, tag = 2, attr = 4, /*in_attr = 8,*/ val = 16, in_val = 32, comment = 64, service = 128, attr_val = attr | val
+            content = 1,
+            tag = 2,
+            attr = 4,
+            /*in_attr = 8,*/
+            val = 16,
+            in_val = 32,
+            comment = 64,
+            service = 128,
+            attr_val = attr | val
         };
 
         enum PToken {
@@ -35,39 +51,38 @@ namespace Html {
             code_end = 59 // ;
         };
 
-        void parse(QIODevice * device);
-        QString parseCode(QIODevice * device, char * ch);
+        void parse(const char * data);
+        QString parseCode(char * ch);
 
         void checkCharset(Tag * tag);
         void proceedCharset(Tag * tag);
 
         Tag * root;
-        Flags flags;
+        ParseFlags pflags;
+        StateFlags sflags;
         CharsetType charset;
-        bool charset_finded, using_default_charset; // use using_default_charset for determination of rule - finded charset or not
-        QString text;
-
+//        bool charset_finded, using_default_charset; // use using_default_charset for determination of rule - finded charset or not
     public:
-        Page(QIODevice * device, const CharsetType & doc_charset = charset_utf8, const Flags & parse_flags = skip_comment);
-        Page(const QString & str, const CharsetType & doc_charset = charset_utf8, const Flags & parse_flags = skip_comment);
+        Page(QIODevice * device, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
+        Page(const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
+        Page(const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
 
         inline ~Page() { delete root; }
 
-        bool isXml();
-
         inline CharsetType charsetType() const { return charset; }
 
+        inline bool isXml() { return sflags & sf_xml; }
+        inline bool isHtml() { return sflags & sf_html; }
+
         //FIXME: output of tags without close pair
-        inline QString toHtml() { return root -> toHtml(); }
+        inline QString toString() { return root -> toString(); }
 
         inline bool has(const char * predicate) const { return root -> has(predicate); }
-        inline bool hasStr(const QString & str) { return text.contains(str, Qt::CaseInsensitive); }
+//        inline bool hasStr(const QString & str) { return text.contains(str, Qt::CaseInsensitive); }
 
-        Set find(const Selector * selector, bool findFirst = false) const;
-        Set find(const char * predicate) const;
         Tag * findFirst(const char * predicate) const;
-
-//        void dump();
+        Set find(const char * predicate) const;
+        Set find(const Selector * selector, const bool & findFirst = false) const;
 
         void output();
     };

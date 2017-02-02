@@ -19,7 +19,6 @@ namespace Html {
     extern const QString tkn_any_elem           = LSTR("*");
     extern const QString tkn_text_block         = LSTR("text");
     extern const QString tkn_comment_block      = LSTR("comment");
-    extern const QString tkn_service_block      = LSTR("service");
 
     extern const QString tkn_charset            = LSTR("charset");
     extern const QString tkn_encoding           = LSTR("encoding");

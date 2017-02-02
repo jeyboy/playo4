@@ -127,10 +127,8 @@ QString Tag::toText() const {
 
         return result;
     }
-//                    const Tag * text = (_name == tkn_text_block ? this : childTag(tkn_text_block));
-//                    return text ? text -> attrs.value(tkn_text_block) : QString();
 }
-QString Tag::toHtml() const {
+QString Tag::toString() const {
     if (_name == tkn_text_block)
         return attrs.value(tkn_text_block);
     else {
@@ -142,7 +140,7 @@ QString Tag::toHtml() const {
         result = result % '>';
 
         for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
-            result += (*tag) -> toHtml();
+            result += (*tag) -> toString();
 
         return solo.contains(_name) && tags.isEmpty() ? result : QString(result % LSTR("</") % _name % '>');
     }
@@ -175,36 +173,23 @@ Tag * Tag::findFirst(const Selector * selector) const {
 //    return tags.findLinks(selector, links);
 //}
 
-
-void Tag::addAttr(QString & name, QString & val) {
-    attrs.insert(name, val);
-    name.clear();
-    val.clear();
-}
-Tag * Tag::appendTag(QString & tname) {
-    Tag * newTag = new Tag(tname, this); tname.clear();
+Tag * Tag::appendTag(const QString & tname) {
+    Tag * newTag = new Tag(tname, this);
     tags.append(newTag);
     return newTag;
 }
-void Tag::appendText(QString & val) {
-    QString tnm(tkn_text_block);
-    Tag * newTag = appendTag(tnm);
-    QString nm(tkn_text_block);
-    newTag -> addAttr(nm, val); val.clear();
+void Tag::appendText(const QString & val) {
+    Tag * newTag = appendTag(tkn_text_block);
+    newTag -> addAttr(tkn_text_block, val);
 }
-void Tag::appendComment(QString & val) {
-    QString tnm(tkn_comment_block);
-    Tag * newTag = appendTag(tnm);
-    QString nm(tkn_comment_block);
-    val = val.mid(2, val.length() - 4);
-    newTag -> addAttr(nm, val); val.clear();
+void Tag::appendComment(const QString & val) {
+    Tag * newTag = appendTag(tkn_comment_block);
+    newTag -> addAttr(tkn_comment_block, val);
 }
 
-void Tag::appendService(QString & val) {
-    QString tnm(tkn_service_block);
-    Tag * newTag = appendTag(tnm);
-    QString nm(tkn_service_block);
-    newTag -> addAttr(nm, val); val.clear();
+void Tag::appendService(const QString & val) {
+    Tag * newTag = appendTag(tkn_service_block);
+    newTag -> addAttr(tkn_service_block, val);
 }
 
 
@@ -288,17 +273,17 @@ Set & Tag::backwardFind(Selector * selector, Set & set) {
     return set;
 }
 
-QHash<QString, QString> & Tag::backwardFindLinks(Selector * selector, QHash<QString, QString> & links) {
-    if (!parent) return links;
+//QHash<QString, QString> & Tag::backwardFindLinks(Selector * selector, QHash<QString, QString> & links) {
+//    if (!parent) return links;
 
-    if (parent -> validTo(selector))
-        selector = selector -> next;
+//    if (parent -> validTo(selector))
+//        selector = selector -> next;
 
-    if (!selector) {
-        if (parent -> isLink())
-            links.insert(parent -> link(), parent -> text());
-    } else if (selector -> isBackward() && parent -> parent)
-        parent -> backwardFindLinks(selector, links);
+//    if (!selector) {
+//        if (parent -> isLink())
+//            links.insert(parent -> link(), parent -> text());
+//    } else if (selector -> isBackward() && parent -> parent)
+//        parent -> backwardFindLinks(selector, links);
 
-    return links;
-}
+//    return links;
+//}

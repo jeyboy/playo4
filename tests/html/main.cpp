@@ -23,6 +23,9 @@ public:
     HtmlTest();
 
 private Q_SLOTS:
+    void measurementParsing();
+    void measurementSelection();
+
     void testHtmlDoctype();
     void testXmlDoctype();
 
@@ -60,6 +63,20 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {}
+
+void HtmlTest::measurementParsing() {
+    QBENCHMARK {
+        Page(loadData(TEST_FOURSHARED_PATH));
+    }
+}
+
+void HtmlTest::measurementSelection() {
+    Page page(loadData(TEST_FOURSHARED_PATH));
+
+    QBENCHMARK {
+        page.find(".row");
+    }
+}
 
 void HtmlTest::testHtmlDoctype() {
     Page page(loadData(TEST_ELEM_ATTRS_PATH));
