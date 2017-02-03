@@ -8,6 +8,9 @@
 #include "html_tag.h"
 #include "html_selector.h"
 
+#define NAME_BUFF QByteArray(sname, pdata - sname)
+#define VAL_BUFF QByteArray(sval, pdata - sval)
+
 class QIODevice;
 class QDebug;
 
@@ -17,9 +20,10 @@ namespace Html {
             sf_none = 0,
             sf_html = 1,
             sf_xml = 2,
-            sf_use_doc_charset = 4,
-            sf_use_default_charset = 8,
-            sf_use_user_charset = 16
+            //...
+            sf_use_doc_charset = 32,
+            sf_use_default_charset = 64,
+            sf_use_user_charset = 128
         };
         enum ParseFlags { pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2 };
 
@@ -33,6 +37,7 @@ namespace Html {
             comment = 64,
             service = 128,
             tag_closing = 256,
+            tag_exit = 512,
             attr_val = attr | val
         };
 
@@ -77,10 +82,22 @@ namespace Html {
         inline bool isXml() { return sflags & sf_xml; }
         inline bool isHtml() { return sflags & sf_html; }
 
+
+//        bool Page::isXml() {
+//            Tag * tag = root -> children().first();
+
+//            if (!tag) return false;
+
+//            QString name = tag -> name();
+//            return name.contains(tag_xml, Qt::CaseInsensitive);
+//        }
+
+
+
         //FIXME: output of tags without close pair
         inline QString toString() { return root -> toString(); }
 
-        inline bool has(const char * predicate) const { return root -> has(predicate); }
+        inline bool hasChilds(const char * predicate) const { return root -> hasChilds(predicate); }
 //        inline bool hasStr(const QString & str) { return text.contains(str, Qt::CaseInsensitive); }
 
         Tag * findFirst(const char * predicate) const;

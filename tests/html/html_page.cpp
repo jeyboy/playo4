@@ -5,30 +5,21 @@
 using namespace Html;
 
 Page::Page(QIODevice * device, const CharsetType & doc_charset, const ParseFlags & parse_flags)
-    : flags(parse_flags), charset(doc_charset), charset_finded(false), using_default_charset(false)
+    : pflags(parse_flags), charset(doc_charset), sflags(sf_none)
 {
     QByteArray data = device -> readAll();
     parse(data.constData());
 }
 Page::Page(const QString & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
-    : flags(parse_flags), charset(doc_charset), charset_finded(false), using_default_charset(false)
+    : pflags(parse_flags), charset(doc_charset), sflags(sf_none)
 {
     parse(QSTR_TO_CHAR(str));
 }
 
-Page::Page(const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = skip_comment)
-    : flags(parse_flags), charset(doc_charset), charset_finded(false), using_default_charset(false)
+Page::Page(const char * str_data, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+    : pflags(parse_flags), charset(doc_charset), sflags(sf_none)
 {
-    parse(str_data)
-}
-
-bool Page::isXml() {
-    Tag * tag = root -> children().first();
-
-    if (!tag) return false;
-
-    QString name = tag -> name();
-    return name.contains(tag_xml, Qt::CaseInsensitive);
+    parse(str_data);
 }
 
 Set Page::find(const Selector * selector, const bool & findFirst) const {
@@ -45,11 +36,9 @@ Tag * Page::findFirst(const char * predicate) const {
 }
 
 void Page::parse(const char * data) {
-    Tag * elem = (root = new Tag(tkn_any_elem));
+    Tag * elem = (root = new Tag(HTML_ANY_TAG));
     PState state = content;
-
-    char *pdata = data, *sname = 0, *sval = 0;
-//    QString name, value; name.reserve(1024); value.reserve(1024);
+    const char *pdata = data, *sname = 0, *sval = 0;
 
     while(pdata) {
         if (*pdata > 0 && *pdata < 32) continue; // skip not printable trash
@@ -67,9 +56,8 @@ void Page::parse(const char * data) {
 //                        }
 
                         if (sname) {
-                            if (!(flags & skip_text))
-                                elem -> appendText(/*QString()*/);
-
+                            if (!(pflags & pf_skip_text))
+                                elem -> appendText(NAME_BUFF);
                             sname = 0;
                         }
 
@@ -106,7 +94,7 @@ void Page::parse(const char * data) {
                             break;}
                             case in_val: {
                                 if (*sval == *pdata) {
-                                    elem -> addAttr(name, value);
+                                    elem -> addAttr(NAME_BUFF, VAL_BUFF);
                                     sname = 0; sval = 0;
                                     state = attr;
                                 }
@@ -122,30 +110,20 @@ void Page::parse(const char * data) {
                 }
             break;}
 
-            case tag_closing: {
+            case tag_exit: {
                 switch(*pdata) {
                     case close_tag: {
-            //                    if (!(charset_finded || using_default_charset))
-            //                        checkCharset(elem);
+                        if (sflags < sf_use_doc_charset)
+                            checkCharset(elem);
 
-            //                    if (!name.isEmpty()) {
-            //                        if (state & attr_val) {
-            //                            if (name[0] != '?') // ignore ?>
-            //                                elem -> addAttr(name, value); // proceed attrs without value // if (isSolo(elem)) elem = elem -> parentTag();
-
-            //                            if ((elem) -> isSolo()) elem = elem -> parentTag();
-            //                        } else {
-            //                            if (is_closed) {
-            //                                if (elem -> name() == name) elem = elem -> parentTag();// add ignoring of the close tag for solo tags
-            //                                name.clear(); is_closed = false;
-            //                            } else {
-            //                                if (last != close_tag_predicate && !Tag::isSolo(name)) elem = elem -> appendTag(name);
-            //                                else elem -> appendTag(name);
-            //                            }
-            //                        }
-            //                    } else {
-            //                        if (elem -> isSolo() || last == close_tag_predicate) elem = elem -> parentTag();
-            //                    }
+                        if (sname) {
+                            if (elem -> name() == NAME_BUFF)
+                                elem = elem -> parentTag();
+                            sname = 0;
+                        } else {
+                            if (elem -> isSolo() || *(pdata - 1) == close_tag_predicate)
+                                elem = elem -> parentTag();
+                        }
 
                         state = content;
                     break;}
@@ -169,23 +147,14 @@ void Page::parse(const char * data) {
 
             case comment: {
                 switch(*pdata) {
-
                     case close_tag: {
-                    if (*(pdata - 1) == comment_token && *(pdata - 2) == comment_token) {
-                        if (!flags & skip_comment)
-                            elem -> appendComment(name);
+                        if (*(pdata - 1) == comment_token && *(pdata - 2) == comment_token) {
+                            if (!pflags & pf_skip_comment)
+                                elem -> appendComment(NAME_BUFF);
 
-                        sname = 0;
-                        state = content;
-                    }
-
-
-            //                        if (last == comment_post_token) {
-            //                            if (flags & skip_comment) name.clear();
-            //                            else elem -> appendComment(name);
-            //                            state = content;
-            //                            break;
-            //                        }
+                            sname = 0;
+                            state = content;
+                        }
                     }
                     default:;
             //                        if ((last = *pdata) > 0) name.append(*pdata);
@@ -199,18 +168,18 @@ void Page::parse(const char * data) {
                         switch(state) {
                             case attr:
                             case val: {
-                                if (sname) elem -> addAttr(name, value);
+                                if (sname) elem -> addAttr(NAME_BUFF, VAL_BUFF);
                                 state = attr;
                             break; } // proceed attrs without value
 
                             case tag: {
                                 if (*(pdata - 1) != close_tag_predicate) {
-                                    elem = elem -> appendTag(name);
+                                    elem = elem -> appendTag(NAME_BUFF);
                                     sname = 0;
                                     state = attr;
                                 }
                             break;}
-                            default: /*continue*/; // else skip spaces
+                            default:;
                         }
                     break;}
 
@@ -219,14 +188,31 @@ void Page::parse(const char * data) {
                         sval = pdata;
                     break;}
 
+                    case close_tag: {
+                        QByteArray name = NAME_BUFF;
+                        if (Tag::isSolo(name))
+                            elem -> appendTag(name);
+                        else
+                            elem = elem -> appendTag(name);
+                        sname = 0; sval = 0;
+                    break;}
+
                     case close_tag_predicate: {
                         switch (state) {
-                            case tag: {state = tag_closing; break;}
+                            case attr_val: {
+                                if (*sname != '?') // ignore ?>
+                                    elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
+
+                                sname = 0; sval = 0;
+
+                                if (elem -> isSolo())
+                                    elem = elem -> parentTag();
+                            }
+                            case tag: {state = tag_exit; break;}
                             case attr: state = tag;
                             default: ;
                         }
                     break; }
-
                     default:;
                 }
             }
@@ -251,7 +237,9 @@ QString Page::parseCode(char * ch) {
         }
 
         ch++;
-    } else return code.prepend('&');
+    }
+
+    return code.prepend('&');
 }
 
 void Page::checkCharset(Tag * tag) {

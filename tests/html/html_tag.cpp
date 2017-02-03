@@ -7,7 +7,7 @@
 
 using namespace Html;
 
-const QHash<QString, bool> Tag::solo = QHash<QString, bool>{
+const QHash<QByteArray, bool> Tag::solo = QHash<QByteArray, bool>{
     {HTML_BR_TAG, true}, {HTML_META_TAG, true}, {HTML_LINK_TAG, true}, {HTML_IMG_TAG, true},
     {HTML_DOCTYPE_TAG, true}, {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}, {HTML_BASE_TAG, true}
 };
@@ -173,21 +173,21 @@ Tag * Tag::findFirst(const Selector * selector) const {
 //    return tags.findLinks(selector, links);
 //}
 
-Tag * Tag::appendTag(const QString & tname) {
+Tag * Tag::appendTag(const QByteArray & tname) {
     Tag * newTag = new Tag(tname, this);
     tags.append(newTag);
     return newTag;
 }
-void Tag::appendText(const QString & val) {
+void Tag::appendText(const QByteArray & val) {
     Tag * newTag = appendTag(tkn_text_block);
     newTag -> addAttr(tkn_text_block, val);
 }
-void Tag::appendComment(const QString & val) {
+void Tag::appendComment(const QByteArray & val) {
     Tag * newTag = appendTag(tkn_comment_block);
     newTag -> addAttr(tkn_comment_block, val);
 }
 
-void Tag::appendService(const QString & val) {
+void Tag::appendService(const QByteArray & val) {
     Tag * newTag = appendTag(tkn_service_block);
     newTag -> addAttr(tkn_service_block, val);
 }

@@ -17,13 +17,13 @@ namespace Html {
 
     class HTMLSHARED_EXPORT Tag {
         int _level;
-        QString _name;
-        QHash<QString, QString> attrs;
+        QByteArray _name;
+        QHash<QByteArray, QByteArray> attrs;
         Set tags;
         Tag * parent;
 //        bool proceeded;
     protected:
-        const static QHash<QString, bool> solo;
+        const static QHash<QByteArray, bool> solo;
 
         QString selectValue() const;
         QString radioValue() const;
@@ -36,14 +36,14 @@ namespace Html {
             fsf_ignore_empty
         };
 
-        static Tag * stub() { return new Tag(tkn_any_elem); }
+        static Tag * stub() { return new Tag(HTML_ANY_TAG); }
 
-        inline Tag(const QString & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> level() + 1 : 0), _name(tag), parent(parent_tag) {}
+        inline Tag(const QByteArray & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> level() + 1 : 0), _name(tag), parent(parent_tag) {}
         inline ~Tag() { qDeleteAll(tags); }
 
-        inline QString name() const { return _name; }
         inline int level() const { return _level; }
-        inline QHash<QString, QString> attributes() const { return attrs; }
+        inline QByteArray name() const { return _name; }
+        inline QHash<QByteArray, QByteArray> attributes() const { return attrs; }
         inline Set children() const { return tags; }
         inline QString data(const QString & name) const { return value(LSTR("data-") % name); }
         inline QString src() const { return value(attr_src); }
@@ -58,7 +58,7 @@ namespace Html {
         QString toString() const;
 
         inline bool isSolo() { return solo.contains(name()); }
-        static inline bool isSolo(const QString & tag_name) { return solo.contains(tag_name); }
+        static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tag_name); }
 
         inline bool isStub() { return _name == tkn_any_elem; }
         inline bool isLink() { return _name == tag_a; }
@@ -89,10 +89,10 @@ namespace Html {
         inline int childrenCount() { return tags.size(); }
 
         //TODO: store classes in hash
-        inline bool hasClass(const QString & class_name) {
-            return attrs[attr_class].split(tkn_split, QString::SkipEmptyParts).contains(class_name);
+        inline bool hasClass(const QByteArray & class_name) {
+            return attrs[attr_class].split(tkn_split).contains(class_name);
         }
-        inline bool hasAttr(const QString & attr_name = attr_checked) const { return attrs.contains(attr_name); }
+        inline bool hasAttr(const QByteArray & attr_name = attr_checked) const { return attrs.contains(attr_name); }
         inline bool hasChilds(const char * predicate) const { return !find(predicate).isEmpty(); }
 
         inline Set find(const Selector * selector) const { return tags.find(selector); }
@@ -107,23 +107,23 @@ namespace Html {
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
 //        QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
 
-        inline void addAttr(const QString & name, const QString & val) { attrs.insert(name, val); }
-        Tag * appendTag(const QString & tname);
-        void appendText(const QString & val);
-        void appendComment(const QString & val);
-        void appendService(const QString & val);
+        inline void addAttr(const QByteArray & name, const QByteArray & val) { attrs.insert(name, val); }
+        Tag * appendTag(const QByteArray & tname);
+        void appendText(const QByteArray & val);
+        void appendComment(const QByteArray & val);
+        void appendService(const QByteArray & val);
 
         friend QDebug operator<< (QDebug debug, const Tag & c) {
             QString attrStr;
-            QHash<QString, QString> vals = c.attributes();
+            QHash<QByteArray, QByteArray> vals = c.attributes();
 
-            for (QHash<QString, QString>::iterator it = vals.begin(); it != vals.end(); ++it)
+            for (QHash<QByteArray, QByteArray>::iterator it = vals.begin(); it != vals.end(); ++it)
                 attrStr.append("(" + it.key() + " : " + (it.value().size() > DEBUG_LIMIT_OUTPUT ? (it.value().mid(0, DEBUG_LIMIT_OUTPUT / 2) % "..." % it.value().mid(it.value().size() - DEBUG_LIMIT_OUTPUT / 2, DEBUG_LIMIT_OUTPUT / 2)) : it.value()) + ")");
 
             if (attrStr.isEmpty())
-                qDebug("%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData());
+                qDebug("%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().data());
             else
-                qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().toUtf8().constData(), " ||| [", attrStr.toUtf8().constData(), "]");
+                qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().data(), " ||| [", attrStr.toUtf8().constData(), "]");
 
             foreach(Tag * it, c.children())
                 qDebug() << (*it);

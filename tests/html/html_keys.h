@@ -2,56 +2,59 @@
 #define HTML_PARSER_KEYS
 
 #include "defines.h"
+//#include <qbytearray.h>
 
-#define HTML_BR_TAG LSTR("br")
-#define HTML_META_TAG LSTR("meta")
-#define HTML_LINK_TAG LSTR("link")
-#define HTML_IMG_TAG LSTR("img")
-#define HTML_DOCTYPE_TAG LSTR("!DOCTYPE")
-#define HTML_XML_TAG LSTR("?xml")
-#define HTML_INPUT_TAG LSTR("input")
-#define HTML_BASE_TAG LSTR("base")
+#define HTML_ANY_TAG QByteArray("*")
+
+#define HTML_BR_TAG QByteArray("br")
+#define HTML_META_TAG QByteArray("meta")
+#define HTML_LINK_TAG QByteArray("link")
+#define HTML_IMG_TAG QByteArray("img")
+#define HTML_DOCTYPE_TAG QByteArray("!DOCTYPE")
+#define HTML_XML_TAG QByteArray("?xml")
+#define HTML_INPUT_TAG QByteArray("input")
+#define HTML_BASE_TAG QByteArray("base")
 
 namespace Html {
-    extern const QString tag_doctype;
-    extern const QString tag_input;
-    extern const QString tag_select;
-    extern const QString tag_textarea;
-    extern const QString tag_img;
-    extern const QString tag_br;
-    extern const QString tag_a;
-    extern const QString tag_script;
-    extern const QString tag_head;
-    extern const QString tag_body;
-    extern const QString tag_xml;
-    extern const QString tag_meta;
-    extern const QString tag_link;
+    extern const QByteArray tag_doctype;
+    extern const QByteArray tag_input;
+    extern const QByteArray tag_select;
+    extern const QByteArray tag_textarea;
+    extern const QByteArray tag_img;
+    extern const QByteArray tag_br;
+    extern const QByteArray tag_a;
+    extern const QByteArray tag_script;
+    extern const QByteArray tag_head;
+    extern const QByteArray tag_body;
+    extern const QByteArray tag_xml;
+    extern const QByteArray tag_meta;
+    extern const QByteArray tag_link;
 
-    extern const QString tkn_split;
-    extern const QString tkn_any_elem;
-    extern const QString tkn_text_block;
-    extern const QString tkn_comment_block;
+    extern const char tkn_split;
+    extern const QByteArray tkn_any_elem;
+    extern const QByteArray tkn_text_block;
+    extern const QByteArray tkn_comment_block;
 
-    extern const QString tkn_charset;
-    extern const QString tkn_encoding;
-    extern const QString tkn_charset_attr;
-    extern const QString tkn_http_equiv;
-    extern const QString tkn_content_type;
-    extern const QString tkn_content;
+    extern const QByteArray tkn_charset;
+    extern const QByteArray tkn_encoding;
+    extern const QByteArray tkn_charset_attr;
+    extern const QByteArray tkn_http_equiv;
+    extern const QByteArray tkn_content_type;
+    extern const QByteArray tkn_content;
 
-    extern const QString attr_name;
-    extern const QString attr_action;
-    extern const QString attr_href;
-    extern const QString attr_src;
-    extern const QString attr_id;
-    extern const QString attr_class;
-    extern const QString attr_type;
-    extern const QString attr_default;
-    extern const QString attr_checked;
-    extern const QString attr_disabled;
+    extern const QByteArray attr_name;
+    extern const QByteArray attr_action;
+    extern const QByteArray attr_href;
+    extern const QByteArray attr_src;
+    extern const QByteArray attr_id;
+    extern const QByteArray attr_class;
+    extern const QByteArray attr_type;
+    extern const QByteArray attr_default;
+    extern const QByteArray attr_checked;
+    extern const QByteArray attr_disabled;
 
-    extern const QString type_radio;
-    extern const QString type_checkbox;
+    extern const QByteArray type_radio;
+    extern const QByteArray type_checkbox;
 }
 
 #endif // HTML_PARSER_KEYS
