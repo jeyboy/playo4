@@ -8,7 +8,7 @@
 #include "html_tag.h"
 #include "html_selector.h"
 
-#define NAME_BUFF QByteArray(sname, pdata - sname)
+#define NAME_BUFF QByteArray(sname, (ename ? ename : pdata) - sname)
 #define NAME_BUFF_VALID sname && (pdata - sname) > 1
 #define VAL_BUFF (sval == 0 ? QByteArray() : QByteArray(sval, pdata - sval))
 #define VAL_BUFF_VALID sval && (pdata - sval) > 1
@@ -32,13 +32,14 @@ namespace Html {
             content = 1,
             tag = 2,
             attr = 4,
-            /*in_attr = 8,*/
+            in_attr = 8,
             val = 16,
             in_val = 32,
             comment = 64,
-            service = 128,
-            tag_closing = 256,
-            tag_exit = 512,
+//            javascript = 128,
+            raw_data = 256,
+            tag_closing = 512,
+            tag_exit = 1024,
             attr_val = attr | val
         };
 
@@ -49,8 +50,8 @@ namespace Html {
             close_tag = 62, // >
             space = 32,
             service_token = 33, // !
-            service_start_token = 91, // [
-            service_end_token = 93, // ]
+            raw_data_token = 91, // [
+            raw_data_end_token = 93, // ]
             comment_token = 45, // -
             attr_rel = 61, // =
             content_del1 = 34, // "

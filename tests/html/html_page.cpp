@@ -38,10 +38,10 @@ Tag * Page::findFirst(const char * predicate) const {
 void Page::parse(const char * data) {
     Tag * elem = (root = new Tag(HTML_ANY_TAG));
     PState state = content;
-    const char *pdata = data, *sname = 0, *sval = 0;
+    const char *pdata = data, *sname = 0, *sval = 0, *ename = 0;
 
     while(pdata) {
-        if (*pdata > 0 && *pdata < 32) { // skip not printable trash
+        if (*pdata < 32 && *pdata > 0) { // skip not printable trash
             pdata++;
             continue;
         }
@@ -62,16 +62,54 @@ void Page::parse(const char * data) {
                         if (*(pdata + 1) == service_token) {
                             char chr = *(pdata + 2);
 
-                            if (chr == service_start_token)
-                                state = service;
+                            if (chr == raw_data_token)
+                                state = raw_data;
                             else if (chr == comment_token)
                                 state = comment;
                         }
                     break;}
+                }
             break;}
 
-            case in_val:
+
+            case attr: {
+                switch(*pdata) {
+                    case attr_rel: {
+                        state = val;
+                        ename = pdata;
+                        sval = pdata + 1;
+                        continue;
+                    break;}
+                }
+            }
+            case in_attr: {
+                switch(*pdata) {
+                    case content_del1:
+                    case content_del2: {
+                        switch(state) {
+                            case val: { state = in_attr; break;}
+                            case in_val: {
+                                if (*sname == *pdata)
+                                    state = val;
+                            break;}
+                            default:;
+                        }
+                    break;}
+                }
+            break;}
+
+
             case val: {
+                switch(*pdata) {
+                    case space: {
+                        elem -> addAttr(NAME_BUFF, VAL_BUFF);
+                        sname = 0; sval = 0; ename = 0;
+                        state = attr;
+                        continue;
+                    break;}
+                }
+            }
+            case in_val: {
                 switch(*pdata) {
                     case content_del1:
                     case content_del2: {
@@ -82,7 +120,7 @@ void Page::parse(const char * data) {
                             case in_val: {
                                 if (*sval == *pdata) {
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF);
-                                    sname = 0; sval = 0;
+                                    sname = 0; sval = 0; ename = 0;
                                     state = attr;
                                 }
                             break;}
@@ -112,10 +150,10 @@ void Page::parse(const char * data) {
                 }
             break;}
 
-            case service: {
+            case raw_data: {
                 switch(*pdata) {
                     case close_tag: {
-                        if (*(pdata - 1) == service_end_token && *(pdata - 2) == service_end_token) {
+                        if (*(pdata - 1) == raw_data_end_token && *(pdata - 2) == raw_data_end_token) {
                             // extract cdata from str
                             state = content;
                         }
@@ -153,7 +191,7 @@ void Page::parse(const char * data) {
                                 if (NAME_BUFF_VALID)
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF);
 
-                                sval = 0; sname = 0;
+                                sval = 0; sname = 0; ename = 0;
                                 state = attr;
                             break; }
 
@@ -168,22 +206,24 @@ void Page::parse(const char * data) {
 
                     case attr_rel: {
                         state = val;
-                        sval = pdata;
+                        ename = pdata;
+                        sval = pdata + 1;
                     break;}
 
                     case close_tag: {
-                        switch(*pdata) {
+                        switch(state) {
                             case attr:
                             case val: {
-                                if (*sname != question_token) // ignore ?>
+                                if (*(pdata - 1) != question_token) // ignore ?>
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF);
 
-                                sname = 0; sval = 0;
+                                sname = 0; sval = 0; ename = 0;
                             break;}
 
                             case tag: {
                                 elem = elem -> appendTag(NAME_BUFF);
                             break;}
+                            default:;
                         }
 
                         if (elem -> isSolo())
@@ -195,10 +235,10 @@ void Page::parse(const char * data) {
                     case close_tag_predicate: {
                         switch (state) {
                             case attr_val: {
-                                if (*sname != question_token) // ignore ?>
-                                    elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
+//                                if (*(pdata - 1) != question_token) // ignore ?>
+                                elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
 
-                                sname = 0; sval = 0;
+                                sname = 0; sval = 0; ename = 0;
                             }
                             case tag: {state = tag_exit; break;}
                             case attr: state = tag;
