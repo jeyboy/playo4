@@ -45,11 +45,11 @@ namespace Html {
         inline QByteArray name() const { return _name; }
         inline QHash<QByteArray, QByteArray> attributes() const { return attrs; }
         inline Set children() const { return tags; }
-        inline QString data(const QString & name) const { return value(LSTR("data-") % name); }
+        inline QString data(const QByteArray & name) const { return value("data-" % name); }
         inline QString src() const { return value(attr_src); }
         inline QString link() const { return attrs.value(attr_href); }
 
-        QString value(const QString & name = attr_default) const;
+        QString value(const QByteArray & name = attr_default) const;
         QString text() const;
 
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
@@ -85,7 +85,7 @@ namespace Html {
 
         inline Tag * parentTag() { return parent; }
         inline Tag * childTag(int pos) const { return tags[pos]; }
-        Tag * childTag(const QString & name_predicate, const int & pos = 0) const;
+        Tag * childTag(const QByteArray & name_predicate, const int & pos = 0) const;
         inline int childrenCount() { return tags.size(); }
 
         //TODO: store classes in hash
@@ -111,7 +111,6 @@ namespace Html {
         Tag * appendTag(const QByteArray & tname);
         void appendText(const QByteArray & val);
         void appendComment(const QByteArray & val);
-        void appendService(const QByteArray & val);
 
         friend QDebug operator<< (QDebug debug, const Tag & c) {
             QString attrStr;

@@ -21,8 +21,7 @@ namespace Html {
             sf_html = 1,
             sf_xml = 2,
             //...
-            sf_use_doc_charset = 32,
-            sf_use_default_charset = 64,
+            sf_use_doc_charset = 64,
             sf_use_user_charset = 128
         };
         enum ParseFlags { pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2 };

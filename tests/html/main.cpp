@@ -175,7 +175,7 @@ void HtmlTest::testElementAttrsExtraction() {
     Tag * p_tag = page.findFirst("p");
 
     QVERIFY2(
-        p_tag && p_tag -> value(LSTR("title")) == LSTR("I'm a tooltip"),
+        p_tag && p_tag -> value("title") == LSTR("I'm a tooltip"),
         "Failure"
     );
 }

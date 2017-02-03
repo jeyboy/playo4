@@ -15,7 +15,7 @@ namespace Html {
     public:
         QString link();
         QString text();
-        QString value(const QString & name = attr_default);
+        QString value(const QByteArray & name = attr_default);
 
         inline Set find(const Selector * selector, bool findFirst = false) const {
             Set set;

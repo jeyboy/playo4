@@ -19,7 +19,7 @@ QString Tag::selectValue() const {
 QString Tag::radioValue() const { return hasAttr(attr_checked) ? attrs[attr_default] : QString(); }
 QString Tag::textareaValue() const { return text(); }
 
-QString Tag::value(const QString & name) const {
+QString Tag::value(const QByteArray & name) const {
     bool is_default_val = name == attr_default;
 
     if (is_default_val) {
@@ -134,7 +134,7 @@ QString Tag::toString() const {
     else {
         QString result = QString(_level * 2, ' ') % '<' % _name;
 
-        for(QHash<QString, QString>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
+        for(QHash<QByteArray, QByteArray>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
             result = result % ' ' % attr.key() % LSTR("=\"") % attr.value() % '"';
 
         result = result % '>';
@@ -146,7 +146,7 @@ QString Tag::toString() const {
     }
 }
 
-Tag * Tag::childTag(const QString & name_predicate, const int & pos) const {
+Tag * Tag::childTag(const QByteArray & name_predicate, const int & pos) const {
     Set::ConstIterator tag = tags.cbegin();
     for(int i = 0; tag != tags.cend(); tag++) {
         if ((*tag) -> name() == name_predicate)
@@ -187,70 +187,63 @@ void Tag::appendComment(const QByteArray & val) {
     newTag -> addAttr(tkn_comment_block, val);
 }
 
-void Tag::appendService(const QByteArray & val) {
-    Tag * newTag = appendTag(tkn_service_block);
-    newTag -> addAttr(tkn_service_block, val);
-}
-
-
-
 bool Tag::validTo(const Selector * selector) {
-    for(QHash<Selector::SState, QString>::ConstIterator it = selector -> _tokens.cbegin(); it != selector -> _tokens.cend(); it++) {
-        switch(it.key()) {
-            case Selector::tag: { if (!(it.value() == tkn_any_elem || _name == it.value())) return false; break; }
-            case Selector::attr: {
-                for(QHash<QString, QPair<char, QString> >::ConstIterator it = selector -> _attrs.cbegin(); it != selector -> _attrs.cend(); it++) {
-                    QString tag_value = it.key() == LSTR("text") ? text() : attrs.value(it.key());
-                    QString selector_value = it.value().second;
+//    for(QHash<Selector::SState, QString>::ConstIterator it = selector -> _tokens.cbegin(); it != selector -> _tokens.cend(); it++) {
+//        switch(it.key()) {
+//            case Selector::tag: { if (!(it.value() == tkn_any_elem || _name == it.value())) return false; break; }
+//            case Selector::attr: {
+//                for(QHash<QString, QPair<char, QString> >::ConstIterator it = selector -> _attrs.cbegin(); it != selector -> _attrs.cend(); it++) {
+//                    QString tag_value = it.key() == LSTR("text") ? text() : attrs.value(it.key());
+//                    QString selector_value = it.value().second;
 
-                    switch(it.value().first) {
-                        case Selector::attr_rel_eq: {
-                            if (!(attrs.contains(it.key()) && (selector_value == tkn_any_elem || tag_value == selector_value)))
-                                return false;
-                            break;}
-                        case Selector::attr_rel_begin: {
-                            if (!tag_value.startsWith(selector_value))
-                                return false;
-                            break;}
-                        case Selector::attr_rel_end: {
-                            if (!tag_value.endsWith(selector_value))
-                                return false;
-                            break;}
-                        case Selector::attr_rel_match: {
-                            if (tag_value.indexOf(selector_value) == -1)
-                                return false;
-                            break;}
-                        case Selector::attr_rel_not: {
-                            if (tag_value.indexOf(selector_value) != -1)
-                                return false;
-                            break;}
+//                    switch(it.value().first) {
+//                        case Selector::attr_rel_eq: {
+//                            if (!(attrs.contains(it.key()) && (selector_value == tkn_any_elem || tag_value == selector_value)))
+//                                return false;
+//                            break;}
+//                        case Selector::attr_rel_begin: {
+//                            if (!tag_value.startsWith(selector_value))
+//                                return false;
+//                            break;}
+//                        case Selector::attr_rel_end: {
+//                            if (!tag_value.endsWith(selector_value))
+//                                return false;
+//                            break;}
+//                        case Selector::attr_rel_match: {
+//                            if (tag_value.indexOf(selector_value) == -1)
+//                                return false;
+//                            break;}
+//                        case Selector::attr_rel_not: {
+//                            if (tag_value.indexOf(selector_value) != -1)
+//                                return false;
+//                            break;}
 
-                        default: qDebug() << "UNSUPPORTED PREDICATE " << it.value().first;
-                    };
-                }
-                break;
-            }
-            case Selector::id:  { if (attrs[attr_id] != it.value()) return false; break; }
-            case Selector::klass: { //TODO: optimisation needed
-                QStringList node_klasses = attrs[attr_class].split(tkn_split, QString::SkipEmptyParts);
-                if (node_klasses.isEmpty()) return false;
+//                        default: qDebug() << "UNSUPPORTED PREDICATE " << it.value().first;
+//                    };
+//                }
+//                break;
+//            }
+//            case Selector::id:  { if (attrs[attr_id] != it.value()) return false; break; }
+//            case Selector::klass: { //TODO: optimisation needed
+//                QStringList node_klasses = attrs[attr_class].split(tkn_split, QString::SkipEmptyParts);
+//                if (node_klasses.isEmpty()) return false;
 
-                for(QStringList::ConstIterator it = selector -> klasses.cbegin(); it != selector -> klasses.cend(); it++) {
-                    bool finded = false;
-                    for(QStringList::Iterator xit = node_klasses.begin(); xit != node_klasses.end(); xit++) // TODO: if list generated each time - remove finded classes for speed up of the proccess of search
-                        if ((finded = (*xit) == (*it))) break;
+//                for(QStringList::ConstIterator it = selector -> klasses.cbegin(); it != selector -> klasses.cend(); it++) {
+//                    bool finded = false;
+//                    for(QStringList::Iterator xit = node_klasses.begin(); xit != node_klasses.end(); xit++) // TODO: if list generated each time - remove finded classes for speed up of the proccess of search
+//                        if ((finded = (*xit) == (*it))) break;
 
-                    if (!finded) return false;
-                }
-                break;
-            }
-            case Selector::type: {
-                if (!((_name == tag_input || _name == tag_select) && attrs[attr_type] == it.value())) return false;
-                break;
-            }
-            default: ;
-        }
-    }
+//                    if (!finded) return false;
+//                }
+//                break;
+//            }
+//            case Selector::type: {
+//                if (!((_name == tag_input || _name == tag_select) && attrs[attr_type] == it.value())) return false;
+//                break;
+//            }
+//            default: ;
+//        }
+//    }
 
     return true;
 }

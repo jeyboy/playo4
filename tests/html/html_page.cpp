@@ -246,7 +246,7 @@ void Page::checkCharset(Tag * tag) {
     if (tag -> isMeta() || tag -> isXmlHead())
         proceedCharset(tag);
     else if (tag -> isBody())
-        using_default_charset = true;
+        sflags = (StateFlags)(sflags | sf_use_user_charset);
 }
 
 void Page::proceedCharset(Tag * tag) {
@@ -254,7 +254,7 @@ void Page::proceedCharset(Tag * tag) {
         QString xml_encoding = tag -> value(tkn_encoding);
         if (!xml_encoding.isEmpty()) {
             charset = toCharsetType(xml_encoding);
-            charset_finded = true;
+            sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     } else {
         QString meta = tag -> value(tkn_charset);
@@ -267,7 +267,7 @@ void Page::proceedCharset(Tag * tag) {
 
         if (!meta.isEmpty()) {
             charset = toCharsetType(meta);
-            charset_finded = true;
+            sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     }
 }

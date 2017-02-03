@@ -1,4 +1,5 @@
 #include "unicode_decoding.h"
+#include <defines.h>
 
 #include <qregularexpression.h>
 #include <qiodevice.h>
