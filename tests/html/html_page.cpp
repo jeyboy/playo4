@@ -41,8 +41,7 @@ void Page::parse(const char * data) {
     const char *pdata = data, *sname = 0, *sval = 0;
 
     while(pdata) {
-         // skip not printable trash
-        if (*pdata > 0 && *pdata < 32) {
+        if (*pdata > 0 && *pdata < 32) { // skip not printable trash
             pdata++;
             continue;
         }
@@ -51,15 +50,7 @@ void Page::parse(const char * data) {
             case content: {
                 switch(*pdata) {
                     case open_tag: {
-//                        if (last == close_tag_predicate && elem -> isScript())
-//                            name.append(*pdata); // javascript comments
-//                        else {
-//                            if (!(flags & skip_text) && !name.isEmpty())
-//                                elem -> appendText(name);
-//                            state = tag;
-//                        }
-
-                        if (sname) {
+                        if (NAME_BUFF_VALID) {
                             if (!(pflags & pf_skip_text))
                                 elem -> appendText(NAME_BUFF);
                             sname = 0;
@@ -77,15 +68,6 @@ void Page::parse(const char * data) {
                                 state = comment;
                         }
                     break;}
-
-//                    case code_start: {
-//                        name.append(parseCode(pdata));
-//                    break; } // &quot; and etc
-
-//                    case space: if (!sname) continue;
-
-//                    default: last = *pdata;
-                }
             break;}
 
             case in_val:
@@ -103,15 +85,10 @@ void Page::parse(const char * data) {
                                     sname = 0; sval = 0;
                                     state = attr;
                                 }
-//                                else value.append(*pdata);
                             break;}
-                            default: { qDebug() << "WRONG STATE" << state; return; }
+                            default:; // { qDebug() << "WRONG STATE" << state; return; }
                         }
                     break;}
-//                    case code_start: { value.append(parseCode(pdata)); break; }
-//                    default:
-//                        if (*pdata > 0) value.append(*pdata);
-//                        else toUtf8(charset, device, value, pdata[0]);
                 }
             break;}
 
@@ -178,14 +155,12 @@ void Page::parse(const char * data) {
 
                                 sval = 0; sname = 0;
                                 state = attr;
-                            break; } // proceed attrs without value
+                            break; }
 
                             case tag: {
-                                if (*(pdata - 1) != close_tag_predicate) {
-                                    elem = elem -> appendTag(NAME_BUFF);
-                                    sname = pdata + 1;
-                                    state = attr;
-                                }
+                                elem = elem -> appendTag(NAME_BUFF);
+                                sname = pdata + 1;
+                                state = attr;
                             break;}
                             default:;
                         }
@@ -197,19 +172,30 @@ void Page::parse(const char * data) {
                     break;}
 
                     case close_tag: {
-                        if (*sname != question_token) // ignore ?>
-                            elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
+                        switch(*pdata) {
+                            case attr:
+                            case val: {
+                                if (*sname != question_token) // ignore ?>
+                                    elem -> addAttr(NAME_BUFF, VAL_BUFF);
 
-                        sname = 0; sval = 0;
+                                sname = 0; sval = 0;
+                            break;}
+
+                            case tag: {
+                                elem = elem -> appendTag(NAME_BUFF);
+                            break;}
+                        }
 
                         if (elem -> isSolo())
                             elem = elem -> parentTag();
+
+                        state = content;
                     break;}
 
                     case close_tag_predicate: {
                         switch (state) {
                             case attr_val: {
-                                if (*sname != '?') // ignore ?>
+                                if (*sname != question_token) // ignore ?>
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
 
                                 sname = 0; sval = 0;
