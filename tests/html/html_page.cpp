@@ -71,34 +71,6 @@ void Page::parse(const char * data) {
                 }
             break;}
 
-
-            case attr: {
-                switch(*pdata) {
-                    case attr_rel: {
-                        state = val;
-                        ename = pdata;
-                        sval = pdata + 1;
-                        continue;
-                    break;}
-                }
-            }
-            case in_attr: {
-                switch(*pdata) {
-                    case content_del1:
-                    case content_del2: {
-                        switch(state) {
-                            case val: { state = in_attr; break;}
-                            case in_val: {
-                                if (*sname == *pdata)
-                                    state = val;
-                            break;}
-                            default:;
-                        }
-                    break;}
-                }
-            break;}
-
-
             case val: {
                 switch(*pdata) {
                     case space: {
@@ -119,6 +91,7 @@ void Page::parse(const char * data) {
                             break;}
                             case in_val: {
                                 if (*sval == *pdata) {
+                                    sval++;
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF);
                                     sname = 0; sval = 0; ename = 0;
                                     state = attr;
@@ -146,6 +119,7 @@ void Page::parse(const char * data) {
                         }
 
                         state = content;
+                        sname = pdata + 1;
                     break;}
                 }
             break;}
@@ -156,6 +130,7 @@ void Page::parse(const char * data) {
                         if (*(pdata - 1) == raw_data_end_token && *(pdata - 2) == raw_data_end_token) {
                             // extract cdata from str
                             state = content;
+                            sname = pdata + 1;
                         }
                     break;}
 
@@ -172,7 +147,7 @@ void Page::parse(const char * data) {
                             if (!(pflags & pf_skip_comment))
                                 elem -> appendComment(NAME_BUFF);
 
-                            sname = 0;
+                            sname = pdata + 1;
                             state = content;
                         }
                     }
@@ -214,7 +189,7 @@ void Page::parse(const char * data) {
                         switch(state) {
                             case attr:
                             case val: {
-                                if (*(pdata - 1) != question_token) // ignore ?>
+                                if (sname && *(pdata - 1) != question_token) // ignore ?>
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF);
 
                                 sname = 0; sval = 0; ename = 0;
@@ -230,6 +205,7 @@ void Page::parse(const char * data) {
                             elem = elem -> parentTag();
 
                         state = content;
+                        sname = pdata + 1;
                     break;}
 
                     case close_tag_predicate: {
@@ -240,7 +216,7 @@ void Page::parse(const char * data) {
 
                                 sname = 0; sval = 0; ename = 0;
                             }
-                            case tag: {state = tag_exit; break;}
+                            case tag: {state = tag_exit; sname++; break;}
                             case attr: state = tag;
                             default: ;
                         }
