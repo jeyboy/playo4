@@ -5,19 +5,19 @@
 using namespace Html;
 
 Page::Page(QIODevice * device, const CharsetType & doc_charset, const ParseFlags & parse_flags)
-    : pflags(parse_flags), charset(doc_charset), sflags(sf_none)
+    : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     QByteArray data = device -> readAll();
     parse(data.constData());
 }
 Page::Page(const QString & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
-    : pflags(parse_flags), charset(doc_charset), sflags(sf_none)
+    : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(QSTR_TO_CHAR(str));
 }
 
 Page::Page(const char * str_data, const CharsetType & doc_charset, const ParseFlags & parse_flags)
-    : pflags(parse_flags), charset(doc_charset), sflags(sf_none)
+    : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(str_data);
 }
@@ -41,7 +41,11 @@ void Page::parse(const char * data) {
     const char *pdata = data, *sname = 0, *sval = 0;
 
     while(pdata) {
-        if (*pdata > 0 && *pdata < 32) continue; // skip not printable trash
+         // skip not printable trash
+        if (*pdata > 0 && *pdata < 32) {
+            pdata++;
+            continue;
+        }
 
         switch(state) {
             case content: {
@@ -62,6 +66,7 @@ void Page::parse(const char * data) {
                         }
 
                         state = tag;
+                        sname = pdata + 1;
 
                         if (*(pdata + 1) == service_token) {
                             char chr = *(pdata + 2);
@@ -149,7 +154,7 @@ void Page::parse(const char * data) {
                 switch(*pdata) {
                     case close_tag: {
                         if (*(pdata - 1) == comment_token && *(pdata - 2) == comment_token) {
-                            if (!pflags & pf_skip_comment)
+                            if (!(pflags & pf_skip_comment))
                                 elem -> appendComment(NAME_BUFF);
 
                             sname = 0;
@@ -168,14 +173,17 @@ void Page::parse(const char * data) {
                         switch(state) {
                             case attr:
                             case val: {
-                                if (sname) elem -> addAttr(NAME_BUFF, VAL_BUFF);
+                                if (NAME_BUFF_VALID)
+                                    elem -> addAttr(NAME_BUFF, VAL_BUFF);
+
+                                sval = 0; sname = 0;
                                 state = attr;
                             break; } // proceed attrs without value
 
                             case tag: {
                                 if (*(pdata - 1) != close_tag_predicate) {
                                     elem = elem -> appendTag(NAME_BUFF);
-                                    sname = 0;
+                                    sname = pdata + 1;
                                     state = attr;
                                 }
                             break;}
@@ -189,12 +197,13 @@ void Page::parse(const char * data) {
                     break;}
 
                     case close_tag: {
-                        QByteArray name = NAME_BUFF;
-                        if (Tag::isSolo(name))
-                            elem -> appendTag(name);
-                        else
-                            elem = elem -> appendTag(name);
+                        if (*sname != question_token) // ignore ?>
+                            elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
+
                         sname = 0; sval = 0;
+
+                        if (elem -> isSolo())
+                            elem = elem -> parentTag();
                     break;}
 
                     case close_tag_predicate: {
@@ -204,9 +213,6 @@ void Page::parse(const char * data) {
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
 
                                 sname = 0; sval = 0;
-
-                                if (elem -> isSolo())
-                                    elem = elem -> parentTag();
                             }
                             case tag: {state = tag_exit; break;}
                             case attr: state = tag;

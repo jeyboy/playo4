@@ -9,7 +9,9 @@
 #include "html_selector.h"
 
 #define NAME_BUFF QByteArray(sname, pdata - sname)
-#define VAL_BUFF QByteArray(sval, pdata - sval)
+#define NAME_BUFF_VALID sname && (pdata - sname) > 1
+#define VAL_BUFF (sval == 0 ? QByteArray() : QByteArray(sval, pdata - sval))
+#define VAL_BUFF_VALID sval && (pdata - sval) > 1
 
 class QIODevice;
 class QDebug;
@@ -41,13 +43,14 @@ namespace Html {
         };
 
         enum PToken {
+            question_token = 63, // ?
             open_tag = 60, // <
             close_tag_predicate = 47, // /
             close_tag = 62, // >
             space = 32,
             service_token = 33, // !
-            service_start_token = 133, // [
-            service_end_token = 135, // ]
+            service_start_token = 91, // [
+            service_end_token = 93, // ]
             comment_token = 45, // -
             attr_rel = 61, // =
             content_del1 = 34, // "
