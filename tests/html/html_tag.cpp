@@ -128,21 +128,21 @@ QString Tag::toText() const {
         return result;
     }
 }
-QString Tag::toString() const {
+QByteArray Tag::toString() const {
     if (_name == tkn_text_block)
         return attrs.value(tkn_text_block);
     else {
-        QString result = QString(_level * 2, ' ') % '<' % _name;
+        QByteArray result = '<' % _name;
 
         for(QHash<QByteArray, QByteArray>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
-            result = result % ' ' % attr.key() % LSTR("=\"") % attr.value() % '"';
+            result = result % ' ' % attr.key() % QByteArray("=\"") % attr.value() % '"';
 
         result = result % '>';
 
         for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
             result += (*tag) -> toString();
 
-        return solo.contains(_name) && tags.isEmpty() ? result : QString(result % LSTR("</") % _name % '>');
+        return solo.contains(_name) && tags.isEmpty() ? result : QByteArray(result % QByteArray("</") % _name % '>');
     }
 }
 

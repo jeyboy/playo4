@@ -19,6 +19,14 @@ class HtmlTest : public QObject {
 
         return res;
     }
+
+    void saveData(const QString & name, const QByteArray & content) {
+        QFile f(DATA_PATH(name));
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            f.write(content);
+            f.close();
+        }
+    }
 public:
     HtmlTest();
 
@@ -63,7 +71,8 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
-    Page(loadData(TEST_MONOTAGS)).output();
+    Page p(loadData(TEST_FOURSHARED_PATH));
+    saveData(LSTR("_out.txt"), p.toString());
 }
 
 //void HtmlTest::measurementParsing() {

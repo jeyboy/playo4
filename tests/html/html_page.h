@@ -89,7 +89,7 @@ namespace Html {
         };
 
         void parse(const char * data);
-        QString parseCode(char * ch);
+//        QString parseCode(char * ch);
 
         void checkCharset(Tag * tag);
         void proceedCharset(Tag * tag);
@@ -112,7 +112,7 @@ namespace Html {
         inline bool isHtml() { return sflags & sf_html; }
 
         //FIXME: output of tags without close pair
-        inline QString toString() { return root -> toString(); }
+        inline QByteArray toString() { return root -> toString(); }
 
         inline bool hasChilds(const char * predicate) const { return root -> hasChilds(predicate); }
 //        inline bool hasStr(const QString & str) { return text.contains(str, Qt::CaseInsensitive); }

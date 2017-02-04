@@ -65,7 +65,7 @@ void Page::parse(const char * data) {
                         state = tag;
                         sname = pdata + 1;
 
-                        if (*(pdata + 1) == service_token) {
+                        if (*sname == service_token) {
                             char chr = *(pdata + 2);
 
                             if (chr == raw_data_token)
@@ -74,7 +74,7 @@ void Page::parse(const char * data) {
                                 state = comment;
                             else
                                 sflags = (StateFlags)(sflags | sf_html);
-                        } else if (*(pdata + 1) == question_token) {
+                        } else if (*sname == question_token) {
                             sflags = (StateFlags)(sflags | sf_xml);
                         }
                     break;}
@@ -96,9 +96,7 @@ void Page::parse(const char * data) {
                     case content_del1:
                     case content_del2: {
                         switch(state) {
-                            case val: {
-                                state = in_val;
-                            break;}
+                            case val: { state = in_val; break;}
                             case in_val: {
                                 if (*sval == *pdata) {
                                     sval++;
@@ -107,7 +105,7 @@ void Page::parse(const char * data) {
                                     state = attr;
                                 }
                             break;}
-                            default:; // { qDebug() << "WRONG STATE" << state; return; }
+                            default:;
                         }
                     break;}
                 }
@@ -124,6 +122,7 @@ void Page::parse(const char * data) {
 //                            elem -> isSolo() ||
 //                            sname && elem -> name() == NAME_BUFF
 //                        )
+//                        elem = elem -> parentTag();
 
 //                      use this check for strict verification (open tag is eql to close)
 //                        sname && elem -> name() == NAME_BUFF
@@ -169,8 +168,6 @@ void Page::parse(const char * data) {
                     break;}
 
                     default:;
-            //                        if (*pdata > 0) name.append(*pdata);
-            //                        else toUtf8(charset, device, name, pdata[0]);
                 }
             break;}
 
@@ -186,8 +183,6 @@ void Page::parse(const char * data) {
                         }
                     }
                     default:;
-            //                        if ((last = *pdata) > 0) name.append(*pdata);
-            //                        else toUtf8(charset, device, name, pdata[0]);
                 }
             break;}
 
@@ -270,25 +265,25 @@ void Page::parse(const char * data) {
     }
 }
 
-QString Page::parseCode(char * ch) {
-    QString code;
-    bool is_unicode = false;
-    while(ch) {
-        switch(*ch) {
-            case code_unicode: { is_unicode = true; break;}
-            case code_end: return QChar(is_unicode ? code.toInt() : html_entities.value(code));
-            default:
-                if (*ch < 123 && (*ch > 96 || (*ch < 58 && *ch > 47)))
-//                    if ((*ch > 47 && *ch < 58) || (*ch > 96 && *ch < 123))
-                    code.append(*ch);
-                else { --ch; return code.prepend('&'); }
-        }
+//QString Page::parseCode(char * ch) {
+//    QString code;
+//    bool is_unicode = false;
+//    while(ch) {
+//        switch(*ch) {
+//            case code_unicode: { is_unicode = true; break;}
+//            case code_end: return QChar(is_unicode ? code.toInt() : html_entities.value(code));
+//            default:
+//                if (*ch < 123 && (*ch > 96 || (*ch < 58 && *ch > 47)))
+////                    if ((*ch > 47 && *ch < 58) || (*ch > 96 && *ch < 123))
+//                    code.append(*ch);
+//                else { --ch; return code.prepend('&'); }
+//        }
 
-        ch++;
-    }
+//        ch++;
+//    }
 
-    return code.prepend('&');
-}
+//    return code.prepend('&');
+//}
 
 void Page::checkCharset(Tag * tag) {
     if (tag -> isMeta() || tag -> isXmlHead())
