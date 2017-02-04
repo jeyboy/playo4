@@ -11,6 +11,7 @@
 #define TEST_GOOGLE_PATH DATA_PATH(QStringLiteral("google.txt"))
 
 #define TEST_JS_PARSING DATA_PATH(QStringLiteral("test_js_parsing.txt"))
+#define TEST_MONOTAGS DATA_PATH(QStringLiteral("test_monotags.txt"))
 
 #define TEST_XML_PATH DATA_PATH(QStringLiteral("test_xml.txt"))
 

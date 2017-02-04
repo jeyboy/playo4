@@ -119,13 +119,17 @@ void Page::parse(const char * data) {
                         if (sflags < sf_use_doc_charset)
                             checkCharset(elem);
 
-                        if (sname) {
-                            if (elem -> name() == NAME_BUFF)
-                                elem = elem -> parentTag();
-                        } else {
-                            if (elem -> isSolo() || *(pdata - 1) == close_tag_predicate)
-                                elem = elem -> parentTag();
-                        }
+//                        if (
+//                            *(pdata - 1) == close_tag_predicate ||
+//                            elem -> isSolo() ||
+//                            sname && elem -> name() == NAME_BUFF
+//                        )
+
+//                      use this check for strict verification (open tag is eql to close)
+//                        sname && elem -> name() == NAME_BUFF
+
+
+                        elem = elem -> parentTag();
 
                         state = content;
                         sname = pdata + 1;
@@ -253,7 +257,7 @@ void Page::parse(const char * data) {
                                 sname = 0; sval = 0; ename = 0;
                             }
                             case tag: {state = tag_exit; sname++; break;}
-                            case attr: state = tag;
+                            case attr: state = tag_exit;
                             default: ;
                         }
                     break; }

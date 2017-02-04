@@ -63,7 +63,7 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
-    Page(loadData(TEST_JS_PARSING)).output();
+    Page(loadData(TEST_MONOTAGS)).output();
 }
 
 //void HtmlTest::measurementParsing() {
