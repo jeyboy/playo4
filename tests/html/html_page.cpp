@@ -40,9 +40,11 @@ void Page::parse(const char * data) {
     PState state = content;
     const char *pdata = data, *sname = 0, *sval = 0, *ename = 0;
 
-    while(pdata) {
+    while(*pdata) {
         if (*pdata < 32 && *pdata > 0) { // skip not printable trash
             pdata++;
+
+            if (sname && !NAME_BUFF_VALID) sname++;
             continue;
         }
 
@@ -172,11 +174,12 @@ void Page::parse(const char * data) {
 
                             case tag: {
                                 elem = elem -> appendTag(NAME_BUFF);
-                                sname = pdata + 1;
                                 state = attr;
                             break;}
                             default:;
                         }
+
+                        sname = pdata + 1;
                     break;}
 
                     case attr_rel: {
@@ -201,8 +204,12 @@ void Page::parse(const char * data) {
                             default:;
                         }
 
-                        if (elem -> isSolo())
+                        if (elem -> isSolo()) {
+                            if (sflags < sf_use_doc_charset)
+                                checkCharset(elem);
+
                             elem = elem -> parentTag();
+                        }
 
                         state = content;
                         sname = pdata + 1;

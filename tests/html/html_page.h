@@ -9,9 +9,9 @@
 #include "html_selector.h"
 
 #define NAME_BUFF QByteArray(sname, (ename ? ename : pdata) - sname)
-#define NAME_BUFF_VALID sname && (pdata - sname) > 1
+#define NAME_BUFF_VALID (sname && (pdata - sname) > 1)
 #define VAL_BUFF (sval == 0 ? QByteArray() : QByteArray(sval, pdata - sval))
-#define VAL_BUFF_VALID sval && (pdata - sval) > 1
+#define VAL_BUFF_VALID (sval && (pdata - sval) > 1)
 
 class QIODevice;
 class QDebug;

@@ -1,0 +1,23 @@
+<script type="text/javascript" src="http://static.4shared.com/js/jquery/jquery-migrate-1.2.1.4min.js?ver=1171340321"></script>
+<script type="text/javascript">
+    $(function () {
+      function addHeader(cookie, header, jqXHR) {
+        var value = $.cookie(cookie);
+        if (value > 2) jqXHR.setRequestHeader(header, value);
+      };
+
+      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        if (!$.cookie) return;
+        if (originalOptions.crossDomain && originalOptions.url.search(".4shared.com") < -1) return;
+        addHeader('Login', 'x-security', jqXHR);
+        addHeader('4langcookie', 'locale', jqXHR);
+      });
+    });
+  </script>
+
+  <script type="text/javascript">
+  function Config() {
+    return this
+  }
+  document.domain='4shared.com';
+</script>
