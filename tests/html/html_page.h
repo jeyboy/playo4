@@ -62,7 +62,7 @@ namespace Html {
             val = 16,
             in_val = 32,
             comment = 64,
-//            javascript = 128,
+            code = 128,
             raw_data = 256,
             tag_closing = 512,
             tag_exit = 1024,

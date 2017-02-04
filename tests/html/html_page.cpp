@@ -134,6 +134,26 @@ void Page::parse(const char * data) {
                 }
             break;}
 
+            case code: {
+                switch(*pdata) {
+                    case space: {
+                        if (sname && !NAME_BUFF_VALID) sname++;
+                    break;}
+
+                    case open_tag: {
+                        if (*(pdata + 1) == close_tag_predicate) {
+                            if (NAME_BUFF_VALID) {
+                                if (!(pflags & pf_skip_text))
+                                    elem -> appendText(NAME_BUFF);
+                            }
+
+                            sname = pdata + 2;
+                            state = tag_exit;
+                        }
+                    }
+                }
+            break;}
+
             case raw_data: {
                 switch(*pdata) {
                     case close_tag: {
@@ -212,23 +232,24 @@ void Page::parse(const char * data) {
                             default:;
                         }
 
+                        state = content;
+
                         if (elem -> isSolo()) {
                             if (sflags < sf_use_doc_charset)
                                 checkCharset(elem);
 
                             elem = elem -> parentTag();
-                        }
+                        } else if (elem -> isScript())
+                            state = code;
 
-                        state = content;
+
                         sname = pdata + 1;
                     break;}
 
                     case close_tag_predicate: {
                         switch (state) {
                             case attr_val: {
-//                                if (*(pdata - 1) != question_token) // ignore ?>
-                                elem -> addAttr(NAME_BUFF, VAL_BUFF); // proceed attrs without value
-
+                                elem -> addAttr(NAME_BUFF, VAL_BUFF);
                                 sname = 0; sval = 0; ename = 0;
                             }
                             case tag: {state = tag_exit; sname++; break;}
