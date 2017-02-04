@@ -16,6 +16,32 @@
 class QIODevice;
 class QDebug;
 
+// Strict mode (http://www.w3schools.com/html/html_xhtml.asp)
+    //Document Structure
+
+    //    XHTML DOCTYPE is mandatory
+    //    The xmlns attribute in <html> is mandatory
+    //    <html>, <head>, <title>, and <body> are mandatory
+
+    //XHTML Elements
+
+    //    XHTML elements must be properly nested
+    //    XHTML elements must always be closed
+    //    XHTML elements must be in lowercase
+    //    XHTML documents must have one root element
+
+    //XHTML Attributes
+
+    //    Attribute names must be in lower case
+    //    Attribute values must be quoted
+    //    Attribute minimization is forbidden
+        //Wrong:
+        //<input type="checkbox" name="vehicle" value="car" checked />
+
+        //Correct:
+        //<input type="checkbox" name="vehicle" value="car" checked="checked" />
+
+
 namespace Html {
     class HTMLSHARED_EXPORT Page : public UnicodeDecoding {
         enum StateFlags {
@@ -84,18 +110,6 @@ namespace Html {
 
         inline bool isXml() { return sflags & sf_xml; }
         inline bool isHtml() { return sflags & sf_html; }
-
-
-//        bool Page::isXml() {
-//            Tag * tag = root -> children().first();
-
-//            if (!tag) return false;
-
-//            QString name = tag -> name();
-//            return name.contains(tag_xml, Qt::CaseInsensitive);
-//        }
-
-
 
         //FIXME: output of tags without close pair
         inline QString toString() { return root -> toString(); }

@@ -63,16 +63,7 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
-//    TEST_BASE_SHORT_TEMPLATE_PATH
-//    TEST_BASE_TEMPLATE_PATH
-//    TEST_XML_PATH
-//    TEST_JS_PARSING
-//    TEST_ELEM_ATTRS_PATH
-//    TEST_ELEM_ATTRS_WITOUT_QUOTAS_PATH
-//    TEST_CLASSES_PATH
-//    TEST_CODING_1251_PATH
-
-    Page(loadData(TEST_BASE_SHORT_TEMPLATE_PATH)).output();
+    Page(loadData(TEST_JS_PARSING)).output();
 }
 
 //void HtmlTest::measurementParsing() {

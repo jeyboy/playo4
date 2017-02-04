@@ -10,7 +10,7 @@
 #define TEST_FOURSHARED_PATH DATA_PATH(QStringLiteral("fourshared.txt"))
 #define TEST_GOOGLE_PATH DATA_PATH(QStringLiteral("google.txt"))
 
-#define TEST_JS_PARSING DATA_PATH(QStringLiteral("js_parsing.txt"))
+#define TEST_JS_PARSING DATA_PATH(QStringLiteral("test_js_parsing.txt"))
 
 #define TEST_XML_PATH DATA_PATH(QStringLiteral("test_xml.txt"))
 

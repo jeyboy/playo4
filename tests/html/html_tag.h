@@ -117,12 +117,19 @@ namespace Html {
             QHash<QByteArray, QByteArray> vals = c.attributes();
 
             for (QHash<QByteArray, QByteArray>::iterator it = vals.begin(); it != vals.end(); ++it)
-                attrStr.append("(" + it.key() + " : " + (it.value().size() > DEBUG_LIMIT_OUTPUT ? (it.value().mid(0, DEBUG_LIMIT_OUTPUT / 2) % "..." % it.value().mid(it.value().size() - DEBUG_LIMIT_OUTPUT / 2, DEBUG_LIMIT_OUTPUT / 2)) : it.value()) + ")");
+                attrStr.append(
+                    '(' % it.key() %
+                        (it.value().size() > 0 ?
+                            QString(LSTR(": ") % (it.value().size() > DEBUG_LIMIT_OUTPUT ? QString(it.value().mid(0, DEBUG_LIMIT_OUTPUT / 2) % LSTR("...") % it.value().mid(it.value().size() - DEBUG_LIMIT_OUTPUT / 2, DEBUG_LIMIT_OUTPUT / 2)) : QString::fromUtf8(it.value())))
+                            : QString()
+                        ) % ')'
+
+                );
 
             if (attrStr.isEmpty())
                 qDebug("%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().data());
             else
-                qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().data(), " ||| [", attrStr.toUtf8().constData(), "]");
+                qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().data(), "[", attrStr.toUtf8().constData(), "]");
 
             foreach(Tag * it, c.children())
                 qDebug() << (*it);

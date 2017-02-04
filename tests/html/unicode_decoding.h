@@ -9,6 +9,8 @@ class UnicodeDecoding {
 public:
     enum CharsetType {
         charset_unknown,
+        charset_ascii,
+        charset_ansi, // cp1252 // ISO-8859-1
         charset_utf8,
         charset_cp1251
     };

@@ -51,6 +51,10 @@ void Page::parse(const char * data) {
         switch(state) {
             case content: {
                 switch(*pdata) {
+                    case space: {
+                        if (sname && !NAME_BUFF_VALID) sname++;
+                    break;}
+
                     case open_tag: {
                         if (NAME_BUFF_VALID) {
                             if (!(pflags & pf_skip_text))
@@ -68,6 +72,10 @@ void Page::parse(const char * data) {
                                 state = raw_data;
                             else if (chr == comment_token)
                                 state = comment;
+                            else
+                                sflags = (StateFlags)(sflags | sf_html);
+                        } else if (*(pdata + 1) == question_token) {
+                            sflags = (StateFlags)(sflags | sf_xml);
                         }
                     break;}
                 }
