@@ -128,7 +128,7 @@ QString Tag::toText() const {
         return result;
     }
 }
-QByteArray Tag::toString() const {
+QByteArray Tag::toByteArray() const {
     if (_name == tkn_text_block)
         return attrs.value(tkn_text_block);
     else {
@@ -140,7 +140,7 @@ QByteArray Tag::toString() const {
         result = result % '>';
 
         for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
-            result += (*tag) -> toString();
+            result += (*tag) -> toByteArray();
 
         return solo.contains(_name) && tags.isEmpty() ? result : QByteArray(result % QByteArray("</") % _name % '>');
     }

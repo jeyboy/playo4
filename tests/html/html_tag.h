@@ -55,7 +55,7 @@ namespace Html {
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QUrl serializeFormToUrl(const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QString toText() const;
-        QByteArray toString() const;
+        QByteArray toByteArray() const;
 
         inline bool isSolo() { return solo.contains(name()); }
         static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tag_name); }

@@ -90,13 +90,13 @@ void Page::parse(const char * data) {
                         continue;
                     break;}
                 }
-            }
+            break;}
             case in_val: {
                 switch(*pdata) {
                     case content_del1:
                     case content_del2: {
                         switch(state) {
-                            case val: { state = in_val; break;}
+//                            case val: { state = in_val; break;}
                             case in_val: {
                                 if (*sval == *pdata) {
                                     sval++;
@@ -117,18 +117,9 @@ void Page::parse(const char * data) {
                         if (sflags < sf_use_doc_charset)
                             checkCharset(elem);
 
-//                        if (
-//                            *(pdata - 1) == close_tag_predicate ||
-//                            elem -> isSolo() ||
-//                            sname && elem -> name() == NAME_BUFF
-//                        )
-//                        elem = elem -> parentTag();
-
 //                      use this check for strict verification (open tag is eql to close)
-//                        sname && elem -> name() == NAME_BUFF
-
-
-                        elem = elem -> parentTag();
+                        if (*(pdata - 1) == close_tag_predicate /*|| elem -> isSolo()*/ || (sname && elem -> name() == NAME_BUFF))
+                            elem = elem -> parentTag();
 
                         state = content;
                         sname = pdata + 1;
@@ -209,10 +200,14 @@ void Page::parse(const char * data) {
                         sname = pdata + 1;
                     break;}
 
-                    case attr_rel: {
-                        state = val;
+                    case attr_rel: {                   
                         ename = pdata;
                         sval = pdata + 1;
+                        if (*sval == content_del1 || *sval == content_del2) {
+                            state = in_val;
+                            pdata++;
+                        }
+                        else state = val;
                     break;}
 
                     case close_tag: {

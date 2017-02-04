@@ -31,7 +31,7 @@ public:
     HtmlTest();
 
 private Q_SLOTS:
-//    void measurementParsing();
+    void measurementParsing();
 //    void measurementSelection();
 
 //    void testHtmlDoctype();
@@ -72,14 +72,14 @@ using namespace Html;
 
 HtmlTest::HtmlTest() {
     Page p(loadData(TEST_FOURSHARED_PATH));
-    saveData(LSTR("_out.txt"), p.toString());
+    saveData(LSTR("_out.txt"), p.toByteArray());
 }
 
-//void HtmlTest::measurementParsing() {
-//    QBENCHMARK {
-//        Page(loadData(TEST_FOURSHARED_PATH));
-//    }
-//}
+void HtmlTest::measurementParsing() {
+    QBENCHMARK {
+        Page(loadData(TEST_FOURSHARED_PATH));
+    }
+}
 
 //void HtmlTest::measurementSelection() {
 //    Page page(loadData(TEST_FOURSHARED_PATH));

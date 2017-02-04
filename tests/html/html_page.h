@@ -112,7 +112,7 @@ namespace Html {
         inline bool isHtml() { return sflags & sf_html; }
 
         //FIXME: output of tags without close pair
-        inline QByteArray toString() { return root -> toString(); }
+        inline QByteArray toByteArray() { return root -> toByteArray(); }
 
         inline bool hasChilds(const char * predicate) const { return root -> hasChilds(predicate); }
 //        inline bool hasStr(const QString & str) { return text.contains(str, Qt::CaseInsensitive); }
