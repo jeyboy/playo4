@@ -132,7 +132,7 @@ namespace Html {
                 qDebug("%s%s%s%s%s", QString(c.level() * 3, ' ').toUtf8().constData(), c.name().data(), "[", attrStr.toUtf8().constData(), "]");
 
             foreach(Tag * it, c.children())
-                qDebug() << (*it);
+                qDebug() << (*it) << '\n';
 
             return debug;
         }

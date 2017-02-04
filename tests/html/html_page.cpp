@@ -122,7 +122,6 @@ void Page::parse(const char * data) {
                         if (sname) {
                             if (elem -> name() == NAME_BUFF)
                                 elem = elem -> parentTag();
-                            sname = 0;
                         } else {
                             if (elem -> isSolo() || *(pdata - 1) == close_tag_predicate)
                                 elem = elem -> parentTag();
@@ -147,7 +146,8 @@ void Page::parse(const char * data) {
                                     elem -> appendText(NAME_BUFF);
                             }
 
-                            sname = pdata + 2;
+                            pdata += 2;
+                            sname = pdata;
                             state = tag_exit;
                         }
                     }
