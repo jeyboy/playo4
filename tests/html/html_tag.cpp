@@ -132,17 +132,24 @@ QByteArray Tag::toByteArray() const {
     if (_name == tkn_text_block)
         return attrs.value(tkn_text_block);
     else {
-        QByteArray result = '<' % _name;
+        QByteArray result;
+        bool root = _name == tkn_any_elem;
 
-        for(QHash<QByteArray, QByteArray>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
-            result = result % ' ' % attr.key() % QByteArray("=\"") % attr.value() % '"';
 
-        result = result % '>';
+        if (!root) {
+            result = '<' % _name;
+
+            for(QHash<QByteArray, QByteArray>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
+                result = result % ' ' % attr.key() % QByteArray("=\"") % attr.value() % '"';
+
+            result = result % '>';
+        }
 
         for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
             result += (*tag) -> toByteArray();
 
-        return solo.contains(_name) && tags.isEmpty() ? result : QByteArray(result % QByteArray("</") % _name % '>');
+
+        return root || (solo.contains(_name) && tags.isEmpty()) ? result : QByteArray(result % QByteArray("</") % _name % '>');
     }
 }
 

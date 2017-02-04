@@ -98,7 +98,6 @@ namespace Html {
         ParseFlags pflags;
         StateFlags sflags;
         CharsetType charset;
-//        bool charset_finded, using_default_charset; // use using_default_charset for determination of rule - finded charset or not
     public:
         Page(QIODevice * device, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
         Page(const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
@@ -111,11 +110,9 @@ namespace Html {
         inline bool isXml() { return sflags & sf_xml; }
         inline bool isHtml() { return sflags & sf_html; }
 
-        //FIXME: output of tags without close pair
         inline QByteArray toByteArray() { return root -> toByteArray(); }
 
         inline bool hasChilds(const char * predicate) const { return root -> hasChilds(predicate); }
-//        inline bool hasStr(const QString & str) { return text.contains(str, Qt::CaseInsensitive); }
 
         Tag * findFirst(const char * predicate) const;
         Set find(const char * predicate) const;

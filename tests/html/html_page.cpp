@@ -91,6 +91,7 @@ void Page::parse(const char * data) {
                     break;}
                 }
             break;}
+
             case in_val: {
                 switch(*pdata) {
                     case content_del1:
@@ -118,7 +119,7 @@ void Page::parse(const char * data) {
                             checkCharset(elem);
 
 //                      use this check for strict verification (open tag is eql to close)
-                        if (*(pdata - 1) == close_tag_predicate /*|| elem -> isSolo()*/ || (sname && elem -> name() == NAME_BUFF))
+                        if (*(pdata - 1) == close_tag_predicate || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF))
                             elem = elem -> parentTag();
 
                         state = content;
