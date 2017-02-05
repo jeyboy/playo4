@@ -96,17 +96,25 @@ void Page::parse(const char * data) {
                 switch(*pdata) {
                     case content_del1:
                     case content_del2: {
-                        switch(state) {
-//                            case val: { state = in_val; break;}
-                            case in_val: {
-                                if (*sval == *pdata) {
-                                    sval++;
-                                    elem -> addAttr(NAME_BUFF, VAL_BUFF);
-                                    sname = 0; sval = 0; ename = 0;
-                                    state = attr;
-                                }
-                            break;}
-                            default:;
+                        if (*sval == *pdata) {
+                            sval++;
+                            elem -> addAttr(NAME_BUFF, VAL_BUFF);
+                            sname = 0; sval = 0; ename = 0;
+                            state = attr;
+                        }
+                    break;}
+                }
+            break;}
+
+            case in_attr: {
+                switch(*pdata) {
+                    case content_del1:
+                    case content_del2: {
+                        if (*sname == *pdata) {
+                            sname++;
+                            elem -> addAttr(NAME_BUFF, VAL_BUFF);
+                            sname = 0; sval = 0; ename = 0;
+                            state = attr;
                         }
                     break;}
                 }
@@ -188,17 +196,24 @@ void Page::parse(const char * data) {
                                     elem -> addAttr(NAME_BUFF, VAL_BUFF);
 
                                 sval = 0; sname = 0; ename = 0;
-                                state = attr;
+
+                                if (*(pdata + 1) == content_del1 || *(pdata + 1) == content_del2) {
+                                    state = in_attr;
+                                    sname = ++pdata;
+                                }
+                                else {
+                                    state = attr;
+                                    sname = pdata + 1;
+                                }
                             break; }
 
                             case tag: {
                                 elem = elem -> appendTag(NAME_BUFF);
                                 state = attr;
+                                sname = pdata + 1;
                             break;}
                             default:;
                         }
-
-                        sname = pdata + 1;
                     break;}
 
                     case attr_rel: {                   

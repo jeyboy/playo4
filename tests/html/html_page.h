@@ -58,7 +58,7 @@ namespace Html {
             content = 1,
             tag = 2,
             attr = 4,
-//            in_attr = 8,
+            in_attr = 8,
             val = 16,
             in_val = 32,
             comment = 64,
