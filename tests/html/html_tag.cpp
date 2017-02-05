@@ -10,7 +10,7 @@ using namespace Html;
 const QHash<QByteArray, bool> Tag::solo = QHash<QByteArray, bool>{
     {HTML_BR_TAG, true}, {HTML_META_TAG, true}, {HTML_LINK_TAG, true}, {HTML_IMG_TAG, true},
     {HTML_DOCTYPE_TAG, true}, {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}, {HTML_BASE_TAG, true},
-    {HTML_DOCTYPE_TAG.toLower(), true}
+    {HTML_DOCTYPE_TAG.toLower(), true}, {HTML_HR_TAG, true}
 };
 
 QString Tag::selectValue() const {

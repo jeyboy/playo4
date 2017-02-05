@@ -7,6 +7,7 @@
 #define HTML_ANY_TAG QByteArray("*")
 
 #define HTML_BR_TAG QByteArray("br")
+#define HTML_HR_TAG QByteArray("hr")
 #define HTML_META_TAG QByteArray("meta")
 #define HTML_LINK_TAG QByteArray("link")
 #define HTML_IMG_TAG QByteArray("img")

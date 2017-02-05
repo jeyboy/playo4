@@ -71,13 +71,13 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
-    Page p(loadData(TEST_KIVY_PATH));
+    Page p(loadData(TEST_YOUTUBE_PATH));
     saveData(LSTR("_out.txt"), p.toByteArray());
 }
 
 void HtmlTest::measurementParsing() {
     QBENCHMARK {
-        Page(loadData(TEST_KIVY_PATH));
+        Page(loadData(TEST_FOURSHARED_PATH));
     }
 }
 
