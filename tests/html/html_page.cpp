@@ -129,8 +129,10 @@ void Page::parse(const char * data) {
 //                      use this check for strict verification (open tag is eql to close)
                         if (*(pdata - 1) == close_tag_predicate || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF))
                             elem = elem -> parentTag();
-                        else
+                        else {
+                            sflags = (StateFlags)(sflags | sf_has_errors);
                             qDebug() << "IGNORE CLOSING OF TAG";
+                        }
 
                         state = content;
                         sname = pdata + 1;
@@ -255,7 +257,6 @@ void Page::parse(const char * data) {
                             state = code;
                         }
 
-
                         sname = pdata + 1;
                     break;}
 
@@ -265,7 +266,13 @@ void Page::parse(const char * data) {
                                 elem -> addAttr(NAME_BUFF, VAL_BUFF);
                                 sname = 0; sval = 0; ename = 0;
                             }
-                            case tag: {state = tag_exit; sname++; break;}
+                            case tag: {
+                                if (*(pdata - 1) != open_tag) // <br/> ant etc
+                                    elem = elem -> appendTag(NAME_BUFF);
+
+                                state = tag_exit;
+                                sname++;
+                            break;}
                             case attr: state = tag_exit;
                             default: ;
                         }

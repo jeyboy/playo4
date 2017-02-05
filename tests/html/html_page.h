@@ -48,6 +48,7 @@ namespace Html {
             sf_none = 0,
             sf_html = 1,
             sf_xml = 2,
+            sf_has_errors = 4,
             //...
             sf_use_doc_charset = 64,
             sf_use_user_charset = 128

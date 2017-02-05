@@ -141,7 +141,7 @@ QByteArray Tag::toByteArray() const {
             result = '<' % _name;
 
             for(QHash<QByteArray, QByteArray>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
-                result = result % ' ' % attr.key() % QByteArray("=\"") % attr.value() % '"';
+                result = result % ' ' % attr.key() % (attr.value().isNull() ? QByteArray() : (QByteArray("=\"") % attr.value() % '"'));
 
             result = result % '>';
         }

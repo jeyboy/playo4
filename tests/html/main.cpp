@@ -76,9 +76,9 @@ HtmlTest::HtmlTest() {
 }
 
 void HtmlTest::measurementParsing() {
-    QBENCHMARK {
-        Page(loadData(TEST_FOURSHARED_PATH));
-    }
+//    QBENCHMARK {
+//        Page(loadData(TEST_FOURSHARED_PATH));
+//    }
 }
 
 //void HtmlTest::measurementSelection() {

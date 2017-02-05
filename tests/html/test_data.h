@@ -11,6 +11,7 @@
 #define TEST_GOOGLE_PATH DATA_PATH(QStringLiteral("google.txt"))
 #define TEST_YOUTUBE_PATH DATA_PATH(QStringLiteral("youtube.txt"))
 #define TEST_KIVY_PATH DATA_PATH(QStringLiteral("kivy.txt"))
+#define TEST_STACK_PATH DATA_PATH(QStringLiteral("stack.txt"))
 
 #define TEST_JS_PARSING DATA_PATH(QStringLiteral("test_js_parsing.txt"))
 #define TEST_MONOTAGS DATA_PATH(QStringLiteral("test_monotags.txt"))
