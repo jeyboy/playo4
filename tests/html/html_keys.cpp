@@ -9,6 +9,7 @@ namespace Html {
     extern const QByteArray tag_br                 = HTML_BR_TAG;
     extern const QByteArray tag_a                  = QByteArray("a");
     extern const QByteArray tag_script             = QByteArray("script");
+    extern const QByteArray tag_style              = QByteArray("style");
     extern const QByteArray tag_head               = QByteArray("head");
     extern const QByteArray tag_body               = QByteArray("body");
     extern const QByteArray tag_meta               = HTML_META_TAG;

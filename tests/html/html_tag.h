@@ -59,14 +59,21 @@ namespace Html {
 
         inline bool isSolo() { return solo.contains(name()); }
         static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tag_name); }
+        inline bool isClosableBy(const char * data) {
+            return _name[0] == *data && _name[1] == *(data + 1) && '>' == *(data + _name.length());
+        }
 
         inline bool isStub() { return _name == tkn_any_elem; }
         inline bool isLink() { return _name == tag_a; }
-        inline bool isScript() { return _name == tag_script; }
-        inline bool isHead() { return _name == tag_head; }
         inline bool isBody() { return _name == tag_body; }
         inline bool isMeta() { return _name == tag_meta; }
+
+        inline bool isHead() { return _name == tag_head; }
         inline bool isXmlHead() { return _name == tag_xml; }
+
+        inline bool isScript() { return _name == tag_script; }
+        inline bool isStyle() { return _name == tag_style; }
+        inline bool isCodeBlock() { return _name == tag_script || _name == tag_style; }
 
         inline bool isFormProceable() const {
             if (hasAttr(attr_disabled)) return false;

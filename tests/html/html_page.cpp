@@ -83,6 +83,7 @@ void Page::parse(const char * data) {
 
             case val: {
                 switch(*pdata) {
+                    case close_tag:
                     case space: {
                         elem -> addAttr(NAME_BUFF, VAL_BUFF);
                         sname = 0; sval = 0; ename = 0;
@@ -128,6 +129,8 @@ void Page::parse(const char * data) {
 //                      use this check for strict verification (open tag is eql to close)
                         if (*(pdata - 1) == close_tag_predicate || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF))
                             elem = elem -> parentTag();
+                        else
+                            qDebug() << "IGNORE CLOSING OF TAG";
 
                         state = content;
                         sname = pdata + 1;
@@ -142,7 +145,7 @@ void Page::parse(const char * data) {
                     break;}
 
                     case open_tag: {
-                        if (*(pdata + 1) == close_tag_predicate && *(pdata + 2) == 's' && *(pdata + 3) == 'c' && *(pdata + 4) == 'r') {
+                        if (*(pdata + 1) == close_tag_predicate && elem -> isClosableBy(pdata + 2) /**(pdata + 2) == 's' && *(pdata + 3) == 'c' && *(pdata + 4) == 'r'*/) {
                             if (NAME_BUFF_VALID) {
                                 if (!(pflags & pf_skip_text))
                                     elem -> appendText(NAME_BUFF);
@@ -248,8 +251,9 @@ void Page::parse(const char * data) {
                                 checkCharset(elem);
 
                             elem = elem -> parentTag();
-                        } else if (elem -> isScript())
+                        } else if (elem -> isCodeBlock()) {
                             state = code;
+                        }
 
 
                         sname = pdata + 1;
@@ -298,7 +302,7 @@ void Page::parse(const char * data) {
 void Page::checkCharset(Tag * tag) {
     if (tag -> isMeta() || tag -> isXmlHead())
         proceedCharset(tag);
-    else if (tag -> isBody())
+    else if (tag -> isHead())
         sflags = (StateFlags)(sflags | sf_use_user_charset);
 }
 

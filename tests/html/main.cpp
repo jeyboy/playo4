@@ -77,7 +77,7 @@ HtmlTest::HtmlTest() {
 
 void HtmlTest::measurementParsing() {
     QBENCHMARK {
-        Page(loadData(TEST_YOUTUBE_PATH));
+        Page(loadData(TEST_FOURSHARED_PATH));
     }
 }
 

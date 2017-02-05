@@ -25,6 +25,7 @@ namespace Html {
     extern const QByteArray tag_br;
     extern const QByteArray tag_a;
     extern const QByteArray tag_script;
+    extern const QByteArray tag_style;
     extern const QByteArray tag_head;
     extern const QByteArray tag_body;
     extern const QByteArray tag_xml;
