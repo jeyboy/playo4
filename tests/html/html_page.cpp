@@ -112,8 +112,7 @@ void Page::parse(const char * data) {
                     case content_del2: {
                         if (*sname == *pdata) {
                             sname++;
-                            elem -> addAttr(NAME_BUFF, VAL_BUFF);
-                            sname = 0; sval = 0; ename = 0;
+                            ename = pdata;
                             state = attr;
                         }
                     break;}
