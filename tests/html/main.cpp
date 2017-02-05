@@ -71,14 +71,14 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
-    Page p(loadData(TEST_GOOGLE_PATH));
-    saveData(LSTR("_out.txt"), p.toByteArray());
+//    Page p(loadData(TEST_GOOGLE_PATH));
+//    saveData(LSTR("_out.txt"), p.toByteArray());
 }
 
 void HtmlTest::measurementParsing() {
-//    QBENCHMARK {
-//        Page(loadData(TEST_FOURSHARED_PATH));
-//    }
+    QBENCHMARK {
+        Page(loadData(TEST_FOURSHARED_PATH));
+    }
 }
 
 //void HtmlTest::measurementSelection() {

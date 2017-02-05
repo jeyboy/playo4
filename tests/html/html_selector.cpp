@@ -2,8 +2,8 @@
 
 using namespace Html;
 
-void Selector::addToken(const SState & tType, QString & token, char & rel) {
-    switch(tType) {
+void Selector::addToken(const SState & state, QString & token, char & rel) {
+    switch(state) {
         case attr: {
             QStringList parts = token.split(rel, QString::SkipEmptyParts);
             if (parts.length() > 1)
@@ -18,21 +18,21 @@ void Selector::addToken(const SState & tType, QString & token, char & rel) {
         default:;
     }
 
-    if (tType == tag && token.isEmpty())
+    if (state == tag && token.isEmpty())
         token = tkn_any_elem;
 
-    _tokens.insert(tType, token);
+    _tokens.insert(state, token);
     token.clear();
 }
 
 //TODO: add :3 - position limitation
-Selector::Selector(const char * predicate) : sType(forward), prev(0), next(0) {
-    Selector::SState state = Selector::tag;
+Selector::Selector(const char * predicate) : turn(forward), prev(0), next(0) {
+    SState state = Selector::tag;
     Selector * selector = this;
-    QString token; token.reserve(128);
-    char rel;
     const char * it = predicate;
-    bool in_attr = false;
+
+//    char rel;
+//    bool in_attr = false;
 
     while(*it) {
         switch(*it) {
