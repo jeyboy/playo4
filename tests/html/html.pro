@@ -26,7 +26,8 @@ HEADERS += \
     html_selector.h \
     html_set.h \
     html_tag.h \
-    defines.h
+    defines.h \
+    list.h
 
 SOURCES += \
     html_page.cpp \

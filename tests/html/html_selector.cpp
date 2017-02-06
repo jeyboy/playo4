@@ -2,91 +2,122 @@
 
 using namespace Html;
 
-void Selector::addToken(const SState & state, QString & token, char & rel) {
+void Selector::addToken(const SState & state, const QByteArray & token, const char & rel) {
     switch(state) {
         case attr: {
-            QStringList parts = token.split(rel, QString::SkipEmptyParts);
+            QList<QByteArray> parts = token.split(rel);
             if (parts.length() > 1)
-                _attrs.insert(parts.first(), QPair<char, QString>(rel, parts.last()));
+                _attrs.insert(parts.first(), QPair<char, QByteArray>(rel, parts.last()));
             else
-                _attrs.insert(parts.first(), QPair<char, QString>(attr_rel_eq, tkn_any_elem));
-            rel = attr_rel_eq;
+                _attrs.insert(parts.first(), QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
         break;}
         case klass: {
-            klasses.append(token.split(' ', QString::SkipEmptyParts));
+            _classes.append(token.split(' '));
         break;}
         default:;
     }
 
     if (state == tag && token.isEmpty())
-        token = tkn_any_elem;
-
-    _tokens.insert(state, token);
-    token.clear();
+        _tokens.insert(state, tkn_any_elem);
+    else
+        _tokens.insert(state, token);
 }
 
 //TODO: add :3 - position limitation
-Selector::Selector(const char * predicate) : turn(forward), prev(0), next(0) {
+Selector::Selector(const char * predicate) : turn(any), pos_limit(-1), prev(0)/*, next(0)*/ {
     SState state = Selector::tag;
     Selector * selector = this;
-    const char * it = predicate;
+    const char * pdata = predicate, * stoken = pdata, *etoken = 0, * rel = 0;
+    bool in_attr = false;
 
-//    char rel;
-//    bool in_attr = false;
+    // *:active:3[name='Loop' top] div p.loop #id.tool .yopt ['piza to'=123] p[text='sdfsdf \'ssda'],a:active > .sos
 
-    while(*it) {
-        switch(*it) {
-            case attr_token_end:
-            case type_token:
-            case class_token:
-            case id_token: {
-                in_attr &= attr_token_end != *it;
+    while(*pdata) {
+        switch(*pdata) {
+            case sel_id_token:
+            case sel_class_token: {
+                if (TOKEN_BUFF_VALID) {
+                    selector -> addToken(state, TOKEN_BUFF, *rel);
+                    stoken = pdata + 1;
+                }
 
-                if (!in_attr) {
-                    if (!token.isEmpty()) selector -> addToken(state, token, rel);
-                    state = (SState)*it;
-                } else token.append(*it);
+                state = (SState)*pdata;
             break;}
 
-            case attr_token:
-            case attr_separator: {
-                in_attr |= attr_token == *it;
-                selector -> addToken(state, token, rel);
-                state = Selector::attr;
+
+            case sel_attr_eq:
+            case sel_attr_begin:
+            case sel_attr_begin2:
+            case sel_attr_end:
+            case sel_attr_not: {
+                // write me
             break;}
 
-            case attr_rel_eq:
-            case attr_rel_begin:
-            case attr_rel_end:
-            case attr_rel_match:
-            case attr_rel_not: {
-                token.append((rel = *it));
-            break;}
 
-            case back_direct_token:
-            case direct_token: {
-                if (!token.isEmpty()) selector -> addToken(state, token, rel);
-                selector = new Selector((SType)*it, selector);
+            case sel_attr_token_end: {
+                in_attr = false;
+                if (TOKEN_BUFF_VALID) {
+                    selector -> addToken(state, TOKEN_BUFF, *rel);
+                    stoken = pdata + 1;
+                }
                 state = Selector::tag;
             break;}
 
-            case space_token: {
-                if (state != attr) {
-                    if (!token.isEmpty())
-                        selector -> addToken(state, token, rel);
-                    selector = new Selector(forward, selector);
+            case sel_attr_token: {
+                in_attr = true;
+            }
+
+            case sel_attr_match2:
+            case sel_attr_type_token: {
+                // write me
+
+                if (TOKEN_BUFF_VALID) {
+                    selector -> addToken(state, TOKEN_BUFF, *rel);
+                    stoken = pdata + 1;
+                }
+
+                state = (SState)*pdata;
+            }
+
+            case in_text: {
+                if (*stoken == *pdata && *(pdata - 1) != '/') {
+                    // save
+
+                    state = attr;
+                }
+            break;}
+
+            case sel_cont1_token:
+            case sel_cont2_token: {
+                // save
+                stoken = pdata + 1;
+                state = in_text;
+            break;}
+
+            case sel_rel_attr_match:
+            case sel_rel_any:
+            case sel_rel_back_parent:
+            case sel_rel_back_sibling:
+            case sel_rel_sibling:
+            case sel_rel_parent: {
+                if (!in_attr) {
+                    selector = new Selector((STurn)*pdata, selector);
+                    stoken = pdata + 1;
                     state = Selector::tag;
                 }
             break;}
 
-            case cont1_token:
-            case cont2_token: break; // skipping
+            case sel_attr_separator: {
+                selector = new Selector(selector -> turn, selector -> prev);
+                stoken = pdata + 1;
+                state = Selector::tag;
+            break;}
 
-            default: token.append(*it);
+            default:;
         }
 
-        it++;
+        pdata++;
     }
 
-    if (!token.isEmpty()) selector -> addToken(state, token, rel);
+//    if (!token.isEmpty()) selector -> addToken(state, token, rel);
 }

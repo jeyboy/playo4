@@ -10,18 +10,18 @@ namespace Html {
     class Selector;
 
     class HTMLSHARED_EXPORT Set : public QList<Tag *> {
-        Set & find(const Selector * selector, Set & set, const bool & findFirst = false) const;
+        Set & find(const Selector * selector, Set & set, const bool & find_first = false) const;
         friend class Tag;
     public:
         QString link();
         QString text();
         QString value(const QByteArray & name = attr_default);
 
-        inline Set find(const Selector * selector, bool findFirst = false) const {
+        inline Set find(const Selector * selector, bool find_first = false) const {
             Set set;
-            return find(selector, set, findFirst);
+            return find(selector, set, find_first);
         }
-        Set find(const char * predicate, const bool & findFirst = false) const;
+        Set find(const char * predicate, const bool & find_first = false) const;
         inline Tag * findFirst(const char * predicate) const {
             Set set = find(predicate, true);
             return set.isEmpty() ? 0 : set.first();

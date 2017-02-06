@@ -31,7 +31,10 @@ public:
     HtmlTest();
 
 private Q_SLOTS:
-    void measurementParsing();
+    void measurementSelectionParsing();
+
+
+//    void measurementParsing();
 //    void measurementSelection();
 
 //    void testHtmlDoctype();
@@ -75,11 +78,17 @@ HtmlTest::HtmlTest() {
 //    saveData(LSTR("_out.txt"), p.toByteArray());
 }
 
-void HtmlTest::measurementParsing() {
+void HtmlTest::measurementSelectionParsing() {
     QBENCHMARK {
-        Page(loadData(TEST_FOURSHARED_PATH));
+        Selector("> :active:3[name='Loop' top] div p.loop #id.tool .yopt ['piza to'=123] p[text='sdfsdf \'ssda'],a:active > .sos ");
     }
 }
+
+//void HtmlTest::measurementParsing() {
+//    QBENCHMARK {
+//        Page(loadData(TEST_FOURSHARED_PATH));
+//    }
+//}
 
 //void HtmlTest::measurementSelection() {
 //    Page page(loadData(TEST_FOURSHARED_PATH));

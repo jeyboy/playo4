@@ -9,27 +9,30 @@ QString Set::link() { return (isEmpty()) ? QString() : first() -> link(); }
 QString Set::text() { return (isEmpty()) ? QString() : first() -> text(); }
 QString Set::value(const QByteArray & name) { return (isEmpty()) ? QString() : first() -> value(name); }
 
-Set Set::find(const char * predicate, const bool & findFirst) const {
+Set Set::find(const char * predicate, const bool & find_first) const {
     Selector selector(predicate);
-    return find(&selector, findFirst);
+    return find(&selector, find_first);
 }
 
-Set & Set::find(const Selector * selector, Set & set, const bool & findFirst) const {
+Set & Set::find(const Selector * selector, Set & set, const bool & find_first) const {
     for(Set::ConstIterator tag = cbegin(); tag != cend(); tag++) {
         if ((*tag) -> validTo(selector)) {
-                if (selector -> next) {
-                    if (selector -> next -> isBackward()) {
-                        (*tag) -> backwardFind(selector -> next, set);
-                        if (findFirst) break;
-                    } else if (!(*tag) -> children().isEmpty())
-                        (*tag) -> children().find(selector -> next, set);
+                if (!selector -> next.isEmpty()) {
+                    for(QList<Selector *>::ConstIterator next_selector = selector -> next.constBegin(); next_selector != selector -> next.constEnd(); next_selector++) {
+                        if ((*next_selector) -> isBackward()) {
+                            (*tag) -> backwardFind((*next_selector), set);
+                        } else if (!(*tag) -> hasChildren())
+                            (*tag) -> children().find((*next_selector), set);
+
+                        if (find_first) return set;
+                    }
                 }
                 else {
                     set.append((*tag));
-                    if (findFirst) break;
+                    if (find_first) break;
                 }
         }
-        else if (!selector -> isDirect() && !(*tag) -> children().isEmpty())
+        else if (!selector -> isDirect() && !(*tag) -> hasChildren())
             (*tag) -> children().find(selector, set);
     }
 

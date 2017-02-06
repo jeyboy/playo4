@@ -38,13 +38,14 @@ namespace Html {
 
         static Tag * stub() { return new Tag(HTML_ANY_TAG); }
 
-        inline Tag(const QByteArray & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> level() + 1 : 0), _name(tag), parent(parent_tag) {}
+        inline Tag(const QByteArray & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> _level + 1 : 0), _name(tag), parent(parent_tag) {}
         inline ~Tag() { qDeleteAll(tags); }
 
         inline int level() const { return _level; }
         inline QByteArray name() const { return _name; }
         inline QHash<QByteArray, QByteArray> attributes() const { return attrs; }
         inline Set children() const { return tags; }
+        inline bool hasChildren() const { return !tags.isEmpty(); }
         inline QString data(const QByteArray & name) const { return value("data-" % name); }
         inline QString src() const { return value(attr_src); }
         inline QString link() const { return attrs.value(attr_href); }
