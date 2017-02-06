@@ -53,6 +53,7 @@ namespace Html {
 
         void addToken(const SState & state, const QByteArray & token, const char & rel);
 
+        inline bool isDirect() const { return turn == parent; }
         inline bool isBackward() const { return turn == parent_back || turn == sibling_back; }
 
         QList<QByteArray> _classes;

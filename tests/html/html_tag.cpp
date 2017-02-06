@@ -260,7 +260,7 @@ Set & Tag::backwardFind(Selector * selector, Set & set) {
     if (!parent) return set;
 
     if (parent -> validTo(selector))
-        selector = selector -> next;
+        selector = selector -> prev/*next*/;
 
     if (!selector)
         set.append(parent);

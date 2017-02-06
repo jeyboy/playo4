@@ -113,7 +113,7 @@ namespace Html {
 
         inline QByteArray toByteArray() { return root -> toByteArray(); }
 
-        inline bool hasChilds(const char * predicate) const { return root -> hasChilds(predicate); }
+        inline bool hasChildren(const char * predicate) const { return root -> hasChildren(predicate); }
 
         Tag * findFirst(const char * predicate) const;
         Set find(const char * predicate) const;

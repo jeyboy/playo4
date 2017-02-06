@@ -45,7 +45,6 @@ namespace Html {
         inline QByteArray name() const { return _name; }
         inline QHash<QByteArray, QByteArray> attributes() const { return attrs; }
         inline Set children() const { return tags; }
-        inline bool hasChildren() const { return !tags.isEmpty(); }
         inline QString data(const QByteArray & name) const { return value("data-" % name); }
         inline QString src() const { return value(attr_src); }
         inline QString link() const { return attrs.value(attr_href); }
@@ -101,7 +100,7 @@ namespace Html {
             return attrs[attr_class].split(tkn_split).contains(class_name);
         }
         inline bool hasAttr(const QByteArray & attr_name = attr_checked) const { return attrs.contains(attr_name); }
-        inline bool hasChilds(const char * predicate) const { return !find(predicate).isEmpty(); }
+        inline bool hasChildren(const char * predicate = 0) const { return !(predicate ? find(predicate).isEmpty() : tags.isEmpty()); }
 
         inline Set find(const Selector * selector) const { return tags.find(selector); }
         Set find(const char * predicate) const;
