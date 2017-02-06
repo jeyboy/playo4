@@ -42,9 +42,9 @@ void Page::parse(const char * data) {
 
     while(*pdata) {
         if (*pdata < 32 && *pdata > 0) { // skip not printable trash
-            pdata++;
+            if (sname && !NBUFF_VALID) sname++;
 
-            if (sname && !NAME_BUFF_VALID) sname++;
+            pdata++;
             continue;
         }
 
@@ -52,7 +52,7 @@ void Page::parse(const char * data) {
             case content: {
                 switch(*pdata) {
                     case space: {
-                        if (sname && !NAME_BUFF_VALID) sname++;
+                        if (sname && !NBUFF_VALID) sname++;
                     break;}
 
                     case open_tag: {
@@ -143,7 +143,7 @@ void Page::parse(const char * data) {
             case code: {
                 switch(*pdata) {
                     case space: {
-                        if (sname && !NAME_BUFF_VALID) sname++;
+                        if (sname && !NBUFF_VALID) sname++;
                     break;}
 
                     case open_tag: {

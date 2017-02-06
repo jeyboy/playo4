@@ -8,7 +8,7 @@
 #include <qhash.h>
 
 #define TOKEN_BUFF QByteArray(stoken, (etoken ? etoken : pdata) - stoken)
-#define TOKEN_BUFF_VALID (stoken && (pdata - stoken) > 1)
+#define TOKEN_BUFF_VALID (stoken && (pdata - stoken) > 0)
 
 namespace Html {
     struct HTMLSHARED_EXPORT Selector {
@@ -38,12 +38,12 @@ namespace Html {
             sel_cont2_token = 39 // '
         };
         enum STurn { any = sel_rel_any, parent = sel_rel_parent, sibling = sel_rel_sibling, parent_back = sel_rel_back_parent, sibling_back = sel_rel_back_sibling };
-        enum SState { none = sel_attr_end, tag, limit, attr, id = sel_id_token, klass = sel_class_token, attr_type = sel_attr_type_token, in_text };
+        enum SState { st_none = sel_attr_end, st_tag, st_limit, st_attr, st_id = sel_id_token, st_class = sel_class_token, st_attr_type = sel_attr_type_token, st_in_text };
 
         Selector(const char * predicate);
 
         inline Selector(const STurn & turn = any, Selector * prev = 0)
-            : turn(turn), pos_limit(-1), prev(prev)/*, next(0)*/
+            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev)/*, next(0)*/
         {
 //            if (prev) prev -> next = this;
             if (prev) prev -> next << this;
@@ -58,7 +58,8 @@ namespace Html {
 
         QList<QByteArray> _classes;
 //        QHash<SState, QByteArray> _limitations;
-        QHash<SState, QByteArray> _tokens;
+//        QHash<SState, QByteArray> _tokens;
+        QByteArray _token;
         QHash<QByteArray, QPair<char, QByteArray> > _attrs;
         STurn turn;
         int pos_limit;
