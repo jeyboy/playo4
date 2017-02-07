@@ -8,7 +8,8 @@
 #include <qhash.h>
 
 #define TOKEN_BUFF QByteArray(stoken, (etoken ? etoken : pdata) - stoken)
-#define TOKEN_BUFF_VALID (stoken && (pdata - stoken) > 0)
+#define TBUFF_VALID ((pdata - stoken) > 0)
+#define TOKEN_BUFF_VALID (stoken && TBUFF_VALID)
 
 namespace Html {
     struct HTMLSHARED_EXPORT Selector {
@@ -51,7 +52,10 @@ namespace Html {
         inline ~Selector() { qDeleteAll(next); }
         Selector operator= (const char * x) { return Selector(x); }
 
-        void addToken(const SState & state, const QByteArray & token, const char & rel);
+        void setTag(const QByteArray & tag);
+        void addClass(const QByteArray & token);
+        void addLimitation(const QByteArray & token);
+        void addAttr(const QByteArray & name, const QByteArray & val, const char & rel);
 
         inline bool isDirect() const { return turn == parent; }
         inline bool isBackward() const { return turn == parent_back || turn == sibling_back; }

@@ -31,7 +31,7 @@ public:
     HtmlTest();
 
 private Q_SLOTS:
-//    void measurementSelectionParsing();
+    void measurementSelectionParsing();
 
 
 //    void measurementParsing();
@@ -74,15 +74,15 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
-    Page p(loadData(TEST_ELEM_ATTRS_PATH));
-    saveData(LSTR("_out.txt"), p.toByteArray());
+//    Page p(loadData(TEST_YOUTUBE_PATH));
+//    saveData(LSTR("_out.txt"), p.toByteArray());
 }
 
-//void HtmlTest::measurementSelectionParsing() {
-//    QBENCHMARK {
-//        Selector("> :active:3[name='Loop' top] div p.loop #id.tool .yopt ['piza to'=123] p[text='sdfsdf \'ssda'],a:active > .sos ");
-//    }
-//}
+void HtmlTest::measurementSelectionParsing() {
+    QBENCHMARK {
+        Selector("> :active:3[name='Loop' top] div p.loop #id.tool .yopt ['piza to'=123] p[text='sdfsdf \'ssda'],a:active > .sos ");
+    }
+}
 
 //void HtmlTest::measurementParsing() {
 //    QBENCHMARK {

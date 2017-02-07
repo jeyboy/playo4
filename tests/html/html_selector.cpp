@@ -2,33 +2,36 @@
 
 using namespace Html;
 
-void Selector::addToken(const SState & state, const QByteArray & token, const char & rel) {
-    switch(state) {
-        case st_attr: {
-            QList<QByteArray> parts = token.split(rel);
-            if (parts.length() > 1)
-                _attrs.insert(parts.first(), QPair<char, QByteArray>(rel, parts.last()));
-            else
-                _attrs.insert(parts.first(), QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
-        break;}
-        case st_class: {
-            _classes.append(token.split(' '));
-        break;}
-        case st_tag: {
-            _token = token;
-        break;}
-        case st_attr_type: {
-            _attrs.insert(token, QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
-        }
-        default:;
-    }
+void Selector::setTag(const QByteArray & tag) {
+    _token = token;
+}
+
+void Selector::addClass(const QByteArray & token) {
+    _classes.append(token.split(' '));
+}
+
+void Selector::addLimitation(const QByteArray & token) {
+    bool ok;
+    int level = token.toInt(&ok, 10);
+    if (ok)
+        pos_limit = level;
+    else
+        _attrs.insert(token, QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
+}
+
+void Selector::addAttr(const QByteArray & name, const QByteArray & val, const char & rel) {
+    QList<QByteArray> parts = token.split(rel);
+    if (parts.length() > 1)
+        _attrs.insert(parts.first(), QPair<char, QByteArray>(rel, parts.last()));
+    else
+        _attrs.insert(parts.first(), QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
 }
 
 //TODO: add :3 - position limitation
 Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), pos_limit(-1), prev(0)/*, next(0)*/ {
     SState state = st_tag;
     Selector * selector = this;
-    const char * pdata = predicate, * stoken = pdata, *etoken = 0, * rel = 0;
+    const char * pdata = predicate, * stoken = pdata, * etoken = 0, * rel = 0, * sval = 0;
     bool in_attr = false;
 
     //> *:active:3[name='Loop' top] div p.loop #id.tool .yopt ['piza to'=123] p[text='sdfsdf \'ssda'],a:active > .sos
@@ -62,6 +65,9 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
                     case sel_attr_end:
                     case sel_attr_not: {
                         // write me
+                        etoken = pdata;
+                        rel = pdata;
+                        sval = pdata + 1;
                     break;}
 
 
@@ -97,8 +103,8 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
                     break;}
 
                     case sel_rel_any: {
-                        if (!in_attr && state == st_tag) {
-                            pdata++;
+                        if (stoken && !TBUFF_VALID/*!in_attr && state == st_tag*/) {
+                            stoken = ++pdata;
                             continue;
                         }
                     }
