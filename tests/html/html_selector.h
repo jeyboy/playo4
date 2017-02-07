@@ -10,6 +10,7 @@
 #define TOKEN_BUFF QByteArray(stoken, (etoken ? etoken : pdata) - stoken)
 #define TBUFF_VALID ((pdata - stoken) > 0)
 #define TOKEN_BUFF_VALID (stoken && TBUFF_VALID)
+#define VAL_BUFF (sval == 0 ? QByteArray() : QByteArray(sval, pdata - sval))
 
 namespace Html {
     struct HTMLSHARED_EXPORT Selector {
@@ -27,8 +28,8 @@ namespace Html {
             sel_attr_not = 33, // !
             sel_attr_match2 = 42, // *
             sel_attr_type_token = 58, // :
-            sel_rel_attr_match = 126, // ~ // ul ~ table // All <table> elements that are siblings of a <ul> element.
 
+            sel_rel_attr_match = 126, // ~ // ul ~ table // All <table> elements that are siblings of a <ul> element.
             sel_rel_parent = 62, // > // div > p // All <p> elements where the parent is a <div> element.
             sel_rel_any = 32,
             sel_rel_sibling = 43, // + // ul + h3 // The <h3> element that are next to each <ul> elements.
@@ -39,7 +40,7 @@ namespace Html {
             sel_cont2_token = 39 // '
         };
         enum STurn { any = sel_rel_any, parent = sel_rel_parent, sibling = sel_rel_sibling, parent_back = sel_rel_back_parent, sibling_back = sel_rel_back_sibling };
-        enum SState { st_none = sel_attr_end, st_tag, st_limit, st_attr, st_id = sel_id_token, st_class = sel_class_token, st_attr_type = sel_attr_type_token, st_in_text };
+        enum SState { st_none = sel_attr_end, st_tag, st_limit, st_attr, st_attr_value, st_id = sel_id_token, st_class = sel_class_token, st_attr_type = sel_attr_type_token, st_in_name, st_in_val };
 
         Selector(const char * predicate);
 
@@ -52,9 +53,7 @@ namespace Html {
         inline ~Selector() { qDeleteAll(next); }
         Selector operator= (const char * x) { return Selector(x); }
 
-        void setTag(const QByteArray & tag);
-        void addClass(const QByteArray & token);
-        void addLimitation(const QByteArray & token);
+        void addPredicate(const SState & state, const QByteArray & token);
         void addAttr(const QByteArray & name, const QByteArray & val, const char & rel);
 
         inline bool isDirect() const { return turn == parent; }

@@ -80,7 +80,7 @@ HtmlTest::HtmlTest() {
 
 void HtmlTest::measurementSelectionParsing() {
     QBENCHMARK {
-        Selector("> :active:3[name='Loop' top] div p.loop #id.tool .yopt ['piza to'=123] p[text='sdfsdf \'ssda'],a:active > .sos ");
+        Selector("> *:active:3[name='Loop' top] div p.loop #id.tool .yopt[gog loh] ['piza to'=123] p[text*'sdfsdf \'ssda'],a:active > .sos");
     }
 }
 
