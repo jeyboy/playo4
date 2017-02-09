@@ -12,6 +12,32 @@
 #define TOKEN_BUFF_VALID (stoken && TBUFF_VALID)
 #define VAL_BUFF (sval == 0 ? QByteArray() : QByteArray(sval, pdata - sval))
 
+#define SELECTOR_ADD_ATTR(token_data) \
+    {\
+        if (TOKEN_BUFF_VALID) { \
+            selector -> addAttr(TOKEN_BUFF, VAL_BUFF, *rel);\
+            etoken = 0; sval = 0; rel = 0; \
+        }\
+        stoken = token_data;\
+    }
+
+#define SELECTOR_ADD_PREDICATE(token_data) \
+    {\
+        if (TOKEN_BUFF_VALID) {\
+            selector -> addPredicate(state, TOKEN_BUFF);\
+            rel = 0; \
+        }\
+        stoken = token_data;\
+    }
+
+#define SELECTOR_PARSE_ERROR(message) \
+    {\
+        has_error = true;\
+        error = message;\
+        return;\
+    }
+
+
 namespace Html {
     struct HTMLSHARED_EXPORT Selector {
         enum SToken {
@@ -45,7 +71,7 @@ namespace Html {
         Selector(const char * predicate);
 
         inline Selector(const STurn & turn = any, Selector * prev = 0)
-            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev)/*, next(0)*/
+            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev)/*, next(0)*/, has_error(false)
         {
 //            if (prev) prev -> next = this;
             if (prev) prev -> next << this;
@@ -69,6 +95,8 @@ namespace Html {
 
         Selector * prev;
         QList<Selector *> next;
+        bool has_error;
+        QString error;
     };
 }
 

@@ -28,7 +28,7 @@ void Selector::addAttr(const QByteArray & name, const QByteArray & val, const ch
 }
 
 //TODO: add :3 - position limitation
-Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), pos_limit(-1), prev(0)/*, next(0)*/ {
+Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), pos_limit(-1), prev(0)/*, next(0)*/, has_error(false) {
     SState state = st_tag;
     Selector * selector = this;
     const char * pdata = predicate, * stoken = pdata, * etoken = 0, * rel = 0, * sval = 0;
@@ -39,31 +39,30 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
     while(*pdata) {
         switch(state) {
             case st_in_name: {
-                if (*stoken == *pdata && *(pdata - 1) != '/')
+                if (*stoken == *pdata && *(pdata - 1) != '/') {
                     state = st_attr;
+                    stoken++; etoken = pdata;
+                }
             break;}
             case st_in_val: {
-                if (*sval == *pdata && *(pdata - 1) != '/')
+                if (*sval == *pdata && *(pdata - 1) != '/') {
+                    sval++;
+                    SELECTOR_ADD_ATTR(0);
                     state = st_attr;
+                }
             break;}
 
             default: {
                 switch(*pdata) {
                     case sel_id_token:
                     case sel_class_token: {
-                        if (TOKEN_BUFF_VALID) {
-                            selector -> addPredicate(state, TOKEN_BUFF);
-                            stoken = pdata + 1;
-                        }
-
+                        SELECTOR_ADD_PREDICATE(pdata + 1)
                         state = (SState)*pdata;
                     break;}
 
                     case sel_attr_match2:{
-                        if (!in_attr) {
-                            pdata++;
-                            continue;
-                        }
+                        if (!in_attr)
+                            goto continue_mark;
                     }
                     case sel_attr_eq:
                     case sel_attr_begin:
@@ -72,7 +71,8 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
                     case sel_attr_not: {
                     attr_rel_mark:
                         state = st_attr_value;
-                        etoken = pdata;
+                        if (!etoken) // if name surrounded by quotes we should ignore this etoken
+                            etoken = pdata;
                         rel = pdata;
                         sval = pdata + 1;
                     break;}
@@ -80,20 +80,14 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
 
                     case sel_attr_token_end: {
                         in_attr = false;
-                        if (TOKEN_BUFF_VALID) {
-                            selector -> addAttr(TOKEN_BUFF, VAL_BUFF, *rel);
-                            stoken = pdata + 1;
-                        }
+                        SELECTOR_ADD_ATTR(pdata + 1);
                         state = st_tag;
                     break;}
 
                     case sel_attr_token: {
                         in_attr = true;
-
-                        if (TOKEN_BUFF_VALID)
-                            selector -> addPredicate(state, TOKEN_BUFF);
-
-                        stoken = pdata + 1;
+                        rel = 0;
+                        SELECTOR_ADD_PREDICATE(pdata + 1)
                         state = st_attr;
                     break;}
 
@@ -103,16 +97,16 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
                             int y = 0;
                         }
                         else {
-                            if (TOKEN_BUFF_VALID)
-                                selector -> addPredicate(state, TOKEN_BUFF);
-
-                            stoken = pdata + 1;
+                            SELECTOR_ADD_PREDICATE(pdata + 1)
                             state = (SState)*pdata;
                         }
                     break;}
 
                     case sel_cont1_token:
                     case sel_cont2_token: {
+                        if (!in_attr)
+                            SELECTOR_PARSE_ERROR(LSTR("quotas is not possible outside of attrs"));
+
                         if (state == st_attr_value)
                             state = st_in_val;
                         else
@@ -121,32 +115,43 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
                     break;}
 
                     case sel_rel_any: {
-                        if (in_attr) {
-                            if (TOKEN_BUFF_VALID) {
-                                selector -> addAttr(TOKEN_BUFF, VAL_BUFF, rel);
-                            }
-                        } else {
-                            if (stoken && !TBUFF_VALID/*!in_attr && state == st_tag*/) {
-                                stoken = ++pdata;
-                                continue;
+                        if (*(pdata + 1) != sel_rel_any) { // ignore multiple spaces
+                            if (in_attr) {
+                                SELECTOR_ADD_ATTR(pdata + 1);
+                                state = st_attr;
+                            } else {
+                                SELECTOR_ADD_PREDICATE(pdata + 1);
+
+                                if (!rel) {
+                                    selector = new Selector((STurn)*pdata, selector);
+                                    rel = pdata;
+                                }
+                                state = st_tag;
                             }
                         }
-                    }
+                    break;}
 
                     case sel_rel_attr_match: {
-                        if (in_attr) {
+                        if (in_attr)
                             goto attr_rel_mark;
-                        }
                     }
                     case sel_rel_back_parent:
                     case sel_rel_back_sibling:
                     case sel_rel_sibling:
                     case sel_rel_parent: {
                         if (!in_attr) {
-                            selector = new Selector((STurn)*pdata, selector);
+                            if (!rel)
+                                selector = new Selector((STurn)*pdata, selector);
+                            else if (*rel == sel_rel_any)
+                                selector -> turn = (STurn)*pdata;
+                            else
+                                SELECTOR_PARSE_ERROR(LSTR("couple of relations inputed: ") % *pdata);
+
+                            rel = pdata;
                             stoken = pdata + 1;
                             state = st_tag;
                         }
+                        else SELECTOR_PARSE_ERROR(LSTR("incorrect relation in attributes: ") % *pdata);
                     break;}
 
                     case sel_attr_separator: {
@@ -160,8 +165,9 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
             }
         }
 
-        pdata++;
+        continue_mark:
+            pdata++;
     }
 
-//    if (!token.isEmpty()) selector -> addToken(state, token, rel);
+    SELECTOR_ADD_PREDICATE(0);
 }
