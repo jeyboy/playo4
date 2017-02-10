@@ -11,7 +11,7 @@ public:
     HtmlTest();
 
 private Q_SLOTS:
-//    void measurementSelectionParsing();
+    void measurementSelectionParsing();
 
 //    void measurementParsing();
 //    void measurementSelection();
@@ -57,9 +57,10 @@ HtmlTest::HtmlTest() {
 //    saveData(LSTR("_out.txt"), p.toByteArray());
 }
 
-//void HtmlTest::measurementSelectionParsing() {
-//    QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }
-//}
+void HtmlTest::measurementSelectionParsing() {
+    QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }
+//    QBENCHMARK { Selector(TestData::dataSelectorParsingWithBranching()); }
+}
 
 //void HtmlTest::measurementParsing() {
 //    QString html_data = TestData::dataHtmlFourshared();

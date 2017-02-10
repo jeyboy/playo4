@@ -4,6 +4,8 @@
 using namespace Html;
 
 void Selector::addPredicate(const SState & state, const QByteArray & token) {
+    qDebug() << "PREDICATE" << token;
+
     switch(state) {
         case st_tag: { _token = token; break;}
         case st_id: { _attrs.insert(attr_id, QPair<char, QByteArray>(sel_attr_eq, token)); break; }
@@ -16,19 +18,24 @@ void Selector::addPredicate(const SState & state, const QByteArray & token) {
             else
                 _attrs.insert(token, QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
         break;}
-        default: qDebug() << "pipec";
+        default: qDebug() << "!!! pipec";
     }
 }
 
 void Selector::addAttr(const QByteArray & name, const QByteArray & val, const char & rel) {
-    if (val.isEmpty())
+    if (val.isEmpty()) {
+        qDebug() << "ATTR" << name << QChar(sel_attr_eq) << tkn_any_elem;
         _attrs.insert(name, QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
-    else
+    } else {
+        qDebug() << "ATTR" << name << rel << val;
         _attrs.insert(name, QPair<char, QByteArray>(rel, val));
+    }
 }
 
 //TODO: add :3 - position limitation
-Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), pos_limit(-1), prev(0)/*, next(0)*/, has_error(false) {
+Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any),
+    pos_limit(-1), prev(0)/*, next(0)*/, has_error(false), error(0)
+{
     SState state = st_tag;
     Selector * selector = this;
     const char * pdata = predicate, * stoken = pdata, * etoken = 0, * rel = 0, * sval = 0;
@@ -39,13 +46,13 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any), po
     while(*pdata) {
         switch(state) {
             case st_in_name: {
-                if (*stoken == *pdata && *(pdata - 1) != '/') {
+                if (*stoken == *pdata && *(pdata - 1) != '\\') {
                     state = st_attr;
                     stoken++; etoken = pdata;
                 }
             break;}
             case st_in_val: {
-                if (*sval == *pdata && *(pdata - 1) != '/') {
+                if (*sval == *pdata && *(pdata - 1) != '\\') {
                     sval++;
                     SELECTOR_ADD_ATTR(0);
                     state = st_attr;

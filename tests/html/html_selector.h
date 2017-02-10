@@ -6,6 +6,7 @@
 #include <qpair.h>
 #include <qlist.h>
 #include <qhash.h>
+#include <qdebug.h>
 
 #define TOKEN_BUFF QByteArray(stoken, (etoken ? etoken : pdata) - stoken)
 #define TBUFF_VALID ((pdata - stoken) > 0)
@@ -32,8 +33,11 @@
 
 #define SELECTOR_PARSE_ERROR(message) \
     {\
-        has_error = true;\
-        error = message;\
+        Selector * curr = this; \
+        while(curr -> prev) \
+            curr = curr ->  prev; \
+        curr -> has_error = true;\
+        curr -> error = new QString(message);\
         return;\
     }
 
@@ -71,12 +75,17 @@ namespace Html {
         Selector(const char * predicate);
 
         inline Selector(const STurn & turn = any, Selector * prev = 0)
-            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev)/*, next(0)*/, has_error(false)
+            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev)/*, next(0)*/, has_error(false), error(0)
         {
+            qDebug() << "SELECTOR" << QChar(turn);
+
 //            if (prev) prev -> next = this;
             if (prev) prev -> next << this;
         }
-        inline ~Selector() { qDeleteAll(next); }
+        inline ~Selector() {
+            qDeleteAll(next);
+            delete error;
+        }
         Selector operator= (const char * x) { return Selector(x); }
 
         void addPredicate(const SState & state, const QByteArray & token);
@@ -96,7 +105,7 @@ namespace Html {
         Selector * prev;
         QList<Selector *> next;
         bool has_error;
-        QString error;
+        QString * error;
     };
 }
 
