@@ -7,32 +7,11 @@
 
 class HtmlTest : public QObject {
     Q_OBJECT
-
-    QString loadData(const QString & path) {
-        QString res;
-        QFile f(path);
-        if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            res = f.readAll();
-            f.close();
-        }
-        else qDebug() << "Error file opening" << path;
-
-        return res;
-    }
-
-    void saveData(const QString & name, const QByteArray & content) {
-        QFile f(DATA_PATH(name));
-        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            f.write(content);
-            f.close();
-        }
-    }
 public:
     HtmlTest();
 
 private Q_SLOTS:
-    void measurementSelectionParsing();
-
+//    void measurementSelectionParsing();
 
 //    void measurementParsing();
 //    void measurementSelection();
@@ -55,7 +34,7 @@ private Q_SLOTS:
 
 //    void testElementTextExtraction();
 //    void testElementAttrsExtraction();
-//    void testElementAttrsWithoutQuotasExtraction();
+//    void testElementAttrsWithoutQuotesExtraction();
 
 //    void testElementClasses();
 //    void testElementId();
@@ -78,37 +57,31 @@ HtmlTest::HtmlTest() {
 //    saveData(LSTR("_out.txt"), p.toByteArray());
 }
 
-void HtmlTest::measurementSelectionParsing() {
-    QBENCHMARK {
-        Selector("> *:active:3[name='Loop' top] div p.loop #id.tool .yopt[gog loh] ['piza to'=123] p[text*'sdfsdf \'ssda'],a:active > .sos");
-    }
-}
+//void HtmlTest::measurementSelectionParsing() {
+//    QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }
+//}
 
 //void HtmlTest::measurementParsing() {
-//    QBENCHMARK {
-//        Page(loadData(TEST_FOURSHARED_PATH));
-//    }
+//    QString html_data = TestData::dataHtmlFourshared();
+//    QBENCHMARK { Page(html_data.toUtf8().constData()); }
 //}
 
 //void HtmlTest::measurementSelection() {
-//    Page page(loadData(TEST_FOURSHARED_PATH));
-
-//    QBENCHMARK {
-//        page.find(".row");
-//    }
+//    Page page(TestData::dataHtmlFourshared());
+//    QBENCHMARK { page.find(".row"); }
 //}
 
 //void HtmlTest::testHtmlDoctype() {
-//    Page page(loadData(TEST_ELEM_ATTRS_PATH));
+//    Page page(TestData::dataHtmlParserAttrs());
 //    QVERIFY2(!page.isXml(), "Failure");
 //}
 //void HtmlTest::testXmlDoctype() {
-//    Page page(loadData(TEST_XML_PATH));
+//    Page page(TestData::dataXmlParser());
 //    QVERIFY2(page.isXml(), "Failure");
 //}
 
 //void HtmlTest::testHtmlBaseTemplate() {
-//    Page page(loadData(TEST_BASE_TEMPLATE_PATH));
+//    Page page(TestData::dataHtmlParserBaseTemplate());
 //    Tag * h1_tag = page.findFirst("h1");
 //    Tag * p_tag = page.findFirst("p");
 
@@ -119,7 +92,7 @@ void HtmlTest::measurementSelectionParsing() {
 //    );
 //}
 //void HtmlTest::testHtmlShortTemplate() {
-//    Page page(loadData(TEST_BASE_SHORT_TEMPLATE_PATH));
+//    Page page(TestData::dataHtmlParserShortTemplate());
 //    Tag * title_tag = page.findFirst("title");
 //    Tag * h1_tag = page.findFirst("h1");
 //    Tag * p_tag = page.findFirst("p");
@@ -133,11 +106,11 @@ void HtmlTest::measurementSelectionParsing() {
 //}
 
 //void HtmlTest::testCoding1251() {
-//    Page page(loadData(TEST_CODING_1251_PATH));
+//    Page page(TestData::dataHtmlParserCoding1251());
 //    QVERIFY2(page.charsetType() == Page::charset_cp1251, "Failure");
 //}
 //void HtmlTest::testCoding1251Decode() {
-//    Page page(loadData(TEST_CODING_1251_PATH));
+//    Page page(TestData::dataHtmlParserCoding1251());
 //    Tag * title_tag = page.findFirst("title");
 
 //    QVERIFY2(
@@ -147,11 +120,11 @@ void HtmlTest::measurementSelectionParsing() {
 //}
 
 //void HtmlTest::testCodingUtf8() {
-//    Page page(loadData(TEST_CODING_UTF8_PATH));
+//    Page page(TestData::dataHtmlParserCodingUtf8());
 //    QVERIFY2(page.charsetType() == Page::charset_utf8, "Failure");
 //}
 //void HtmlTest::testCodingUtf8Decode() {
-//    Page page(loadData(TEST_CODING_UTF8_PATH));
+//    Page page(TestData::dataHtmlParserCodingUtf8());
 //    Tag * title_tag = page.findFirst("title");
 //    QVERIFY2(
 //        title_tag && title_tag -> text() == LSTR("My First HTML"),
@@ -160,7 +133,7 @@ void HtmlTest::measurementSelectionParsing() {
 //}
 
 //void HtmlTest::testJS() {
-//    Page page(loadData(TEST_JS_PATH));
+//    Page page(TestData::dataHtmlParserJs2());
 //    Set script_tags = page.find("script");
 
 //    QVERIFY2(
@@ -170,11 +143,11 @@ void HtmlTest::measurementSelectionParsing() {
 //    );
 //}
 ////void HtmlTest::testCDATAJs() {
-////    Page page(loadData(TEST_CDATA_JS_PATH));
+////    Page page(TestData::dataHtmlParserCdataJs());
 
 ////}
 //void HtmlTest::testCDATAHtml() {
-//    Page page(loadData(TEST_CDATA_HTML_PATH));
+//    Page page(TestData::dataHtmlParserCdataHtml());
 //    Tag * div = page.findFirst("div");
 
 //    QVERIFY2(
@@ -185,13 +158,13 @@ void HtmlTest::measurementSelectionParsing() {
 //}
 
 //void HtmlTest::testElementTextExtraction() {
-//    Page page(loadData(TEST_ELEM_ATTRS_PATH));
+//    Page page(TestData::dataHtmlParserAttrs());
 //    Tag * h2_tag = page.findFirst("h2");
 
 //    QVERIFY2(h2_tag && h2_tag -> text() == LSTR("The title attribute"), "Failure");
 //}
 //void HtmlTest::testElementAttrsExtraction() {
-//    Page page(loadData(TEST_ELEM_ATTRS_PATH));
+//    Page page(TestData::dataHtmlParserAttrs());
 //    Tag * p_tag = page.findFirst("p");
 
 //    QVERIFY2(
@@ -199,8 +172,8 @@ void HtmlTest::measurementSelectionParsing() {
 //        "Failure"
 //    );
 //}
-//void HtmlTest::testElementAttrsWithoutQuotasExtraction() {
-//    Page page(loadData(TEST_ELEM_ATTRS_WITOUT_QUOTAS_PATH));
+//void HtmlTest::testElementAttrsWithoutQuotesExtraction() {
+//    Page page(TestData::dataHtmlParserAttrsWithoutQuotes());
 //    Tag * a_tag = page.findFirst("a");
 
 //    qDebug() << a_tag;
@@ -214,7 +187,7 @@ void HtmlTest::measurementSelectionParsing() {
 //}
 
 //void HtmlTest::testElementClasses() {
-//    Page page(loadData(TEST_CLASSES_PATH));
+//    Page page(TestData::dataHtmlParserClasses());
 //    QString cl1_cl2("cl1 cl2 classes");
 //    QString cl2_cl3("cl2 cl3 classes");
 
@@ -232,7 +205,7 @@ void HtmlTest::measurementSelectionParsing() {
 //    );
 //}
 //void HtmlTest::testElementId() {
-//    Page page(loadData(TEST_CLASSES_PATH));
+//    Page page(TestData::dataHtmlParserClasses());
 //    Set tags = page.find("#blia");
 
 //    QVERIFY2(
@@ -243,7 +216,7 @@ void HtmlTest::measurementSelectionParsing() {
 
 
 //void HtmlTest::testFormCheckboxes() {
-//    Page page(loadData(TEST_POST_FORM_CHECKBOX_PATH));
+//    Page page(TestData::dataHtmlParserCheckboxes());
 //    Tag * form_tag = page.findFirst("form");
 
 //    QUrl url = form_tag -> serializeFormToUrl();
@@ -257,7 +230,7 @@ void HtmlTest::measurementSelectionParsing() {
 //    );
 //}
 //void HtmlTest::testFormRadio() {
-//    Page page(loadData(TEST_POST_FORM_RADIO_PATH));
+//    Page page(TestData::dataHtmlParserRadios());
 //    Tag * form_tag = page.findFirst("form");
 
 //    QUrl url = form_tag -> serializeFormToUrl();
@@ -271,7 +244,7 @@ void HtmlTest::measurementSelectionParsing() {
 //    );
 //}
 //void HtmlTest::testFormSelect() {
-//    Page page(loadData(TEST_POST_FORM_SELECT_PATH));
+//    Page page(TestData::dataHtmlParserSelects());
 //    Tag * form_tag = page.findFirst("form");
 
 //    QUrl url = form_tag -> serializeFormToUrl();
@@ -285,7 +258,7 @@ void HtmlTest::measurementSelectionParsing() {
 //    );
 //}
 //void HtmlTest::testFormText() {
-//    Page page(loadData(TEST_POST_FORM_TEXT_PATH));
+//    Page page(TestData::dataHtmlParserTexts());
 //    Tag * form_tag = page.findFirst("form");
 
 //    QUrl url = form_tag -> serializeFormToUrl();
@@ -299,7 +272,7 @@ void HtmlTest::measurementSelectionParsing() {
 //    );
 //}
 //void HtmlTest::testFormTextArea() {
-//    Page page(loadData(TEST_POST_FORM_TEXT_PATH));
+//    Page page(TestData::dataHtmlParserTexts());
 //    Tag * form_tag = page.findFirst("form");
 
 //    QUrl url = form_tag -> serializeFormToUrl();
@@ -313,7 +286,7 @@ void HtmlTest::measurementSelectionParsing() {
 //}
 
 //void HtmlTest::testIframe() {
-//    Page page(loadData(TEST_IFRAME_PATH));
+//    Page page(TestData::dataHtmlParserIFrame());
 
 //    QVERIFY2(
 //        false,
