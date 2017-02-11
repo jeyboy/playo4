@@ -99,31 +99,7 @@ namespace Html {
         Tag * child(const QByteArray & name_predicate, const int & pos = 0) const;
         inline int childrenCount() { return _tags.size(); }
 
-        inline QHash<QByteArray, bool> * classes() {
-            if (!_classes) {
-                QByteArray klasses = _attrs.take(attr_class);
-                if (!klasses.isEmpty()) {
-                    _classes = new QHash<QByteArray, bool>();
-                    const char * data = klasses.constData(), * sdata = data;
-                    while(true) {
-                        switch(*data) {
-                            case 32: {
-                                _classes -> insert(QByteArray(sdata, data - sdata), true);
-                            break;}
-                            case 0: {
-                                _classes -> insert(QByteArray(sdata, data - sdata), true);
-                                break;
-                            }
-                            default:;
-                        }
-
-                        data++;
-                    }
-                }
-            }
-
-            return _classes;
-        }
+        QHash<QByteArray, bool> * classes();
         inline bool hasClass(const QByteArray & class_name) {
             return classes() -> contains(class_name);
         }

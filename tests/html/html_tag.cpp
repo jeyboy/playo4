@@ -139,6 +139,32 @@ Tag * Tag::child(const QByteArray & name_predicate, const int & pos) const {
     return 0;
 }
 
+QHash<QByteArray, bool> * Tag::classes() {
+    if (!_classes) {
+        QByteArray klasses = _attrs.take(attr_class);
+        if (!klasses.isEmpty()) {
+            _classes = new QHash<QByteArray, bool>();
+            const char * data = klasses.constData(), * sdata = data;
+            while(*data) {
+                switch(*data) {
+                    case 32: {
+                        if (data - sdata > 0)
+                            _classes -> insert(QByteArray(sdata, data - sdata), true);
+                        sdata = data + 1;
+                    break;}
+                    default:;
+                }
+
+                data++;
+            }
+
+            _classes -> insert(QByteArray(sdata, data - sdata), true);
+        }
+    }
+
+    return _classes;
+}
+
 Set Tag::find(const char * predicate) const {
     Selector selector(predicate);
     return _tags.find(&selector);
@@ -220,71 +246,13 @@ bool Tag::validTo(const Selector * selector) {
 
     if (!selector -> _classes.isEmpty()) {
         QHash<QByteArray, bool> * tag_classes = classes();
+        if (!tag_classes) return false;
 
         for(QList<QByteArray>::ConstIterator selector_class = selector -> _classes.cbegin(); selector_class != selector -> _classes.cend(); selector_class++) {
             if (!tag_classes -> contains(*selector_class))
                 return false;
         }
     }
-
-    return true;
-
-//    for(QHash<Selector::SState, QString>::ConstIterator it = selector -> _tokens.cbegin(); it != selector -> _tokens.cend(); it++) {
-//        switch(it.key()) {
-//            case Selector::tag: { if (!(it.value() == tkn_any_elem || _name == it.value())) return false; break; }
-//            case Selector::attr: {
-//                for(QHash<QString, QPair<char, QString> >::ConstIterator it = selector -> _attrs.cbegin(); it != selector -> _attrs.cend(); it++) {
-//                    QString tag_value = it.key() == LSTR("text") ? text() : attrs.value(it.key());
-//                    QString selector_value = it.value().second;
-
-//                    switch(it.value().first) {
-//                        case Selector::attr_rel_eq: {
-//                            if (!(attrs.contains(it.key()) && (selector_value == tkn_any_elem || tag_value == selector_value)))
-//                                return false;
-//                            break;}
-//                        case Selector::attr_rel_begin: {
-//                            if (!tag_value.startsWith(selector_value))
-//                                return false;
-//                            break;}
-//                        case Selector::attr_rel_end: {
-//                            if (!tag_value.endsWith(selector_value))
-//                                return false;
-//                            break;}
-//                        case Selector::attr_rel_match: {
-//                            if (tag_value.indexOf(selector_value) == -1)
-//                                return false;
-//                            break;}
-//                        case Selector::attr_rel_not: {
-//                            if (tag_value.indexOf(selector_value) != -1)
-//                                return false;
-//                            break;}
-
-//                        default: qDebug() << "UNSUPPORTED PREDICATE " << it.value().first;
-//                    };
-//                }
-//                break;
-//            }
-//            case Selector::id:  { if (attrs[attr_id] != it.value()) return false; break; }
-//            case Selector::klass: { //TODO: optimisation needed
-//                QStringList node_klasses = attrs[attr_class].split(tkn_split, QString::SkipEmptyParts);
-//                if (node_klasses.isEmpty()) return false;
-
-//                for(QStringList::ConstIterator it = selector -> klasses.cbegin(); it != selector -> klasses.cend(); it++) {
-//                    bool finded = false;
-//                    for(QStringList::Iterator xit = node_klasses.begin(); xit != node_klasses.end(); xit++) // TODO: if list generated each time - remove finded classes for speed up of the proccess of search
-//                        if ((finded = (*xit) == (*it))) break;
-
-//                    if (!finded) return false;
-//                }
-//                break;
-//            }
-//            case Selector::type: {
-//                if (!((_name == tag_input || _name == tag_select) && attrs[attr_type] == it.value())) return false;
-//                break;
-//            }
-//            default: ;
-//        }
-//    }
 
     return true;
 }

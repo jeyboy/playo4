@@ -21,7 +21,7 @@ namespace Html {
             Set set;
             return find(selector, set, find_first);
         }
-        Set find(const char * predicate, const bool & find_first = false) const;
+        Set find(const char * predicate, const bool & find_first) const;
         inline Tag * findFirst(const char * predicate) const {
             Set set = find(predicate, true);
             return set.isEmpty() ? 0 : set.first();

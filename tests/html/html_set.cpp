@@ -16,22 +16,26 @@ Set Set::find(const char * predicate, const bool & find_first) const {
 
 Set & Set::find(const Selector * selector, Set & set, const bool & find_first) const {
     for(Set::ConstIterator tag = cbegin(); tag != cend(); tag++) {
+        bool has_children = (*tag) -> hasChildren();
+
+        if (!has_children && selector -> next) continue; // ignore leafs if selector has next segment
+
         if ((*tag) -> validTo(selector)) {
                 if (selector -> next) {
-                    if (selector -> next -> isBackward()) {
+                    if (selector -> next -> isBackward())
                         (*tag) -> backwardFind(selector -> next, set);
-                    } else if (!(*tag) -> hasChildren())
+                    else if (has_children)
                         (*tag) -> children().find(selector -> next, set);
-
-                    if (find_first) return set;
                 }
                 else {
                     set.append((*tag));
                     if (find_first) break;
                 }
         }
-        else if (!selector -> isDirect() && !(*tag) -> hasChildren())
+        else if (!selector -> isDirect() && has_children)
             (*tag) -> children().find(selector, set);
+
+        if (find_first && !set.isEmpty()) break;
     }
 
     return set;
