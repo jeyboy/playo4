@@ -18,16 +18,17 @@ namespace Html {
     class HTMLSHARED_EXPORT Tag {
         int _level;
         QByteArray _name;
-        QHash<QByteArray, QByteArray> attrs;
-        Set tags;
+        QHash<QByteArray, QByteArray> _attrs;
+        QHash<QByteArray, bool> * _classes;
+        Set _tags;
         Tag * _parent;
 //        bool proceeded;
     protected:
         const static QHash<QByteArray, bool> solo;
 
-        QString selectValue() const;
-        QString radioValue() const;
-        QString textareaValue() const;
+        QByteArray selectValue() const;
+        QByteArray radioValue() const;
+        QByteArray textareaValue() const;
     public:
         enum FormSerializationFlags {
             fsf_none,
@@ -38,20 +39,23 @@ namespace Html {
 
         static Tag * stub() { return new Tag(HTML_ANY_TAG); }
 
-        inline Tag(const QByteArray & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> _level + 1 : 0), _name(tag), parent(parent_tag) {}
-        inline ~Tag() { qDeleteAll(tags); }
+        inline Tag(const QByteArray & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> _level + 1 : 0), _name(tag), _classes(0), _parent(parent_tag) {}
+        inline ~Tag() {
+            qDeleteAll(_tags);
+            delete _classes;
+        }
 
         inline int level() const { return _level; }
         inline QByteArray name() const { return _name; }
-        inline QHash<QByteArray, QByteArray> attributes() const { return attrs; }
-        inline Set children() const { return tags; }
-        inline QString data(const QByteArray & name) const { return value("data-" % name); }
-        inline QString src() const { return value(attr_src); }
-        inline QString link() const { return attrs.value(attr_href); }
+        inline QHash<QByteArray, QByteArray> attributes() const { return _attrs; }
+        inline Set children() const { return _tags; }
+        inline QByteArray data(const QByteArray & name) const { return value("data-" % name); }
+        inline QByteArray src() const { return value(attr_src); }
+        inline QByteArray link() const { return _attrs.value(attr_href); }
 
-        QString value(const QByteArray & name = attr_default) const;
-        QString text() const;
-        QString texts() const;
+        QByteArray value(const QByteArray & name = attr_default) const;
+        QByteArray text() const;
+        QByteArray texts() const;
 
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QUrl serializeFormToUrl(const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
@@ -81,8 +85,8 @@ namespace Html {
             if (_name == tag_select || _name == tag_textarea) return true;
 
             if (_name == tag_input) {
-                bool is_radio = attrs.value(attr_type) == type_radio;
-                bool is_checkbox = attrs.value(attr_type) == type_checkbox;
+                bool is_radio = _attrs.value(attr_type) == type_radio;
+                bool is_checkbox = _attrs.value(attr_type) == type_checkbox;
 
                 return (!is_radio && !is_checkbox) || hasAttr(attr_checked);
             }
@@ -91,18 +95,42 @@ namespace Html {
         }
 
         inline Tag * parent() { return _parent; }
-        inline Tag * child(const int & pos) const { return tags.size() < pos ? tags[pos] : 0; }
+        inline Tag * child(const int & pos) const { return _tags.size() < pos ? _tags[pos] : 0; }
         Tag * child(const QByteArray & name_predicate, const int & pos = 0) const;
-        inline int childrenCount() { return tags.size(); }
+        inline int childrenCount() { return _tags.size(); }
 
-        //TODO: store classes in hash
-        inline bool hasClass(const QByteArray & class_name) {
-            return attrs[attr_class].split(tkn_split).contains(class_name);
+        inline QHash<QByteArray, bool> * classes() {
+            if (!_classes) {
+                QByteArray klasses = _attrs.take(attr_class);
+                if (!klasses.isEmpty()) {
+                    _classes = new QHash<QByteArray, bool>();
+                    const char * data = klasses.constData(), * sdata = data;
+                    while(true) {
+                        switch(*data) {
+                            case 32: {
+                                _classes -> insert(QByteArray(sdata, data - sdata), true);
+                            break;}
+                            case 0: {
+                                _classes -> insert(QByteArray(sdata, data - sdata), true);
+                                break;
+                            }
+                            default:;
+                        }
+
+                        data++;
+                    }
+                }
+            }
+
+            return _classes;
         }
-        inline bool hasAttr(const QByteArray & attr_name = attr_checked) const { return attrs.contains(attr_name); }
-        inline bool hasChildren(const char * predicate = 0) const { return !(predicate ? find(predicate).isEmpty() : tags.isEmpty()); }
+        inline bool hasClass(const QByteArray & class_name) {
+            return classes() -> contains(class_name);
+        }
+        inline bool hasAttr(const QByteArray & attr_name = attr_checked) const { return _attrs.contains(attr_name); }
+        inline bool hasChildren(const char * predicate = 0) const { return !(predicate ? find(predicate).isEmpty() : _tags.isEmpty()); }
 
-        inline Set find(const Selector * selector) const { return tags.find(selector); }
+        inline Set find(const Selector * selector) const { return _tags.find(selector); }
         Set find(const char * predicate) const;
         Set & backwardFind(Selector * selector, Set & set);
         Tag * findFirst(const char * predicate) const;
@@ -114,7 +142,7 @@ namespace Html {
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
 //        QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
 
-        inline void addAttr(const QByteArray & name, const QByteArray & val) { attrs.insert(name, val); }
+        inline void addAttr(const QByteArray & name, const QByteArray & val) { _attrs.insert(name, val); }
         Tag * appendTag(const QByteArray & tname);
         void appendText(const QByteArray & val);
         void appendComment(const QByteArray & val);

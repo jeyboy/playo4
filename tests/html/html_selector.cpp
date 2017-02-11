@@ -3,6 +3,15 @@
 
 using namespace Html;
 
+const QHash<QByteArray, QByteArray> Selector::attr_predifinitions = QHash<QByteArray, QByteArray>{
+    {"text", HTML_ATTR_TYPE}, {"submit", HTML_ATTR_TYPE}, {"reset", HTML_ATTR_TYPE}, {"radio", HTML_ATTR_TYPE},
+    {"password", HTML_ATTR_TYPE}, {"image", HTML_ATTR_TYPE}, {"hidden", HTML_ATTR_TYPE}, {"file", HTML_ATTR_TYPE},
+    {"checkbox", HTML_ATTR_TYPE}, {"button", HTML_ATTR_TYPE}, {"week", HTML_ATTR_TYPE}, {"month", HTML_ATTR_TYPE},
+    {"url", HTML_ATTR_TYPE}, {"time", HTML_ATTR_TYPE}, {"tel", HTML_ATTR_TYPE}, {"search", HTML_ATTR_TYPE},
+    {"range", HTML_ATTR_TYPE}, {"number", HTML_ATTR_TYPE}, {"email", HTML_ATTR_TYPE}, {"datetime-local", HTML_ATTR_TYPE},
+    {"datetime", HTML_ATTR_TYPE}, {"date", HTML_ATTR_TYPE}, {"color", HTML_ATTR_TYPE}
+};
+
 void Selector::addPredicate(const SState & state, const QByteArray & token) {
     switch(state) {
         case st_tag: { _token = token; break;}
@@ -13,8 +22,12 @@ void Selector::addPredicate(const SState & state, const QByteArray & token) {
             int level = token.toInt(&ok, 10);
             if (ok)
                 pos_limit = level;
-            else
-                _attrs.insert(token, QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
+            else {
+                if (attr_predifinitions.contains(token))
+                    _attrs.insert(attr_predifinitions[token], QPair<char, QByteArray>(sel_attr_eq, token));
+                else
+                    _attrs.insert(token, QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
+            }
         break;}
         default: qDebug() << "!!! pipec";
     }

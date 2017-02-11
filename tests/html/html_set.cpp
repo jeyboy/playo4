@@ -5,9 +5,9 @@
 
 using namespace Html;
 
-QString Set::link() { return (isEmpty()) ? QString() : first() -> link(); }
-QString Set::text() { return (isEmpty()) ? QString() : first() -> text(); }
-QString Set::value(const QByteArray & name) { return (isEmpty()) ? QString() : first() -> value(name); }
+QByteArray Set::link() { return (isEmpty()) ? QByteArray() : first() -> link(); }
+QByteArray Set::text() { return (isEmpty()) ? QByteArray() : first() -> text(); }
+QByteArray Set::value(const QByteArray & name) { return (isEmpty()) ? QByteArray() : first() -> value(name); }
 
 Set Set::find(const char * predicate, const bool & find_first) const {
     Selector selector(predicate);

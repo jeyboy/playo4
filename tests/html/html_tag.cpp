@@ -13,14 +13,14 @@ const QHash<QByteArray, bool> Tag::solo = QHash<QByteArray, bool>{
     {HTML_DOCTYPE_TAG.toLower(), true}, {HTML_HR_TAG, true}
 };
 
-QString Tag::selectValue() const {
+QByteArray Tag::selectValue() const {
     Html::Set options = find("option[selected]");
     return options.value();
 }
-QString Tag::radioValue() const { return hasAttr(attr_checked) ? attrs[attr_default] : QString(); }
-QString Tag::textareaValue() const { return text(); }
+QByteArray Tag::radioValue() const { return hasAttr(attr_checked) ? _attrs[attr_default] : QByteArray(); }
+QByteArray Tag::textareaValue() const { return text(); }
 
-QString Tag::value(const QByteArray & name) const {
+QByteArray Tag::value(const QByteArray & name) const {
     bool is_default_val = name == attr_default;
 
     if (is_default_val) {
@@ -30,25 +30,25 @@ QString Tag::value(const QByteArray & name) const {
         if (_name == tag_textarea)
             return textareaValue();
 
-        if (attrs.value(attr_type) == type_radio)
+        if (_attrs.value(attr_type) == type_radio)
             return radioValue();
     }
 
-    return attrs.value(name);
+    return _attrs.value(name);
 }
 
-QString Tag::text() const {
-    const Tag * text = (_name == tkn_text_block ? this : childTag(tkn_text_block));
-    return text ? text -> attrs.value(tkn_text_block) : QString();
+QByteArray Tag::text() const {
+    const Tag * text = (_name == tkn_text_block ? this : child(tkn_text_block));
+    return text ? text -> _attrs.value(tkn_text_block) : QByteArray();
 }
-QString Tag::texts() const {
+QByteArray Tag::texts() const {
     if (_name == tkn_text_block)
-        return attrs.value(tkn_text_block);
+        return _attrs.value(tkn_text_block);
     else {
-        QString result;
+        QByteArray result;
 
-        for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
-            result += (*tag) -> toText();
+        for(Set::ConstIterator tag = _tags.cbegin(); tag != _tags.cend(); tag++)
+            result += (*tag) -> texts();
 
         return result;
     }
@@ -106,7 +106,7 @@ QUrl Tag::serializeFormToUrl(const QHash<QString, QString> & vals, const FormSer
 
 QByteArray Tag::toByteArray() const {
     if (_name == tkn_text_block)
-        return attrs.value(tkn_text_block);
+        return _attrs.value(tkn_text_block);
     else {
         QByteArray result;
         bool root = _name == tkn_any_elem;
@@ -115,23 +115,23 @@ QByteArray Tag::toByteArray() const {
         if (!root) {
             result = '<' % _name;
 
-            for(QHash<QByteArray, QByteArray>::ConstIterator attr = attrs.constBegin(); attr != attrs.constEnd(); attr++)
+            for(QHash<QByteArray, QByteArray>::ConstIterator attr = _attrs.cbegin(); attr != _attrs.cend(); attr++)
                 result = result % ' ' % attr.key() % (attr.value().isNull() ? QByteArray() : (QByteArray("=\"") % attr.value() % '"'));
 
             result = result % '>';
         }
 
-        for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
+        for(Set::ConstIterator tag = _tags.cbegin(); tag != _tags.cend(); tag++)
             result += (*tag) -> toByteArray();
 
 
-        return root || (solo.contains(_name) && tags.isEmpty()) ? result : QByteArray(result % QByteArray("</") % _name % '>');
+        return root || (solo.contains(_name) && _tags.isEmpty()) ? result : QByteArray(result % QByteArray("</") % _name % '>');
     }
 }
 
 Tag * Tag::child(const QByteArray & name_predicate, const int & pos) const {
-    Set::ConstIterator tag = tags.cbegin();
-    for(int i = 0; tag != tags.cend(); tag++) {
+    int i = 0;
+    for(Set::ConstIterator tag = _tags.cbegin(); tag != _tags.cend(); tag++) {
         if ((*tag) -> _name == name_predicate)
             if (i++ == pos) return (*tag);
     }
@@ -141,14 +141,14 @@ Tag * Tag::child(const QByteArray & name_predicate, const int & pos) const {
 
 Set Tag::find(const char * predicate) const {
     Selector selector(predicate);
-    return tags.find(&selector);
+    return _tags.find(&selector);
 }
 Tag * Tag::findFirst(const char * predicate) const {
     Selector selector(predicate);
     return findFirst(&selector);
 }
 Tag * Tag::findFirst(const Selector * selector) const {
-    Set set = tags.find(selector, true);
+    Set set = _tags.find(selector, true);
     return set.isEmpty() ? 0 : set.first();
 }
 
@@ -158,7 +158,7 @@ Tag * Tag::findFirst(const Selector * selector) const {
 
 Tag * Tag::appendTag(const QByteArray & tname) {
     Tag * newTag = new Tag(tname, this);
-    tags.append(newTag);
+    _tags.append(newTag);
     return newTag;
 }
 void Tag::appendText(const QByteArray & val) {
@@ -174,18 +174,18 @@ bool Tag::validTo(const Selector * selector) {
     if (!(selector -> _token == tkn_any_elem || selector -> _token == _name))
         return false;
 
-    if (!selector -> pos_limit != -1) {
+    if (selector -> pos_limit != -1) {
         if (!_parent || _parent -> child(selector -> pos_limit) != this)
             return false;
     }
 
     if (!selector -> _attrs.isEmpty()) {
-        for(QHash<QByteArray, QPair<char, QByteArray> >::Iterator attr = selector -> _attrs.begin(); attr != selector -> _attrs.end(); attr++) {
+        for(QHash<QByteArray, QPair<char, QByteArray> >::ConstIterator attr = selector -> _attrs.cbegin(); attr != selector -> _attrs.cend(); attr++) {
             QByteArray attr_key = attr.key();
-            if (!attrs.contains(attr_key))
+            if (!_attrs.contains(attr_key))
                 return false;
 
-            QByteArray tag_value = attr_key == tkn_text_block ? text() : attrs.value(attr_key);
+            QByteArray tag_value = attr_key == tkn_text_block ? text() : _attrs.value(attr_key);
             QByteArray selector_value = attr.value().second;
             char rel = attr.value().first;
 
@@ -215,26 +215,15 @@ bool Tag::validTo(const Selector * selector) {
 
                 default: qDebug() << "UNSUPPORTED PREDICATE " << rel;
             };
-
-//            case Selector::type: {
-//                if (!((_name == tag_input || _name == tag_select) && attrs[attr_type] == it.value())) return false;
-//                break;
-//            }
         }
     }
 
     if (!selector -> _classes.isEmpty()) {
-        QByteArray classes = attrs[attr_class];
-        if (classes.isEmpty()) return false;
-        QList<QByteArray> tag_classes = classes.split(' ');
+        QHash<QByteArray, bool> * tag_classes = classes();
 
-        for(QList<QByteArray>::Iterator selector_class = selector -> _classes.begin(); selector_class != selector -> _classes.end(); selector_class++) {
-            bool finded = false;
-            for(QList<QByteArray>::Iterator tag_class = tag_classes.begin(); tag_class != tag_classes.end(); tag_class++) {
-                if ((finded = (*selector_class) == (*tag_class))) break;
-            }
-
-            if (!finded) return false;
+        for(QList<QByteArray>::ConstIterator selector_class = selector -> _classes.cbegin(); selector_class != selector -> _classes.cend(); selector_class++) {
+            if (!tag_classes -> contains(*selector_class))
+                return false;
         }
     }
 
@@ -301,19 +290,19 @@ bool Tag::validTo(const Selector * selector) {
 }
 
 Set & Tag::backwardFind(Selector * selector, Set & set) {
-    if (!parent) return set;
+    if (!_parent) return set;
 
-    if (parent -> validTo(selector))
+    if (_parent -> validTo(selector))
         selector = selector -> prev/*next*/;
 
     if (!selector)
-        set.append(parent);
+        set.append(_parent);
     else
         if (selector -> isBackward()) {
-            if (parent -> parent)
-                parent -> backwardFind(selector, set);
+            if (_parent -> _parent)
+                _parent -> backwardFind(selector, set);
         }
-        else parent -> children().find(selector, set);
+        else _parent -> children().find(selector, set);
 
     return set;
 }

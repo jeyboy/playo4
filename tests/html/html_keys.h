@@ -15,6 +15,7 @@
 #define HTML_XML_TAG QByteArray("?xml")
 #define HTML_INPUT_TAG QByteArray("input")
 #define HTML_BASE_TAG QByteArray("base")
+#define HTML_ATTR_TYPE QByteArray("type")
 
 namespace Html {
     extern const QByteArray tag_doctype;

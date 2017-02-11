@@ -34,7 +34,7 @@ namespace Html {
     extern const QByteArray attr_src               = QByteArray("src");
     extern const QByteArray attr_id                = QByteArray("id");
     extern const QByteArray attr_class             = QByteArray("class");
-    extern const QByteArray attr_type              = QByteArray("type");
+    extern const QByteArray attr_type              = HTML_ATTR_TYPE;
     extern const QByteArray attr_default           = QByteArray("value");
     extern const QByteArray attr_checked           = QByteArray("checked");
     extern const QByteArray attr_disabled          = QByteArray("disabled");

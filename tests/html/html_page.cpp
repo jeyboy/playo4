@@ -128,7 +128,7 @@ void Page::parse(const char * data) {
 
 //                      use this check for strict verification (open tag is eql to close)
                         if (*(pdata - 1) == close_tag_predicate || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF))
-                            elem = elem -> parentTag();
+                            elem = elem -> parent();
                         else {
                             sflags = (StateFlags)(sflags | sf_has_errors);
                             qDebug() << "IGNORE CLOSING OF TAG";
@@ -252,7 +252,7 @@ void Page::parse(const char * data) {
                             if (sflags < sf_use_doc_charset)
                                 checkCharset(elem);
 
-                            elem = elem -> parentTag();
+                            elem = elem -> parent();
                         } else if (elem -> isCodeBlock()) {
                             state = code;
                         }

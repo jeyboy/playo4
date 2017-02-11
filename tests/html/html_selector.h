@@ -71,6 +71,8 @@ namespace Html {
         enum STurn { any = sel_rel_any, parent = sel_rel_parent, sibling = sel_rel_sibling, parent_back = sel_rel_back_parent, sibling_back = sel_rel_back_sibling };
         enum SState { st_none = sel_attr_end, st_tag, st_limit, st_attr, st_attr_value, st_id = sel_id_token, st_class = sel_class_token, st_attr_type = sel_attr_type_token, st_in_name, st_in_val };
 
+        const static QHash<QByteArray, QByteArray> attr_predifinitions;
+
         Selector(const char * predicate);
 
         inline Selector(const STurn & turn = any, Selector * prev = 0)
@@ -79,7 +81,7 @@ namespace Html {
             if (prev) prev -> next = this;
         }
         inline ~Selector() {
-            qDeleteAll(next);
+            delete next;
             delete error;
         }
         Selector operator= (const char * x) { return Selector(x); }

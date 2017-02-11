@@ -13,9 +13,9 @@ namespace Html {
         Set & find(const Selector * selector, Set & set, const bool & find_first = false) const;
         friend class Tag;
     public:
-        QString link();
-        QString text();
-        QString value(const QByteArray & name = attr_default);
+        QByteArray link();
+        QByteArray text();
+        QByteArray value(const QByteArray & name = attr_default);
 
         inline Set find(const Selector * selector, const bool & find_first = false) const {
             Set set;
