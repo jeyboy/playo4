@@ -114,7 +114,7 @@ void HtmlTest::testCoding1251Decode() {
     Tag * title_tag = page.findFirst("title");
 
     QVERIFY2(
-        title_tag && title_tag -> text() == LSTR("Кодировка"),
+        title_tag && title_tag -> text() == QByteArray("Кодировка"),
         "Failure"
     );
 }
@@ -127,7 +127,7 @@ void HtmlTest::testCodingUtf8Decode() {
     Page page(TestData::dataHtmlParserCodingUtf8());
     Tag * title_tag = page.findFirst("title");
     QVERIFY2(
-        title_tag && title_tag -> text() == LSTR("My First HTML"),
+        title_tag && title_tag -> text() == QByteArray("My First HTML"),
         "Failure"
     );
 }
@@ -138,7 +138,7 @@ void HtmlTest::testJS() {
 
     QVERIFY2(
         script_tags.size() == 1 &&
-        script_tags.first() -> text() == LSTR("function myFunction() {document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";}"),
+        script_tags.first() -> text() == QByteArray("function myFunction() {document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";}"),
         "Failure"
     );
 }
@@ -161,14 +161,14 @@ void HtmlTest::testElementTextExtraction() {
     Page page(TestData::dataHtmlParserAttrs());
     Tag * h2_tag = page.findFirst("h2");
 
-    QVERIFY2(h2_tag && h2_tag -> text() == LSTR("The title attribute"), "Failure");
+    QVERIFY2(h2_tag && h2_tag -> text() == QByteArray("The title attribute"), "Failure");
 }
 void HtmlTest::testElementAttrsExtraction() {
     Page page(TestData::dataHtmlParserAttrs());
     Tag * p_tag = page.findFirst("p");
 
     QVERIFY2(
-        p_tag && p_tag -> value("title") == LSTR("I'm a tooltip"),
+        p_tag && p_tag -> value("title") == QByteArray("I'm a tooltip"),
         "Failure"
     );
 }
@@ -176,20 +176,18 @@ void HtmlTest::testElementAttrsWithoutQuotesExtraction() {
     Page page(TestData::dataHtmlParserAttrsWithoutQuotes());
     Tag * a_tag = page.findFirst("a");
 
-    qDebug() << a_tag;
-
     QVERIFY2(
         a_tag &&
-            a_tag -> link() == LSTR("http://www.w3schools.com") &&
-            a_tag -> text() == LSTR("This is a link"),
+            a_tag -> link() == QByteArray("http://www.w3schools.com") &&
+            a_tag -> text() == QByteArray("This is a link"),
         "Failure"
     );
 }
 
 void HtmlTest::testElementClasses() {
     Page page(TestData::dataHtmlParserClasses());
-    QString cl1_cl2("cl1 cl2 classes");
-    QString cl2_cl3("cl2 cl3 classes");
+    QByteArray cl1_cl2("cl1 cl2 classes");
+    QByteArray cl2_cl3("cl2 cl3 classes");
 
     Set cl1_tags = page.find(".cl1");
     Set cl2_tags = page.find(".cl2");

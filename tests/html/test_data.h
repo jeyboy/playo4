@@ -140,6 +140,13 @@ class TestData {
         return data_parser;
     }
 
+    static QString dataHtmlParserErrorWrongCloseTag() {
+        static QString data_parser = load(DATA_PATH(QStringLiteral("test_wrong_tags_closing.txt")));
+        return data_parser;
+    }
+
+
+
     static const char * dataSelectorParsingHuge() {
         return "> *:active:3[name='Loop' top] div p.loop #id.tool .yopt[gog loh]~['piza to'=123] p[text*'sdfsdf \\'ssda'] <.sos";
     }
@@ -151,7 +158,7 @@ class TestData {
     static const char * dataSelectorParsingWithDoubleAttrs() { return "p[name='Loop'][cool='Lo']"; }
     static const char * dataSelectorParsingWithAttrsNoQuotes() { return "p[name=Loop pop=1]"; }
     static const char * dataSelectorParsingWithAttrsNoTag() { return "[name=Loop]"; }
-    static const char * dataSelectorParsingWithAllLimits() { return ".cla#ss:47:disabled[name=Loop]"; }
+    static const char * dataSelectorParsingWithAllLimits() { return ".cla#ss:47:disabled:text[name=Loop]"; }
     static const char * dataSelectorParsingWithAdditionalBlanks() { return ".cla[name=Loop  cool] ~ a"; }
     static const char * dataSelectorParsingWithStrictSplitters() { return ".cla[name=Loop cool]~a"; }
     static const char * dataSelectorParsingWithEmptyBrackets() { return ".cla[]"; }
