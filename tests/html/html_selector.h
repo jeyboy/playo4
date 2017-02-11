@@ -6,7 +6,6 @@
 #include <qpair.h>
 #include <qlist.h>
 #include <qhash.h>
-#include <qdebug.h>
 
 #define TOKEN_BUFF QByteArray(stoken, (etoken ? etoken : pdata) - stoken)
 #define TBUFF_VALID ((pdata - stoken) > 0)
@@ -75,12 +74,9 @@ namespace Html {
         Selector(const char * predicate);
 
         inline Selector(const STurn & turn = any, Selector * prev = 0)
-            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev)/*, next(0)*/, has_error(false), error(0)
+            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev), next(0), has_error(false), error(0)
         {
-            qDebug() << "SELECTOR" << QChar(turn);
-
-//            if (prev) prev -> next = this;
-            if (prev) prev -> next << this;
+            if (prev) prev -> next = this;
         }
         inline ~Selector() {
             qDeleteAll(next);
@@ -95,15 +91,13 @@ namespace Html {
         inline bool isBackward() const { return turn == parent_back || turn == sibling_back; }
 
         QList<QByteArray> _classes;
-//        QHash<SState, QByteArray> _limitations;
-//        QHash<SState, QByteArray> _tokens;
         QByteArray _token;
         QHash<QByteArray, QPair<char, QByteArray> > _attrs;
         STurn turn;
         int pos_limit;
 
         Selector * prev;
-        QList<Selector *> next;
+        Selector * next;
         bool has_error;
         QString * error;
     };

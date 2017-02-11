@@ -20,7 +20,7 @@ namespace Html {
         QByteArray _name;
         QHash<QByteArray, QByteArray> attrs;
         Set tags;
-        Tag * parent;
+        Tag * _parent;
 //        bool proceeded;
     protected:
         const static QHash<QByteArray, bool> solo;
@@ -51,10 +51,10 @@ namespace Html {
 
         QString value(const QByteArray & name = attr_default) const;
         QString text() const;
+        QString texts() const;
 
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QUrl serializeFormToUrl(const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
-        QString toText() const;
         QByteArray toByteArray() const;
 
         inline bool isSolo() { return solo.contains(name()); }
@@ -90,9 +90,9 @@ namespace Html {
             return false;
         }
 
-        inline Tag * parentTag() { return parent; }
-        inline Tag * childTag(int pos) const { return tags[pos]; }
-        Tag * childTag(const QByteArray & name_predicate, const int & pos = 0) const;
+        inline Tag * parent() { return _parent; }
+        inline Tag * child(const int & pos) const { return tags.size() < pos ? tags[pos] : 0; }
+        Tag * child(const QByteArray & name_predicate, const int & pos = 0) const;
         inline int childrenCount() { return tags.size(); }
 
         //TODO: store classes in hash

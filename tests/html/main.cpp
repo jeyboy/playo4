@@ -59,7 +59,6 @@ HtmlTest::HtmlTest() {
 
 void HtmlTest::measurementSelectionParsing() {
     QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }
-//    QBENCHMARK { Selector(TestData::dataSelectorParsingWithBranching()); }
 }
 
 //void HtmlTest::measurementParsing() {

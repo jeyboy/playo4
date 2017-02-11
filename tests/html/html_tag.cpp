@@ -41,6 +41,18 @@ QString Tag::text() const {
     const Tag * text = (_name == tkn_text_block ? this : childTag(tkn_text_block));
     return text ? text -> attrs.value(tkn_text_block) : QString();
 }
+QString Tag::texts() const {
+    if (_name == tkn_text_block)
+        return attrs.value(tkn_text_block);
+    else {
+        QString result;
+
+        for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
+            result += (*tag) -> toText();
+
+        return result;
+    }
+}
 
 //INFO: some servers very sensitive to params part and payload part separation ...
 // appendable - appends inputs from vals, which not finded in form
@@ -82,33 +94,7 @@ void Tag::serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, Q
         payload = query.toString().toUtf8();
     }
 }
-//                QUrl Tag::serializeFormToUrl(const QHash<QString, QString> & vals, const FormSerializationFlags & flags, const QString & default_url) { // not full support of inputs
-//                    QString action = value(attr_action);
-//                    QUrl url = QUrl(action.isEmpty() ? default_url : action);
 
-//                    Set inputs = find("input") << find("select");
-//                    QHash<QString, QString> url_vals(vals);
-
-//                    if (!inputs.isEmpty()) {
-//                        QUrlQuery query = QUrlQuery(url.query());
-
-//                        for(Set::Iterator input = inputs.begin(); input != inputs.end(); input++) {
-//                            QString inp_name = (*input) -> value(attr_name);
-//                            QString inp_val = url_vals.take(inp_name);
-//                            if (inp_val.isEmpty()) inp_val = (*input) -> value();
-
-//                            query.addQueryItem(inp_name, flags & fsf_percent_encoding ? QUrl::toPercentEncoding(inp_val) : inp_val);
-//                        }
-
-//                        if (flags & fsf_append_vals_from_hash && !url_vals.isEmpty())
-//                            for(QHash<QString, QString>::Iterator it = url_vals.begin(); it != url_vals.end(); it++)
-//                                query.addQueryItem(it.key(), flags & fsf_percent_encoding ? QUrl::toPercentEncoding(it.value()) : it.value());
-
-//                        url.setQuery(query);
-//                    }
-
-//                    return url;
-//                }
 QUrl Tag::serializeFormToUrl(const QHash<QString, QString> & vals, const FormSerializationFlags & flags, const QString & default_url) { // not full support of inputs
     QUrl url;
     QByteArray payload;
@@ -117,18 +103,7 @@ QUrl Tag::serializeFormToUrl(const QHash<QString, QString> & vals, const FormSer
     url.setQuery(QUrlQuery(payload + '&' + url.query()));
     return url;
 }
-QString Tag::toText() const {
-    if (_name == tkn_text_block)
-        return attrs.value(tkn_text_block);
-    else {
-        QString result;
 
-        for(Set::ConstIterator tag = tags.cbegin(); tag != tags.cend(); tag++)
-            result += (*tag) -> toText();
-
-        return result;
-    }
-}
 QByteArray Tag::toByteArray() const {
     if (_name == tkn_text_block)
         return attrs.value(tkn_text_block);
@@ -154,10 +129,10 @@ QByteArray Tag::toByteArray() const {
     }
 }
 
-Tag * Tag::childTag(const QByteArray & name_predicate, const int & pos) const {
+Tag * Tag::child(const QByteArray & name_predicate, const int & pos) const {
     Set::ConstIterator tag = tags.cbegin();
     for(int i = 0; tag != tags.cend(); tag++) {
-        if ((*tag) -> name() == name_predicate)
+        if ((*tag) -> _name == name_predicate)
             if (i++ == pos) return (*tag);
     }
 
@@ -196,6 +171,75 @@ void Tag::appendComment(const QByteArray & val) {
 }
 
 bool Tag::validTo(const Selector * selector) {
+    if (!(selector -> _token == tkn_any_elem || selector -> _token == _name))
+        return false;
+
+    if (!selector -> pos_limit != -1) {
+        if (!_parent || _parent -> child(selector -> pos_limit) != this)
+            return false;
+    }
+
+    if (!selector -> _attrs.isEmpty()) {
+        for(QHash<QByteArray, QPair<char, QByteArray> >::Iterator attr = selector -> _attrs.begin(); attr != selector -> _attrs.end(); attr++) {
+            QByteArray attr_key = attr.key();
+            if (!attrs.contains(attr_key))
+                return false;
+
+            QByteArray tag_value = attr_key == tkn_text_block ? text() : attrs.value(attr_key);
+            QByteArray selector_value = attr.value().second;
+            char rel = attr.value().first;
+
+            switch(rel) {
+                case Selector::sel_attr_eq: {
+                    if (!((selector_value == tkn_any_elem || tag_value == selector_value)))
+                        return false;
+                    break;}
+                case Selector::sel_attr_begin:
+                case Selector::sel_attr_begin2: {
+                    if (!tag_value.startsWith(selector_value))
+                        return false;
+                    break;}
+                case Selector::sel_attr_end: {
+                    if (!tag_value.endsWith(selector_value))
+                        return false;
+                    break;}
+                case Selector::sel_rel_attr_match:
+                case Selector::sel_attr_match2: {
+                    if (tag_value.indexOf(selector_value) == -1)
+                        return false;
+                    break;}
+                case Selector::sel_attr_not: {
+                    if (tag_value.indexOf(selector_value) != -1)
+                        return false;
+                    break;}
+
+                default: qDebug() << "UNSUPPORTED PREDICATE " << rel;
+            };
+
+//            case Selector::type: {
+//                if (!((_name == tag_input || _name == tag_select) && attrs[attr_type] == it.value())) return false;
+//                break;
+//            }
+        }
+    }
+
+    if (!selector -> _classes.isEmpty()) {
+        QByteArray classes = attrs[attr_class];
+        if (classes.isEmpty()) return false;
+        QList<QByteArray> tag_classes = classes.split(' ');
+
+        for(QList<QByteArray>::Iterator selector_class = selector -> _classes.begin(); selector_class != selector -> _classes.end(); selector_class++) {
+            bool finded = false;
+            for(QList<QByteArray>::Iterator tag_class = tag_classes.begin(); tag_class != tag_classes.end(); tag_class++) {
+                if ((finded = (*selector_class) == (*tag_class))) break;
+            }
+
+            if (!finded) return false;
+        }
+    }
+
+    return true;
+
 //    for(QHash<Selector::SState, QString>::ConstIterator it = selector -> _tokens.cbegin(); it != selector -> _tokens.cend(); it++) {
 //        switch(it.key()) {
 //            case Selector::tag: { if (!(it.value() == tkn_any_elem || _name == it.value())) return false; break; }
