@@ -64,7 +64,7 @@ namespace Html {
         inline bool isSolo() { return solo.contains(name()); }
         static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tag_name); }
         inline bool isClosableBy(const char * data) {
-            return _name[0] == *data && _name[1] == *(data + 1) && '>' == *(data + _name.length());
+            return _name.startsWith(QByteArray(data, 2).toLower()) && '>' == *(data + _name.length());
         }
 
         inline bool isStub() { return _name == tkn_any_elem; }
@@ -118,7 +118,7 @@ namespace Html {
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
 //        QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
 
-        inline void addAttr(const QByteArray & name, const QByteArray & val) { _attrs.insert(name, val); }
+        inline void addAttr(const QByteArray & name, const QByteArray & val) { _attrs.insert(name.toLower(), val); }
         Tag * appendTag(const QByteArray & tname);
         void appendText(const QByteArray & val);
         void appendComment(const QByteArray & val);

@@ -147,7 +147,7 @@ void Page::parse(const char * data) {
                     break;}
 
                     case open_tag: {
-                        if (*(pdata + 1) == close_tag_predicate && elem -> isClosableBy(pdata + 2) /**(pdata + 2) == 's' && *(pdata + 3) == 'c' && *(pdata + 4) == 'r'*/) {
+                        if (*(pdata + 1) == close_tag_predicate && elem -> isClosableBy(pdata + 2)) {
                             if (NAME_BUFF_VALID) {
                                 if (!(pflags & pf_skip_text))
                                     elem -> appendText(NAME_BUFF);

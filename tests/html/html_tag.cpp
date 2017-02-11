@@ -183,7 +183,7 @@ Tag * Tag::findFirst(const Selector * selector) const {
 //}
 
 Tag * Tag::appendTag(const QByteArray & tname) {
-    Tag * newTag = new Tag(tname, this);
+    Tag * newTag = new Tag(tname.toLower(), this);
     _tags.append(newTag);
     return newTag;
 }

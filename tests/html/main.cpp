@@ -86,8 +86,8 @@ void HtmlTest::testHtmlBaseTemplate() {
     Tag * p_tag = page.findFirst("p");
 
     QVERIFY2(
-        h1_tag -> text() == LSTR("My First Heading") &&
-            p_tag -> text() == LSTR("My first paragraph."),
+        h1_tag -> text() == QByteArray("My First Heading") &&
+            p_tag -> text() == QByteArray("My first paragraph."),
         "Failure"
     );
 }
@@ -98,9 +98,9 @@ void HtmlTest::testHtmlShortTemplate() {
     Tag * p_tag = page.findFirst("p");
 
     QVERIFY2(
-        title_tag -> text() == LSTR("Page Title") &&
-            h1_tag -> text() == LSTR("This is a heading") &&
-            p_tag -> text() == LSTR("This is a paragraph."),
+        title_tag -> text() == QByteArray("Page Title") &&
+            h1_tag -> text() == QByteArray("This is a heading") &&
+            p_tag -> text() == QByteArray("This is a paragraph."),
         "Failure"
     );
 }
