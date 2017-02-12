@@ -8,9 +8,9 @@
 using namespace Html;
 
 const QHash<QByteArray, bool> Tag::solo = QHash<QByteArray, bool>{
-    {HTML_BR_TAG, true}, {HTML_META_TAG, true}, {HTML_LINK_TAG, true}, {HTML_IMG_TAG, true},
-    {HTML_DOCTYPE_TAG, true}, {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}, {HTML_BASE_TAG, true},
-    {HTML_DOCTYPE_TAG.toLower(), true}, {HTML_HR_TAG, true}
+    {HTML_BR_TAG, true}, {HTML_META_TAG, true}, {HTML_LINK_TAG, true},
+    {HTML_IMG_TAG, true}, {HTML_HR_TAG, true}, {HTML_DOCTYPE_TAG, true},
+    {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}, {HTML_BASE_TAG, true}
 };
 
 QByteArray Tag::selectValue() const {
@@ -257,35 +257,20 @@ bool Tag::validTo(const Selector * selector) {
     return true;
 }
 
-Set & Tag::backwardFind(Selector * selector, Set & set) {
-    if (!_parent) return set;
+//Set & Tag::backwardFind(Selector * selector, Set & set) {
+//    if (!_parent) return set;
 
-    if (_parent -> validTo(selector))
-        selector = selector -> prev/*next*/;
+//    if (_parent -> validTo(selector))
+//        selector = selector -> prev/*next*/;
 
-    if (!selector)
-        set.append(_parent);
-    else
-        if (selector -> isBackward()) {
-            if (_parent -> _parent)
-                _parent -> backwardFind(selector, set);
-        }
-        else _parent -> children().find(selector, set);
+//    if (!selector)
+//        set.append(_parent);
+//    else
+//        if (selector -> isBackward()) {
+//            if (_parent -> _parent)
+//                _parent -> backwardFind(selector, set);
+//        }
+//        else _parent -> children().find(selector, set);
 
-    return set;
-}
-
-//QHash<QString, QString> & Tag::backwardFindLinks(Selector * selector, QHash<QString, QString> & links) {
-//    if (!parent) return links;
-
-//    if (parent -> validTo(selector))
-//        selector = selector -> next;
-
-//    if (!selector) {
-//        if (parent -> isLink())
-//            links.insert(parent -> link(), parent -> text());
-//    } else if (selector -> isBackward() && parent -> parent)
-//        parent -> backwardFindLinks(selector, links);
-
-//    return links;
+//    return set;
 //}

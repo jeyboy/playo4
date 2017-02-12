@@ -59,16 +59,16 @@ namespace Html {
             sel_attr_type_token = 58, // :
 
             sel_rel_attr_match = 126, // ~ // ul ~ table // All <table> elements that are siblings of a <ul> element.
-            sel_rel_parent = 62, // > // div > p // All <p> elements where the parent is a <div> element.
             sel_rel_any = 32,
-            sel_rel_sibling = 43, // + // ul + h3 // The <h3> element that are next to each <ul> elements.
-            sel_rel_back_parent = 60, // <
-            sel_rel_back_sibling = 45, // -
+            sel_rel_parent = 62, // > // div > p // All <p> elements where the parent is a <div> element.
+            sel_rel_prev_parent = 60, // <
+            sel_rel_next_sibling = 43, // + // ul + h3 // The <h3> element that are next to each <ul> elements.
+            sel_rel_prev_sibling = 45, // -
 
             sel_cont1_token = 34, // "
             sel_cont2_token = 39 // '
         };
-        enum STurn { any = sel_rel_any, parent = sel_rel_parent, sibling = sel_rel_sibling, parent_back = sel_rel_back_parent, sibling_back = sel_rel_back_sibling };
+        enum STurn { any = sel_rel_any, parent = sel_rel_parent, sibling = sel_rel_attr_match, parent_prev = sel_rel_prev_parent, sibling_next = sel_rel_next_sibling, sibling_prev = sel_rel_prev_sibling };
         enum SState { st_none = sel_attr_end, st_tag, st_limit, st_attr, st_attr_value, st_id = sel_id_token, st_class = sel_class_token, st_attr_type = sel_attr_type_token, st_in_name, st_in_val };
 
         const static QHash<QByteArray, QByteArray> attr_predifinitions;
@@ -90,7 +90,7 @@ namespace Html {
         void addAttr(const QByteArray & name, const QByteArray & val, const char & rel);
 
         inline bool isDirect() const { return turn == parent; }
-        inline bool isBackward() const { return turn == parent_back || turn == sibling_back; }
+        inline bool isForward() const { return turn == any || turn == parent; }
 
         QList<QByteArray> _classes;
         QByteArray _token;

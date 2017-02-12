@@ -16,7 +16,7 @@ namespace Html {
     extern const QByteArray tag_xml                = HTML_XML_TAG;
     extern const QByteArray tag_link               = HTML_LINK_TAG;
 
-    extern const char tkn_split                    = ' ';
+//    extern const char tkn_split                    = ' ';
     extern const QByteArray tkn_any_elem           = HTML_ANY_TAG;
     extern const QByteArray tkn_text_block         = QByteArray("text");
     extern const QByteArray tkn_comment_block      = QByteArray("comment");

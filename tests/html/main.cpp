@@ -62,7 +62,8 @@ void HtmlTest::measurementSelectionParsing() {
 }
 
 void HtmlTest::measurementParsing() {
-    QString html_data = TestData::dataHtmlFourshared();
+//    QString html_data = TestData::dataHtmlFourshared();
+    QString html_data = TestData::dataHtmlYoutube();
     QBENCHMARK { Page(html_data.toUtf8().constData()); }
 }
 
@@ -127,7 +128,7 @@ void HtmlTest::testCodingUtf8Decode() {
     Page page(TestData::dataHtmlParserCodingUtf8());
     Tag * title_tag = page.findFirst("title");
     QVERIFY2(
-        title_tag && title_tag -> text() == QByteArray("My First HTML"),
+        title_tag && title_tag -> text() == QByteArrayLiteral("My First HTML"),
         "Failure"
     );
 }

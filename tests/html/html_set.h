@@ -34,6 +34,7 @@ namespace Html {
         //TODO: rewrite on using of usuall find
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links) const;
         inline Set & operator <<(const Set & l) { *this += l; return *this; }
+        inline Set & operator <<(Tag * t) { append(t); return *this; }
     };
 }
 

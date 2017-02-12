@@ -22,7 +22,6 @@ namespace Html {
         QHash<QByteArray, bool> * _classes;
         Set _tags;
         Tag * _parent;
-//        bool proceeded;
     protected:
         const static QHash<QByteArray, bool> solo;
 
@@ -106,17 +105,15 @@ namespace Html {
         inline bool hasAttr(const QByteArray & attr_name = attr_checked) const { return _attrs.contains(attr_name); }
         inline bool hasChildren(const char * predicate = 0) const { return !(predicate ? find(predicate).isEmpty() : _tags.isEmpty()); }
 
-        inline Set find(const Selector * selector) const { return _tags.find(selector); }
         Set find(const char * predicate) const;
-        Set & backwardFind(Selector * selector, Set & set);
         Tag * findFirst(const char * predicate) const;
+        inline Set find(const Selector * selector) const { return _tags.find(selector); }
         Tag * findFirst(const Selector * selector) const;
 
         bool validTo(const Selector * selector);
 
         //TODO: rewrite
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
-//        QHash<QString, QString> & backwardFindLinks(Selector * selector, QHash<QString, QString> & links);
 
         inline void addAttr(const QByteArray & name, const QByteArray & val) { _attrs.insert(name.toLower(), val); }
         Tag * appendTag(const QByteArray & tname);

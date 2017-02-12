@@ -11,7 +11,7 @@
 #define HTML_META_TAG QByteArray("meta")
 #define HTML_LINK_TAG QByteArray("link")
 #define HTML_IMG_TAG QByteArray("img")
-#define HTML_DOCTYPE_TAG QByteArray("!DOCTYPE")
+#define HTML_DOCTYPE_TAG QByteArray("!doctype")
 #define HTML_XML_TAG QByteArray("?xml")
 #define HTML_INPUT_TAG QByteArray("input")
 #define HTML_BASE_TAG QByteArray("base")
@@ -33,7 +33,7 @@ namespace Html {
     extern const QByteArray tag_meta;
     extern const QByteArray tag_link;
 
-    extern const char tkn_split;
+//    extern const char tkn_split;
     extern const QByteArray tkn_any_elem;
     extern const QByteArray tkn_text_block;
     extern const QByteArray tkn_comment_block;

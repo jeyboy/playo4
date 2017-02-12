@@ -153,9 +153,9 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any),
                         if (in_attr)
                             goto attr_rel_mark;
                     }
-                    case sel_rel_back_parent:
-                    case sel_rel_back_sibling:
-                    case sel_rel_sibling:
+                    case sel_rel_prev_parent:
+                    case sel_rel_prev_sibling:
+                    case sel_rel_next_sibling:
                     case sel_rel_parent: {
                         if (!in_attr) {
                             if (!rel)

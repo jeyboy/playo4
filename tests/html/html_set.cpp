@@ -17,18 +17,38 @@ Set Set::find(const char * predicate, const bool & find_first) const {
 Set & Set::find(const Selector * selector, Set & set, const bool & find_first) const {
     for(Set::ConstIterator tag = cbegin(); tag != cend(); tag++) {
         bool has_children = (*tag) -> hasChildren();
+        bool has_next_selector = selector -> next != 0;
+        bool is_forward_selector = has_next_selector && selector -> next -> isForward();
 
-        if (!has_children && selector -> next) continue; // ignore leafs if selector has next segment
+        if (!has_children && has_next_selector && is_forward_selector) continue; // ignore leafs if selector has next segment
 
         if ((*tag) -> validTo(selector)) {
-                if (selector -> next) {
-                    if (selector -> next -> isBackward())
-                        (*tag) -> backwardFind(selector -> next, set);
-                    else if (has_children)
-                        (*tag) -> children().find(selector -> next, set);
+                if (has_next_selector) {
+                    Tag * proc_tag = 0;
+
+                    switch(selector -> next -> turn) {
+                        case Selector::any:
+                        case Selector::parent: { (*tag) -> children().find(selector -> next, set, find_first); break;}
+
+                        case Selector::sibling: {
+                            (*tag) -> parent() -> children().find(selector -> next, set, find_first);
+                        break;}
+
+                        case Selector::sibling_next: proc_tag = *(tag + 1);
+                        case Selector::sibling_prev: {
+                            if (!proc_tag) proc_tag = *(tag - 1);
+                            (Set() << proc_tag).find(selector -> next, set, find_first);
+                        break;}
+
+                        case Selector::parent_prev: {
+                            Tag * parent_tag = (*tag) -> parent() -> parent();
+                            if (!parent_tag) continue;
+                            parent_tag -> children().find(selector -> next, set, find_first);
+                        break;}
+                    }
                 }
                 else {
-                    set.append((*tag));
+                    set.append(*tag);
                     if (find_first) break;
                 }
         }
