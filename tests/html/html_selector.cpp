@@ -143,12 +143,17 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any),
                         }
                     break;}
 
+                    case sel_rel_prev_sibling: {
+                        if (state != st_tag || (state == st_tag && (*(pdata - 1) != sel_rel_any || *(pdata + 1) != sel_rel_any)))
+                            goto continue_mark;
+                    }
+
                     case sel_rel_attr_match: {
                         if (in_attr)
                             goto attr_rel_mark;
                     }
+
                     case sel_rel_prev_parent:
-                    case sel_rel_prev_sibling:
                     case sel_rel_next_sibling:
                     case sel_rel_parent: {
                         if (!in_attr) {
