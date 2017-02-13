@@ -330,7 +330,7 @@ void HtmlTest::testSelectionPrevParent() {
 }
 void HtmlTest::testSelectionOnlyChilds() {
     Page page(TestData::dataHtmlStackOverflow());
-    Set bar_as = page.find(".topbar > a");
+    Set bar_as = page.find(".topbar > div");
 
     Tag * topbar = page.findFirst(".topbar");
     bool res = !bar_as.isEmpty();
@@ -384,9 +384,9 @@ void HtmlTest::testSelectionMultipleAttrs() {
 
 void HtmlTest::testSelectionPosLimit() {
     Page page(TestData::dataHtmlStackOverflow());
-    Tag * div = page.findFirst("body .topbar :2");
+    Tag * div = page.findFirst("body > :4");
 
-    QVERIFY2(div && div -> hasClass("topbar-dialog"), "Failure");
+    QVERIFY2(div && div -> hasId("notify-container"), "Failure");
 }
 
 void HtmlTest::testSelectionTextEqualTo() {

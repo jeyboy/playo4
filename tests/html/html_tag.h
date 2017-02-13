@@ -94,7 +94,7 @@ namespace Html {
         }
 
         inline Tag * parent() { return _parent; }
-        inline Tag * child(const int & pos) const { return _tags.size() < pos ? _tags[pos] : 0; }
+        inline Tag * child(const int & pos) const { return pos < _tags.size() ? _tags[pos] : 0; }
         Tag * child(const QByteArray & name_predicate, const int & pos = 0) const;
         inline int childrenCount() { return _tags.size(); }
 
