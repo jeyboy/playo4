@@ -215,6 +215,7 @@ bool Tag::validTo(const Selector * selector) {
             QByteArray selector_value = attr.value().second;
             char rel = attr.value().first;
 
+            //FIXME: there should be checking of classes: class*'pre' and etc
             switch(rel) {
                 case Selector::sel_attr_eq: {
                     if (!((selector_value == tkn_any_elem || tag_value == selector_value)))
@@ -256,21 +257,3 @@ bool Tag::validTo(const Selector * selector) {
 
     return true;
 }
-
-//Set & Tag::backwardFind(Selector * selector, Set & set) {
-//    if (!_parent) return set;
-
-//    if (_parent -> validTo(selector))
-//        selector = selector -> prev/*next*/;
-
-//    if (!selector)
-//        set.append(_parent);
-//    else
-//        if (selector -> isBackward()) {
-//            if (_parent -> _parent)
-//                _parent -> backwardFind(selector, set);
-//        }
-//        else _parent -> children().find(selector, set);
-
-//    return set;
-//}

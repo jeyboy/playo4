@@ -396,13 +396,22 @@ void HtmlTest::testSelectionTextEqualTo() {
     QVERIFY2(false, "Failure");
 }
 void HtmlTest::testSelectionTextStartedWith() {
+    //    Page page(TestData::dataHtmlStackOverflow());
+    //    Tag * div = page.findFirst("body .topbar :2");
 
+        QVERIFY2(false, "Failure");
 }
 void HtmlTest::testSelectionTextEndedWith() {
+    //    Page page(TestData::dataHtmlStackOverflow());
+    //    Tag * div = page.findFirst("body .topbar :2");
 
+        QVERIFY2(false, "Failure");
 }
 void HtmlTest::testSelectionTextContains() {
+    //    Page page(TestData::dataHtmlStackOverflow());
+    //    Tag * div = page.findFirst("body .topbar :2");
 
+        QVERIFY2(false, "Failure");
 }
 
 

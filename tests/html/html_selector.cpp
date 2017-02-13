@@ -43,7 +43,6 @@ void Selector::addAttr(const QByteArray & name, const QByteArray & val, const ch
     }
 }
 
-//TODO: add :3 - position limitation
 Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any),
     pos_limit(-1), prev(0), next(0), has_error(false), error(0)
 {
@@ -51,8 +50,6 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any),
     Selector * selector = this;
     const char * pdata = predicate, * stoken = pdata, * etoken = 0, * rel = 0, * sval = 0;
     bool in_attr = false;
-
-    //> *:active:3[name='Loop' top] div p.loop #id.tool .yopt[gog loh] ['piza to'=123] p[text*'sdfsdf \'ssda'],a:active > .sos
 
     while(*pdata) {
         switch(state) {
