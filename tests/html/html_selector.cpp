@@ -21,7 +21,7 @@ void Selector::addPredicate(const SState & state, const QByteArray & token) {
             bool ok;
             int level = token.toInt(&ok, 10);
             if (ok)
-                pos_limit = level;
+                pos_limit = level - 1; // convert to zero based index
             else {
                 QByteArray lower_token = token.toLower();
 
@@ -111,10 +111,7 @@ Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any),
 
 
                     case sel_attr_type_token: {
-                        if (in_attr) {
-                            int y = 0;
-                        }
-                        else {
+                        if (!in_attr) {
                             SELECTOR_ADD_PREDICATE(pdata + 1)
                             state = (SState)*pdata;
                         }

@@ -48,7 +48,7 @@ namespace Html {
         inline QByteArray name() const { return _name; }
         inline QHash<QByteArray, QByteArray> attributes() const { return _attrs; }
         inline Set children() const { return _tags; }
-        inline QByteArray data(const QByteArray & name) const { return value("data-" % name); }
+        inline QByteArray data(const QByteArray & name) const { return value(QByteArrayLiteral("data-") + name); }
         inline QByteArray src() const { return value(attr_src); }
         inline QByteArray link() const { return _attrs.value(attr_href); }
 
@@ -99,10 +99,10 @@ namespace Html {
         inline int childrenCount() { return _tags.size(); }
 
         QHash<QByteArray, bool> * classes();
-        inline bool hasClass(const QByteArray & class_name) {
-            return classes() -> contains(class_name);
-        }
+        inline bool hasId(const QByteArray & id_name) { return _attrs[attr_id] == id_name; }
+        inline bool hasClass(const QByteArray & class_name) { return classes() -> contains(class_name); }
         inline bool hasAttr(const QByteArray & attr_name = attr_checked) const { return _attrs.contains(attr_name); }
+        inline bool hasAttr(const QByteArray & attr_name, const QByteArray & attr_val) const { return _attrs[attr_name] == attr_val; }
         inline bool hasChildren(const char * predicate = 0) const { return !(predicate ? find(predicate).isEmpty() : _tags.isEmpty()); }
 
         Set find(const char * predicate) const;

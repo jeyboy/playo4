@@ -48,6 +48,27 @@ private Q_SLOTS:
     void testIframe();
 //    void testTable(); //TEST_TABLE_PATH
 //    void testVideo(); //TEST_VIDEO_HTML5_PATH
+
+    void testSelectionAnyRelation();
+
+    void testSelectionPrevParent();
+    void testSelectionOnlyChilds();
+
+    void testSelectionPrevSibling();
+    void testSelectionNextSibling();
+    void testSelectionAnySibling();
+
+    void testSelectionId();
+    void testSelectionMultipleClasses();
+
+    void testSelectionMultipleAttrs();
+
+    void testSelectionPosLimit();
+
+    void testSelectionTextEqualTo();
+    void testSelectionTextStartedWith();
+    void testSelectionTextEndedWith();
+    void testSelectionTextContains();
 };
 
 using namespace Html;
@@ -292,6 +313,98 @@ void HtmlTest::testIframe() {
         "Failure"
     );
 }
+
+
+void HtmlTest::testSelectionAnyRelation() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Tag * div = page.findFirst("body .topbar");
+
+    QVERIFY2(div && div -> hasClass("topbar"), "Failure");
+}
+
+void HtmlTest::testSelectionPrevParent() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Tag * div = page.findFirst(".js-gps-track < .modal-content");
+
+    QVERIFY2(div && div -> hasClass("modal-content"), "Failure");
+}
+void HtmlTest::testSelectionOnlyChilds() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Set bar_as = page.find(".topbar > a");
+
+    Tag * topbar = page.findFirst(".topbar");
+    bool res = !bar_as.isEmpty();
+
+    for(Set::Iterator tag = bar_as.begin(); tag != bar_as.end(); tag++)
+        if ((*tag) -> parent() != topbar) {
+            res = false;
+            break;
+        }
+
+    QVERIFY2(res, "Failure");
+}
+
+void HtmlTest::testSelectionPrevSibling() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Tag * div = page.findFirst("#custom-header - div");
+
+    QVERIFY2(div && div -> hasId("notify-container"), "Failure");
+}
+void HtmlTest::testSelectionNextSibling() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Tag * div = page.findFirst("#notify-container + div");
+
+    QVERIFY2(div && div -> hasId("custom-header"), "Failure");
+}
+void HtmlTest::testSelectionAnySibling() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Set bars = page.find("body ~ .topbar");
+
+    QVERIFY2(bars.size() == 1 && bars.first() -> hasClass("topbar"), "Failure");
+}
+
+void HtmlTest::testSelectionId() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Set divs = page.find("body #your-communities-header");
+    QVERIFY2(divs.size() == 1 && divs.first() -> hasId("your-communities-header"), "Failure");
+}
+void HtmlTest::testSelectionMultipleClasses() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Tag * as = page.findFirst(".current-site-link.site-link.js-gps-track");
+
+    QVERIFY2(as && as -> hasClass("site-link"), "Failure");
+}
+
+void HtmlTest::testSelectionMultipleAttrs() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Tag * as = page.findFirst("a[data-gps-track='site_switcher.show'][title='A list of all 163 Stack Exchange sites']");
+
+    QVERIFY2(as && as -> hasAttr("data-gps-track"), "Failure");
+}
+
+void HtmlTest::testSelectionPosLimit() {
+    Page page(TestData::dataHtmlStackOverflow());
+    Tag * div = page.findFirst("body .topbar :2");
+
+    QVERIFY2(div && div -> hasClass("topbar-dialog"), "Failure");
+}
+
+void HtmlTest::testSelectionTextEqualTo() {
+//    Page page(TestData::dataHtmlStackOverflow());
+//    Tag * div = page.findFirst("body .topbar :2");
+
+    QVERIFY2(false, "Failure");
+}
+void HtmlTest::testSelectionTextStartedWith() {
+
+}
+void HtmlTest::testSelectionTextEndedWith() {
+
+}
+void HtmlTest::testSelectionTextContains() {
+
+}
+
 
 
 QTEST_APPLESS_MAIN(HtmlTest)
