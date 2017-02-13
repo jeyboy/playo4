@@ -12,7 +12,7 @@ const QHash<QByteArray, QByteArray> Selector::attr_predifinitions = QHash<QByteA
     {"datetime", HTML_ATTR_TYPE}, {"date", HTML_ATTR_TYPE}, {"color", HTML_ATTR_TYPE}
 };
 
-void Selector::addPredicate(const SState & state, const QByteArray & token) {
+bool Selector::addPredicate(const SState & state, const QByteArray & token) {
     switch(state) {
         case st_tag: { _token = token.toLower(); break;}
         case st_id: { _attrs.insert(attr_id, QPair<char, QByteArray>(sel_attr_eq, token)); break; }
@@ -31,8 +31,10 @@ void Selector::addPredicate(const SState & state, const QByteArray & token) {
                     _attrs.insert(lower_token, QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
             }
         break;}
-        default: qDebug() << "!!! pipec";
+        default: return false;
     }
+
+    return true;
 }
 
 void Selector::addAttr(const QByteArray & name, const QByteArray & val, const char & rel) {

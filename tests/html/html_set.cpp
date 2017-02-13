@@ -15,6 +15,8 @@ Set Set::find(const char * predicate, const bool & find_first) const {
 }
 
 Set & Set::find(const Selector * selector, Set & set, const bool & find_first) const {
+    if (selector -> has_error) return set;
+
     for(Set::ConstIterator tag = cbegin(); tag != cend(); tag++) {
         bool has_children = (*tag) -> hasChildren();
         bool has_next_selector = selector -> next != 0;

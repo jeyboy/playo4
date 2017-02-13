@@ -24,7 +24,8 @@
 #define SELECTOR_ADD_PREDICATE(token_data) \
     {\
         if (TOKEN_BUFF_VALID) {\
-            selector -> addPredicate(state, TOKEN_BUFF);\
+            if (!selector -> addPredicate(state, TOKEN_BUFF))\
+                SELECTOR_PARSE_ERROR("wrong predicate state: " + char(state));\
             rel = 0; \
         }\
         stoken = token_data;\
@@ -37,6 +38,7 @@
             curr = curr ->  prev; \
         curr -> has_error = true;\
         curr -> error = new QString(message);\
+        qDebug() << "SELECTOR ERROR: " << message;\
         return;\
     }
 
@@ -71,7 +73,7 @@ namespace Html {
             sel_attr_eq = 61, // =
             sel_attr_begin = 94, // ^
             sel_attr_begin2 = 124, // |
-            sel_attr_end = 38, // $
+            sel_attr_end = 36, // $
             sel_attr_not = 33, // !
             sel_attr_match2 = 42, // *
             sel_attr_type_token = 58, // :
@@ -104,7 +106,7 @@ namespace Html {
         }
         Selector operator= (const char * x) { return Selector(x); }
 
-        void addPredicate(const SState & state, const QByteArray & token);
+        bool addPredicate(const SState & state, const QByteArray & token);
         void addAttr(const QByteArray & name, const QByteArray & val, const char & rel);
 
         inline bool isDirect() const { return turn == parent; }

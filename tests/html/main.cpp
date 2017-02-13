@@ -395,9 +395,9 @@ void HtmlTest::testSelectionPosLimit() {
 
 void HtmlTest::testSelectionTextEqualTo() {
     Page page(TestData::dataHtmlParserAttrs());
-    Tag * div = page.findFirst("[text='The title attribute']");
+    Tag * h2 = page.findFirst("[text='The title attribute']");
 
-    QVERIFY2(div, "Failure");
+    QVERIFY2(h2, "Failure");
 }
 void HtmlTest::testSelectionTextStartedWith() {
     Page page(TestData::dataHtmlParserAttrs());
