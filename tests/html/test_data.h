@@ -153,7 +153,6 @@ class TestData {
     static const char * dataSelectorParsingRootPs() { return "> p"; }
     static const char * dataSelectorParsingAnyLevelPs() { return "* > p"; }
     static const char * dataSelectorParsingWithAttrs() { return "p[name='Loop' top]"; }
-//    static const char * dataSelectorParsingWithQuotesInText() { return "p[name='Loo\\'p' top]"; }
     static const char * dataSelectorParsingWithQuitedAttrs() { return "p['name bli'='Loop' 'lo jka'='cool']"; }
     static const char * dataSelectorParsingWithDoubleAttrs() { return "p[name='Loop'][cool='Lo']"; }
     static const char * dataSelectorParsingWithAttrsNoQuotes() { return "p[name=Loop pop=1]"; }

@@ -40,6 +40,24 @@
         return;\
     }
 
+#define SELECTOR_PROCEED_CLASSES(rel, classes_token) \
+    { \
+        const char * data = classes_token.constData(), * sdata = data; \
+        while(*data) { \
+            switch(*data) { \
+                case 32: { \
+                    if (data - sdata > 0) \
+                        _classes << QPair<char, QByteArray>(rel, QByteArray(sdata, data - sdata)); \
+                    sdata = data + 1; \
+                break;} \
+                default:; \
+            } \
+            data++; \
+        }\
+        if (data - sdata > 0)\
+            _classes << QPair<char, QByteArray>(rel, QByteArray(sdata, data - sdata));\
+    }
+
 
 namespace Html {
     struct HTMLSHARED_EXPORT Selector {
@@ -92,7 +110,7 @@ namespace Html {
         inline bool isDirect() const { return turn == parent; }
         inline bool isForward() const { return turn == any || turn == parent; }
 
-        QList<QByteArray> _classes;
+        QList<QPair<char, QByteArray> > _classes;
         QByteArray _token;
         QHash<QByteArray, QPair<char, QByteArray> > _attrs;
         STurn turn;

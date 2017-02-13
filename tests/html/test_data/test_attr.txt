@@ -3,6 +3,8 @@
 <body>
 
 <h2>The title attribute</h2>
+<div> I am not the title attribute</div>
+<div>The pithe</div>
 
 <p title="I'm a tooltip">a</p>
 

@@ -69,14 +69,18 @@ private Q_SLOTS:
     void testSelectionTextStartedWith();
     void testSelectionTextEndedWith();
     void testSelectionTextContains();
+    void testSelectionTextNotContains();
+
+    void testSelectionClassesEqualTo();
+    void testSelectionClassesStartedWith();
+    void testSelectionClassesEndedWith();
+    void testSelectionClassesContains();
+    void testSelectionClassesNotContains();
 };
 
 using namespace Html;
 
-HtmlTest::HtmlTest() {
-//    Page p(loadData(TEST_YOUTUBE_PATH));
-//    saveData(LSTR("_out.txt"), p.toByteArray());
-}
+HtmlTest::HtmlTest() {}
 
 void HtmlTest::measurementSelectionParsing() {
     QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }
@@ -390,30 +394,66 @@ void HtmlTest::testSelectionPosLimit() {
 }
 
 void HtmlTest::testSelectionTextEqualTo() {
-//    Page page(TestData::dataHtmlStackOverflow());
-//    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserAttrs());
+    Tag * div = page.findFirst("[text='The title attribute']");
 
-    QVERIFY2(false, "Failure");
+    QVERIFY2(div, "Failure");
 }
 void HtmlTest::testSelectionTextStartedWith() {
-    //    Page page(TestData::dataHtmlStackOverflow());
-    //    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserAttrs());
+    Set tags = page.find("[text^'The']");
 
-        QVERIFY2(false, "Failure");
+    QVERIFY2(tags.size() == 2, "Failure");
 }
 void HtmlTest::testSelectionTextEndedWith() {
-    //    Page page(TestData::dataHtmlStackOverflow());
-    //    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserAttrs());
+    Set tags = page.find("[text$'bute']");
 
-        QVERIFY2(false, "Failure");
+    QVERIFY2(tags.size() == 2, "Failure");
 }
 void HtmlTest::testSelectionTextContains() {
+    Page page(TestData::dataHtmlParserAttrs());
+    Set tags = page.find("[text~'title']");
+
+    QVERIFY2(tags.size() == 2, "Failure");
+}
+void HtmlTest::testSelectionTextNotContains() {
+    Page page(TestData::dataHtmlParserAttrs());
+    Set tags = page.find("body [text!'title']");
+
+    QVERIFY2(tags.size() == 2, "Failure");
+}
+
+void HtmlTest::testSelectionClassesEqualTo() {
     //    Page page(TestData::dataHtmlStackOverflow());
     //    Tag * div = page.findFirst("body .topbar :2");
 
         QVERIFY2(false, "Failure");
 }
+void HtmlTest::testSelectionClassesStartedWith() {
+    //    Page page(TestData::dataHtmlStackOverflow());
+    //    Tag * div = page.findFirst("body .topbar :2");
 
+        QVERIFY2(false, "Failure");
+}
+void HtmlTest::testSelectionClassesEndedWith() {
+    //    Page page(TestData::dataHtmlStackOverflow());
+    //    Tag * div = page.findFirst("body .topbar :2");
+
+        QVERIFY2(false, "Failure");
+}
+void HtmlTest::testSelectionClassesContains() {
+    //    Page page(TestData::dataHtmlStackOverflow());
+    //    Tag * div = page.findFirst("body .topbar :2");
+
+        QVERIFY2(false, "Failure");
+}
+void HtmlTest::testSelectionClassesNotContains() {
+    //    Page page(TestData::dataHtmlStackOverflow());
+    //    Tag * div = page.findFirst("body .topbar :2");
+
+        QVERIFY2(false, "Failure");
+}
 
 
 QTEST_APPLESS_MAIN(HtmlTest)

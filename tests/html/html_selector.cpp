@@ -16,12 +16,12 @@ void Selector::addPredicate(const SState & state, const QByteArray & token) {
     switch(state) {
         case st_tag: { _token = token.toLower(); break;}
         case st_id: { _attrs.insert(attr_id, QPair<char, QByteArray>(sel_attr_eq, token)); break; }
-        case st_class: { _classes.append(token.split(' ')); break;}
+        case st_class: { SELECTOR_PROCEED_CLASSES(sel_attr_eq, token); break;}
         case st_attr_type: {
             bool ok;
             int level = token.toInt(&ok, 10);
             if (ok)
-                pos_limit = level - 1; // convert to zero based index
+                pos_limit = level - 1; //INFO: convert to zero based index
             else {
                 QByteArray lower_token = token.toLower();
 
@@ -39,7 +39,12 @@ void Selector::addAttr(const QByteArray & name, const QByteArray & val, const ch
     if (val.isEmpty()) {
         _attrs.insert(name.toLower(), QPair<char, QByteArray>(sel_attr_eq, tkn_any_elem));
     } else {
-        _attrs.insert(name.toLower(), QPair<char, QByteArray>(rel, val));
+        QByteArray lower_name = name.toLower();
+
+        if (lower_name == attr_class) {
+            SELECTOR_PROCEED_CLASSES(rel, val);
+        } else
+            _attrs.insert(lower_name, QPair<char, QByteArray>(rel, val));
     }
 }
 

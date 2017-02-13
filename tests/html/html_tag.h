@@ -67,6 +67,7 @@ namespace Html {
         }
 
         inline bool isStub() { return _name == tkn_any_elem; }
+        inline bool isText() { return _name == tkn_text_block; }
         inline bool isLink() { return _name == tag_a; }
         inline bool isBody() { return _name == tag_body; }
         inline bool isMeta() { return _name == tag_meta; }

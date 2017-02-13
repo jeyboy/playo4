@@ -63,12 +63,16 @@ Page::Page(QIODevice * device, const CharsetType & doc_charset, const ParseFlags
     QByteArray data = device -> readAll();
     parse(data.constData());
 }
+Page::Page(const QByteArray & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+    : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
+{
+    parse(str.constData());
+}
 Page::Page(const QString & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(QSTR_TO_CHAR(str));
 }
-
 Page::Page(const char * str_data, const CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {

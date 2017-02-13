@@ -158,7 +158,8 @@ QHash<QByteArray, bool> * Tag::classes() {
                 data++;
             }
 
-            _classes -> insert(QByteArray(sdata, data - sdata), true);
+            if (data - sdata > 0)
+                _classes -> insert(QByteArray(sdata, data - sdata), true);
         }
     }
 
@@ -208,14 +209,15 @@ bool Tag::validTo(const Selector * selector) {
     if (!selector -> _attrs.isEmpty()) {
         for(QHash<QByteArray, QPair<char, QByteArray> >::ConstIterator attr = selector -> _attrs.cbegin(); attr != selector -> _attrs.cend(); attr++) {
             QByteArray attr_key = attr.key();
-            if (!_attrs.contains(attr_key))
+            bool text_required = attr_key == tkn_text_block;
+
+            if (!text_required && !_attrs.contains(attr_key))
                 return false;
 
-            QByteArray tag_value = attr_key == tkn_text_block ? text() : _attrs.value(attr_key);
+            QByteArray tag_value = text_required ? text() : _attrs.value(attr_key);
             QByteArray selector_value = attr.value().second;
             char rel = attr.value().first;
 
-            //FIXME: there should be checking of classes: class*'pre' and etc
             switch(rel) {
                 case Selector::sel_attr_eq: {
                     if (!((selector_value == tkn_any_elem || tag_value == selector_value)))
@@ -249,9 +251,53 @@ bool Tag::validTo(const Selector * selector) {
         QHash<QByteArray, bool> * tag_classes = classes();
         if (!tag_classes) return false;
 
-        for(QList<QByteArray>::ConstIterator selector_class = selector -> _classes.cbegin(); selector_class != selector -> _classes.cend(); selector_class++) {
-            if (!tag_classes -> contains(*selector_class))
-                return false;
+        for(QList<QPair<char, QByteArray> >::ConstIterator selector_class = selector -> _classes.cbegin(); selector_class != selector -> _classes.cend(); selector_class++) {
+            switch((*selector_class).first) {
+                case Selector::sel_attr_eq: {
+                    if (!tag_classes -> contains((*selector_class).second))
+                        return false;
+                    break;}
+                case Selector::sel_attr_begin:
+                case Selector::sel_attr_begin2: {
+                    bool res = false;
+                    for(QHash<QByteArray, bool>::Iterator tag_class = tag_classes -> begin(); tag_class != tag_classes -> end(); tag_class++)
+                        if (tag_class.key().startsWith((*selector_class).second)) {
+                            res = true;
+                            break;
+                        }
+                    if (!res) return false;
+                break;}
+                case Selector::sel_attr_end: {
+                    bool res = false;
+                    for(QHash<QByteArray, bool>::Iterator tag_class = tag_classes -> begin(); tag_class != tag_classes -> end(); tag_class++)
+                        if (tag_class.key().endsWith((*selector_class).second)) {
+                            res = true;
+                            break;
+                        }
+                    if (!res) return false;
+                break;}
+                case Selector::sel_rel_attr_match:
+                case Selector::sel_attr_match2: {
+                    bool res = false;
+                    for(QHash<QByteArray, bool>::Iterator tag_class = tag_classes -> begin(); tag_class != tag_classes -> end(); tag_class++)
+                        if (tag_class.key().indexOf((*selector_class).second) != -1) {
+                            res = true;
+                            break;
+                        }
+                    if (!res) return false;
+                break;}
+                case Selector::sel_attr_not: {
+                    bool res = false;
+                    for(QHash<QByteArray, bool>::Iterator tag_class = tag_classes -> begin(); tag_class != tag_classes -> end(); tag_class++)
+                        if (tag_class.key().indexOf((*selector_class).second) == -1) {
+                            res = true;
+                            break;
+                        }
+                    if (!res) return false;
+                break;}
+
+                default: qDebug() << "UNSUPPORTED PREDICATE " << (*selector_class).first;
+            };
         }
     }
 

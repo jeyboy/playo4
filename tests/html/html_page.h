@@ -104,6 +104,7 @@ namespace Html {
     public:
         Page(QIODevice * device, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
         Page(const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
+        Page(const QByteArray & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
         Page(const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
 
         inline ~Page() { delete root; }
