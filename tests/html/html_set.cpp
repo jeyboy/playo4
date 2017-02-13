@@ -34,9 +34,15 @@ Set & Set::find(const Selector * selector, Set & set, const bool & find_first) c
                             (*tag) -> parent() -> children().find(selector -> next, set, find_first);
                         break;}
 
-                        case Selector::sibling_next: proc_tag = *(tag + 1);
+                        case Selector::sibling_next: {
+                            if (tag + 1 == cend()) continue;
+                            proc_tag = *(tag + 1);
+                        }
                         case Selector::sibling_prev: {
-                            if (!proc_tag) proc_tag = *(tag - 1);
+                            if (!proc_tag) {
+                                if (tag == cbegin()) continue;
+                                proc_tag = *(tag - 1);
+                            }
                             (Set() << proc_tag).find(selector -> next, set, find_first);
                         break;}
 

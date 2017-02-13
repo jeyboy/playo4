@@ -100,7 +100,10 @@ namespace Html {
 
         QHash<QByteArray, bool> * classes();
         inline bool hasId(const QByteArray & id_name) { return _attrs[attr_id] == id_name; }
-        inline bool hasClass(const QByteArray & class_name) { return classes() -> contains(class_name); }
+        inline bool hasClass(const QByteArray & class_name) {
+            QHash<QByteArray, bool> * klasses = classes();
+            return klasses && klasses -> contains(class_name);
+        }
         inline bool hasAttr(const QByteArray & attr_name = attr_checked) const { return _attrs.contains(attr_name); }
         inline bool hasAttr(const QByteArray & attr_name, const QByteArray & attr_val) const { return _attrs[attr_name] == attr_val; }
         inline bool hasChildren(const char * predicate = 0) const { return !(predicate ? find(predicate).isEmpty() : _tags.isEmpty()); }
