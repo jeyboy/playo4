@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<iframe src="http://www.w3schools.com/html/demo_iframe.htm"></iframe>
+<iframe src="test_classes.txt"></iframe>
 
 </body>
 </html>

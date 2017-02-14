@@ -48,6 +48,7 @@ private Q_SLOTS:
     void testFormTextArea();
 
     void testIframe();
+    void testIframeLoading();
 //    void testTable(); //TEST_TABLE_PATH
 //    void testVideo(); //TEST_VIDEO_HTML5_PATH
 
@@ -313,13 +314,26 @@ void HtmlTest::testFormTextArea() {
 
 void HtmlTest::testIframe() {
     Page page(TestData::dataHtmlParserIFrame());
-
-    QVERIFY2(
-        false,
-        "Failure"
-    );
+    QVERIFY2(page.hasIframes(), "Failure");
 }
+void HtmlTest::testIframeLoading() {
+    Page page(TestData::dataHtmlParserIFrame());
 
+    bool res = page.hasIframes();
+    if (res) {
+        Tag * frame = page.iframesList().first();
+
+        if ((res = frame -> isFrameRequireInit())) {
+            QByteArray src = frame -> src();
+            frame -> proceedIFrameData(TestData::dataLoad(src));
+            res = frame -> hasChildren();
+        }
+
+        res = !!page.findFirst("body iframe #bli");
+    }
+
+    QVERIFY2(res, "Failure");
+}
 
 void HtmlTest::testSelectionAnyRelation() {
     Page page(TestData::dataHtmlStackOverflow());

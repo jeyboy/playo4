@@ -8,6 +8,8 @@
 #include "html_tag.h"
 #include "html_selector.h"
 
+#define INIT_ROOT_TAG (root = new Tag(HTML_ANY_TAG))
+
 #define NAME_BUFF QByteArray(sname, (ename ? ename : pdata) - sname)
 #define NBUFF_VALID ((pdata - sname) > 0)
 #define NAME_BUFF_VALID (sname && NBUFF_VALID)
@@ -51,11 +53,17 @@ namespace Html {
             sf_html = 1,
             sf_xml = 2,
             sf_has_errors = 4,
+            sf_has_iframes = 8,
             //...
             sf_use_doc_charset = 64,
             sf_use_user_charset = 128
         };
-        enum ParseFlags { pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2 };
+        enum ParseFlags {
+            pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2,
+            pf_skip_mnemonics_decoding = 4, pf_skip_content_decoding = 8,
+
+            pf_default = pf_skip_comment | pf_skip_mnemonics_decoding | pf_skip_content_decoding
+        };
 
         enum PState {
             content = 1,
@@ -91,7 +99,7 @@ namespace Html {
             code_end = 59 // ;
         };
 
-        void parse(const char * data);
+        void parse(const char * data, Tag * root_tag);
 //        QString parseCode(char * ch);
 
         void checkCharset(Tag * tag);
@@ -101,11 +109,20 @@ namespace Html {
         ParseFlags pflags;
         StateFlags sflags;
         CharsetType charset;
+
+        Set iframes;
+        friend class Tag;
+
+        /////////////// REMOVE ME AFTER REFACTOR OF TAG // iframe tag should to store pointer on page and use it for parse
+        Page(Tag * root_tag, const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const QByteArray & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        /////////////////////////////////////
     public:
-        Page(QIODevice * device, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
-        Page(const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
-        Page(const QByteArray & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
-        Page(const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_skip_comment);
+        Page(QIODevice * device, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const QByteArray & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
 
         inline ~Page() { delete root; }
 
@@ -116,11 +133,14 @@ namespace Html {
 
         inline QByteArray toByteArray() { return root -> toByteArray(); }
 
+        inline bool hasIframes() const { return sflags & sf_has_iframes; }
         inline bool hasChildren(const char * predicate) const { return root -> hasChildren(predicate); }
 
         Tag * findFirst(const char * predicate) const;
         Set find(const char * predicate) const;
         Set find(const Selector * selector, const bool & findFirst = false) const;
+
+        inline Set iframesList() const { return iframes; }
 
         void output();
     };

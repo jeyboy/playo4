@@ -32,6 +32,7 @@ namespace Html {
     extern const QByteArray tag_xml;
     extern const QByteArray tag_meta;
     extern const QByteArray tag_link;
+    extern const QByteArray tag_iframe;
 
 //    extern const char tkn_split;
     extern const QByteArray tkn_any_elem;

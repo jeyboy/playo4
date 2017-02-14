@@ -56,6 +56,10 @@ namespace Html {
         QByteArray text() const;
         QByteArray texts() const;
 
+        void proceedIFrameData(const QByteArray & data);
+        void proceedIFrameData(const QString & data);
+        void proceedIFrameData(const char * data);
+
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QUrl serializeFormToUrl(const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QByteArray toByteArray() const;
@@ -74,6 +78,9 @@ namespace Html {
 
         inline bool isHead() { return _name == tag_head; }
         inline bool isXmlHead() { return _name == tag_xml; }
+
+        inline bool isFrame() { return _name == tag_iframe; }
+        inline bool isFrameRequireInit() { return _name == tag_iframe && _tags.isEmpty(); }
 
         inline bool isScript() { return _name == tag_script; }
         inline bool isStyle() { return _name == tag_style; }

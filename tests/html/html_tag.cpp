@@ -4,6 +4,7 @@
 #include <qurlquery.h>
 
 #include "html_selector.h"
+#include "html_page.h"
 
 using namespace Html;
 
@@ -53,6 +54,10 @@ QByteArray Tag::texts() const {
         return result;
     }
 }
+
+void Tag::proceedIFrameData(const QByteArray & data) { Page(this, data); }
+void Tag::proceedIFrameData(const QString & data) { Page(this, data); }
+void Tag::proceedIFrameData(const char * data) { Page(this, data); }
 
 //INFO: some servers very sensitive to params part and payload part separation ...
 // appendable - appends inputs from vals, which not finded in form

@@ -28,6 +28,7 @@ class TestData {
         }
     }
 
+    static QString dataLoad(const QByteArray & name) { return load(DATA_PATH(name)); }
 
     static QString dataHtmlFourshared() {
         static QString data_fourshared = load(DATA_PATH(QStringLiteral("fourshared.txt")));

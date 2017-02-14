@@ -57,26 +57,46 @@
 
 using namespace Html;
 
+//// remove me later
+Page::Page(Tag * root_tag, const char * str_data, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+    : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
+{
+    parse(str_data, root_tag);
+}
+Page::Page(Tag * root_tag, const QByteArray & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+   : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
+{
+   parse(str.constData(), root_tag);
+}
+Page::Page(Tag * root_tag, const QString & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+    : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
+{
+    parse(QSTR_TO_CHAR(str), root_tag);
+}
+//////////////////////////
+//////////////////////////
+
+
 Page::Page(QIODevice * device, const CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     QByteArray data = device -> readAll();
-    parse(data.constData());
+    parse(data.constData(), INIT_ROOT_TAG);
 }
 Page::Page(const QByteArray & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
-    parse(str.constData());
+    parse(str.constData(), INIT_ROOT_TAG);
 }
 Page::Page(const QString & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
-    parse(QSTR_TO_CHAR(str));
+    parse(QSTR_TO_CHAR(str), INIT_ROOT_TAG);
 }
 Page::Page(const char * str_data, const CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
-    parse(str_data);
+    parse(str_data, INIT_ROOT_TAG);
 }
 
 Set Page::find(const Selector * selector, const bool & findFirst) const {
@@ -92,8 +112,8 @@ Tag * Page::findFirst(const char * predicate) const {
     return set.isEmpty() ? 0 : set.first();
 }
 
-void Page::parse(const char * data) {
-    Tag * elem = (root = new Tag(HTML_ANY_TAG));
+void Page::parse(const char * data, Tag * root_tag) {
+    Tag * elem = root_tag;
     PState state = content;
     const char *pdata = data, *sname = 0, *sval = 0, *ename = 0;
 
@@ -185,6 +205,11 @@ void Page::parse(const char * data) {
 
 //                      use this check for strict verification (open tag is eql to close)
                         if (*(pdata - 1) == close_tag_predicate || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF)) {
+                            if (elem -> isFrame()) {
+                                iframes << elem;
+                                sflags = (StateFlags)(sflags | sf_has_iframes);
+                            }
+
                             elem = elem -> parent();
 
                             if (!elem) {

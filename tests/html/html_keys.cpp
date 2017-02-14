@@ -15,6 +15,7 @@ namespace Html {
     extern const QByteArray tag_meta               = HTML_META_TAG;
     extern const QByteArray tag_xml                = HTML_XML_TAG;
     extern const QByteArray tag_link               = HTML_LINK_TAG;
+    extern const QByteArray tag_iframe             = QByteArray("iframe");
 
 //    extern const char tkn_split                    = ' ';
     extern const QByteArray tkn_any_elem           = HTML_ANY_TAG;
