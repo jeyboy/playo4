@@ -287,13 +287,9 @@ bool Tag::validTo(const Selector * selector) {
                     if (!res) return false;
                 break;}
                 case Selector::sel_attr_not: {
-                    bool res = false;
                     for(QHash<QByteArray, bool>::Iterator tag_class = tag_classes -> begin(); tag_class != tag_classes -> end(); tag_class++)
-                        if (tag_class.key().indexOf((*selector_class).second) == -1) {
-                            res = true;
-                            break;
-                        }
-                    if (!res) return false;
+                        if (tag_class.key().indexOf((*selector_class).second) != -1)
+                            return false;
                 break;}
 
                 default: qDebug() << "UNSUPPORTED PREDICATE " << (*selector_class).first;

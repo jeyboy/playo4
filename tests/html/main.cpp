@@ -5,6 +5,8 @@
 
 #include "test_data.h"
 
+//QSKIP("This test requires the SQLITE database driver");
+
 class HtmlTest : public QObject {
     Q_OBJECT
 public:
@@ -425,34 +427,34 @@ void HtmlTest::testSelectionTextNotContains() {
 }
 
 void HtmlTest::testSelectionClassesEqualTo() {
-    //    Page page(TestData::dataHtmlStackOverflow());
-    //    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserClasses());
+    Set tags = page.find("body .cl2");
 
-        QVERIFY2(false, "Failure");
+    QVERIFY2(tags.size() == 2 && tags[0] -> hasClass("cl2") && tags[1] -> hasClass("cl2"), "Failure");
 }
 void HtmlTest::testSelectionClassesStartedWith() {
-    //    Page page(TestData::dataHtmlStackOverflow());
-    //    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserClasses());
+    Set tags = page.find("body .cl2[class^'cl']");
 
-        QVERIFY2(false, "Failure");
+    QVERIFY2(tags.size() == 2 && tags[0] -> hasClass("cl1") && tags[1] -> hasClass("cl3"), "Failure");
 }
 void HtmlTest::testSelectionClassesEndedWith() {
-    //    Page page(TestData::dataHtmlStackOverflow());
-    //    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserClasses());
+    Set tags = page.find("body [class$'3']");
 
-        QVERIFY2(false, "Failure");
+    QVERIFY2(tags.size() == 2 && tags[0] -> hasClass("cl2") && tags[1] -> hasClass("ck3"), "Failure");
 }
 void HtmlTest::testSelectionClassesContains() {
-    //    Page page(TestData::dataHtmlStackOverflow());
-    //    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserClasses());
+    Set tags = page.find("body [class*'k']");
 
-        QVERIFY2(false, "Failure");
+    QVERIFY2(tags.size() == 2 && tags[0] -> hasClass("cl2") && tags[1] -> hasClass("ck3"), "Failure");
 }
 void HtmlTest::testSelectionClassesNotContains() {
-    //    Page page(TestData::dataHtmlStackOverflow());
-    //    Tag * div = page.findFirst("body .topbar :2");
+    Page page(TestData::dataHtmlParserClasses());
+    Set tags = page.find("body [class!'2']");
 
-        QVERIFY2(false, "Failure");
+    QVERIFY2(tags.size() == 1 && tags[0] -> hasClass("ck3"), "Failure");
 }
 
 
