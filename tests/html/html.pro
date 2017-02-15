@@ -21,21 +21,21 @@ TEMPLATE = app
 HEADERS += \
     html_global.h \
     html_page.h \
-    unicode_decoding.h \
     html_keys.h \
     html_selector.h \
     html_set.h \
     html_tag.h \
     defines.h \
-    list.h
+    list.h \
+    html_decoding.h
 
 SOURCES += \
     html_page.cpp \
-    unicode_decoding.cpp \
     html_keys.cpp \
     html_selector.cpp \
     html_set.cpp \
-    html_tag.cpp
+    html_tag.cpp \
+    html_decoding.cpp
 ### test
 
 

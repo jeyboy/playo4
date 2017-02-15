@@ -379,26 +379,6 @@ void Page::parse(const char * data, Tag * root_tag) {
     }
 }
 
-//QString Page::parseCode(char * ch) {
-//    QString code;
-//    bool is_unicode = false;
-//    while(ch) {
-//        switch(*ch) {
-//            case code_unicode: { is_unicode = true; break;}
-//            case code_end: return QChar(is_unicode ? code.toInt() : html_entities.value(code));
-//            default:
-//                if (*ch < 123 && (*ch > 96 || (*ch < 58 && *ch > 47)))
-////                    if ((*ch > 47 && *ch < 58) || (*ch > 96 && *ch < 123))
-//                    code.append(*ch);
-//                else { --ch; return code.prepend('&'); }
-//        }
-
-//        ch++;
-//    }
-
-//    return code.prepend('&');
-//}
-
 void Page::checkCharset(Tag * tag) {
     if (tag -> isMeta() || tag -> isXmlHead())
         proceedCharset(tag);
@@ -406,11 +386,11 @@ void Page::checkCharset(Tag * tag) {
         sflags = (StateFlags)(sflags | sf_use_user_charset);
 }
 
-void Page::proceedCharset(Tag * tag) {
+void Page::proceedCharset(Tag * tag) { // refactor me: use qbytearray except string
     if (tag -> isXmlHead()) {
         QString xml_encoding = tag -> value(tkn_encoding);
         if (!xml_encoding.isEmpty()) {
-            charset = toCharsetType(xml_encoding);
+            charset = HtmlDecoding::toCharsetType(xml_encoding);
             sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     } else {
@@ -423,7 +403,7 @@ void Page::proceedCharset(Tag * tag) {
         }
 
         if (!meta.isEmpty()) {
-            charset = toCharsetType(meta);
+            charset = HtmlDecoding::toCharsetType(meta);
             sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     }

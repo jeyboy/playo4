@@ -1,122 +1,115 @@
-#include "unicode_decoding.h"
+#include "html_decoding.h"
 #include <defines.h>
 
-#include <qregularexpression.h>
-#include <qiodevice.h>
+//#include <qregularexpression.h>
 #include <qdebug.h>
 
-QHash<QString, int> UnicodeDecoding::html_entities = {
-    { LSTR("quot"), 34 },
-    { LSTR("amp"), 38 },
-    { LSTR("apos"), 39 },
-    { LSTR("lt"), 60 },
-    { LSTR("gt"), 62 },
+QHash<QByteArray, int> HtmlDecoding::html_entities = {
+    { QByteArrayLiteral("quot"), 34 },
+    { QByteArrayLiteral("amp"), 38 },
+    { QByteArrayLiteral("apos"), 39 },
+    { QByteArrayLiteral("lt"), 60 },
+    { QByteArrayLiteral("gt"), 62 },
 
-    { LSTR("nbsp"), 32 }, // 160
-    { LSTR("iexcl"), 161 },
-    { LSTR("cent"), 162 },
-    { LSTR("pound"), 163 },
-    { LSTR("curren"), 164 },
-    { LSTR("yen"), 165 },
-    { LSTR("brvbar"), 166 },
-    { LSTR("sect"), 167 },
-    { LSTR("uml"), 168 },
-    { LSTR("copy"), 169 },
-    { LSTR("ordf"), 170 },
-    { LSTR("laquo"), 171 },
-    { LSTR("not"), 172 },
-    { LSTR("shy"), 173 },
-    { LSTR("reg"), 174 },
-    { LSTR("macr"), 175 },
-    { LSTR("deg"), 176 },
-    { LSTR("plusmn"), 177 },
-    { LSTR("sup2"), 178 },
-    { LSTR("sup3"), 179 },
-    { LSTR("acute"), 180 },
-    { LSTR("micro"), 181 },
-    { LSTR("para"), 182 },
-    { LSTR("middot"), 183 },
-    { LSTR("cedil"), 184 },
-    { LSTR("sup1"), 185 },
-    { LSTR("ordm"), 186 },
-    { LSTR("raquo"), 187 },
-    { LSTR("frac14"), 188 },
-    { LSTR("frac12"), 189 },
-    { LSTR("frac34"), 190 },
+    { QByteArrayLiteral("nbsp"), 32 }, // 160
+    { QByteArrayLiteral("iexcl"), 161 },
+    { QByteArrayLiteral("cent"), 162 },
+    { QByteArrayLiteral("pound"), 163 },
+    { QByteArrayLiteral("curren"), 164 },
+    { QByteArrayLiteral("yen"), 165 },
+    { QByteArrayLiteral("brvbar"), 166 },
+    { QByteArrayLiteral("sect"), 167 },
+    { QByteArrayLiteral("uml"), 168 },
+    { QByteArrayLiteral("copy"), 169 },
+    { QByteArrayLiteral("ordf"), 170 },
+    { QByteArrayLiteral("laquo"), 171 },
+    { QByteArrayLiteral("not"), 172 },
+    { QByteArrayLiteral("shy"), 173 },
+    { QByteArrayLiteral("reg"), 174 },
+    { QByteArrayLiteral("macr"), 175 },
+    { QByteArrayLiteral("deg"), 176 },
+    { QByteArrayLiteral("plusmn"), 177 },
+    { QByteArrayLiteral("sup2"), 178 },
+    { QByteArrayLiteral("sup3"), 179 },
+    { QByteArrayLiteral("acute"), 180 },
+    { QByteArrayLiteral("micro"), 181 },
+    { QByteArrayLiteral("para"), 182 },
+    { QByteArrayLiteral("middot"), 183 },
+    { QByteArrayLiteral("cedil"), 184 },
+    { QByteArrayLiteral("sup1"), 185 },
+    { QByteArrayLiteral("ordm"), 186 },
+    { QByteArrayLiteral("raquo"), 187 },
+    { QByteArrayLiteral("frac14"), 188 },
+    { QByteArrayLiteral("frac12"), 189 },
+    { QByteArrayLiteral("frac34"), 190 },
+    { QByteArrayLiteral("iquest"), 191 },
+    { QByteArrayLiteral("Agrave"), 192 },
+    { QByteArrayLiteral("Aacute"), 193 },
+    { QByteArrayLiteral("Acirc"), 194 },
+    { QByteArrayLiteral("Atilde"), 195 },
+    { QByteArrayLiteral("Auml"), 196 },
+    { QByteArrayLiteral("Aring"), 197 },
+    { QByteArrayLiteral("AElig"), 198 },
+    { QByteArrayLiteral("Ccedil"), 199 },
+    { QByteArrayLiteral("Egrave"), 200 },
+    { QByteArrayLiteral("Eacute"), 201 },
+    { QByteArrayLiteral("Ecirc"), 202 },
+    { QByteArrayLiteral("Euml"), 203 },
+    { QByteArrayLiteral("Igrave"), 204 },
+    { QByteArrayLiteral("Iacute"), 205 },
+    { QByteArrayLiteral("Icirc"), 206 },
+    { QByteArrayLiteral("Iuml"), 207 },
+    { QByteArrayLiteral("ETH"), 208 },
+    { QByteArrayLiteral("Ntilde"), 209 },
+    { QByteArrayLiteral("Ograve"), 210 },
+    { QByteArrayLiteral("Oacute"), 211 },
+    { QByteArrayLiteral("Ocirc"), 212 },
+    { QByteArrayLiteral("Otilde"), 213 },
+    { QByteArrayLiteral("Ouml"), 214 },
+    { QByteArrayLiteral("times"), 215 },
+    { QByteArrayLiteral("Oslash"), 216 },
+    { QByteArrayLiteral("Ugrave"), 217 },
+    { QByteArrayLiteral("Uacute"), 218 },
+    { QByteArrayLiteral("Ucirc"), 219 },
+    { QByteArrayLiteral("Uuml"), 220 },
+    { QByteArrayLiteral("Yacute"), 221 },
+    { QByteArrayLiteral("THORN"), 222 },
+    { QByteArrayLiteral("szlig"), 223 },
+    { QByteArrayLiteral("agrave"), 224 },
+    { QByteArrayLiteral("aacute"), 225 },
+    { QByteArrayLiteral("acirc"), 226 },
+    { QByteArrayLiteral("atilde"), 227 },
+    { QByteArrayLiteral("auml"), 228 },
+    { QByteArrayLiteral("aring"), 229 },
+    { QByteArrayLiteral("aelig"), 230 },
+    { QByteArrayLiteral("ccedil"), 231 },
+    { QByteArrayLiteral("egrave"), 232 },
+    { QByteArrayLiteral("eacute"), 233 },
+    { QByteArrayLiteral("ecirc"), 234 },
+    { QByteArrayLiteral("euml"), 235 },
+    { QByteArrayLiteral("igrave"), 236 },
+    { QByteArrayLiteral("iacute"), 237 },
+    { QByteArrayLiteral("icirc"), 238 },
+    { QByteArrayLiteral("iuml"), 239 },
+    { QByteArrayLiteral("eth"), 240 },
+    { QByteArrayLiteral("ntilde"), 241 },
+    { QByteArrayLiteral("ograve"), 242 },
+    { QByteArrayLiteral("oacute"), 243 },
+    { QByteArrayLiteral("ocirc"), 244 },
+    { QByteArrayLiteral("otilde"), 245 },
+    { QByteArrayLiteral("ouml"), 246 },
+    { QByteArrayLiteral("divide"), 247 },
+    { QByteArrayLiteral("oslash"), 248 },
+    { QByteArrayLiteral("ugrave"), 249 },
+    { QByteArrayLiteral("uacute"), 250 },
+    { QByteArrayLiteral("ucirc"), 251 },
+    { QByteArrayLiteral("uuml"), 252 },
+    { QByteArrayLiteral("yacute"), 253 },
+    { QByteArrayLiteral("thorn"), 254 },
+    { QByteArrayLiteral("yuml"), 255 },
 
+    { QByteArrayLiteral("fnof"), 402 },
 
-
-
-
-
-//    ¿ 	перевёрнутый знак вопроса 	&iquest; 	&#191;
-//    À 	латинская заглавная A с грависом («тупым ударением») 	&Agrave; 	&#192;
-//    Á 	латинская заглавная A с акутом («острым ударением») 	&Aacute; 	&#193;
-//    Â 	латинская заглавная A с циркумфлексом 	&Acirc; 	&#194;
-//    Ã 	латинская заглавная A с тильдой 	&Atilde; 	&#195;
-//    Ä 	латинская заглавная A с тремой 	&Auml; 	&#196;
-//    Å 	латинская заглавная A с кружком сверху 	&Aring; 	&#197;
-//    Æ 	латинская заглавная лигатура AE 	&AElig; 	&#198;
-//    Ç 	латинская заглавная C с седилью 	&Ccedil; 	&#199;
-//    È 	латинская заглавная E с грависом 	&Egrave; 	&#200;
-//    É 	латинская заглавная E с акутом 	&Eacute; 	&#201;
-//    Ê 	латинская заглавная E с циркумфлексом 	&Ecirc; 	&#202;
-//    Ë 	латинская заглавная E с тремой 	&Euml; 	&#203;
-//    Ì 	латинская заглавная I с грависом 	&Igrave; 	&#204;
-//    Í 	латинская заглавная I с акутом 	&Iacute; 	&#205;
-//    Î 	латинская заглавная I с циркумфлексом 	&Icirc; 	&#206;
-//    Ï 	латинская заглавная I с тремой 	&Iuml; 	&#207;
-//    Ð 	латинская заглавная буква «eth» 	&ETH; 	&#208;
-//    Ñ 	латинская заглавная N с тильдой 	&Ntilde; 	&#209;
-//    Ò 	латинская заглавная O с грависом 	&Ograve; 	&#210;
-//    Ó 	латинская заглавная O с акутом 	&Oacute; 	&#211;
-//    Ô 	латинская заглавная O с циркумфлексом 	&Ocirc; 	&#212;
-//    Õ 	латинская заглавная O с тильдой 	&Otilde; 	&#213;
-//    Ö 	латинская заглавная O с тремой 	&Ouml; 	&#214;
-//    × 	знак умножения 	&times; 	&#215;
-//    Ø 	латинская заглавная O диагонально перечёркнутая 	&Oslash; 	&#216;
-//    Ù 	латинская заглавная U с грависом 	&Ugrave; 	&#217;
-//    Ú 	латинская заглавная U с акутом 	&Uacute; 	&#218;
-//    Û 	латинская заглавная U с циркумфлексом 	&Ucirc; 	&#219;
-//    Ü 	латинская заглавная U с тремой 	&Uuml; 	&#220;
-//    Ý 	латинская заглавная Y с акутом 	&Yacute; 	&#221;
-//    Þ 	латинская заглавная буква Торн (THORN) 	&THORN; 	&#222;
-//    ß 	латинская буква эсцет 	&szlig; 	&#223;
-//    à 	латинская "a" с грависом 	&agrave; 	&#224;
-//    á 	латинская "a" с акутом 	&aacute; 	&#225;
-//    â 	латинская "a" с циркумфлексом 	&acirc; 	&#226;
-//    ã 	латинская "a" с тильдой 	&atilde; 	&#227;
-//    ä 	латинская "a" с тремой 	&auml; 	&#228;
-//    å 	латинская "a" с кружком сверху 	&aring; 	&#229;
-//    æ 	латинская "ae" 	&aelig; 	&#230;
-//    ç 	латинская "c" седилья 	&ccedil; 	&#231;
-//    è 	латинская "e" с грависом 	&egrave; 	&#232;
-//    é 	латинская "e" с акутом 	&eacute; 	&#233;
-//    ê 	латинская "e" с циркумфлексом 	&ecirc; 	&#234;
-//    ë 	латинская "e" с тремой 	&euml; 	&#235;
-//    ì 	латинская "i" с грависом 	&igrave; 	&#236;
-//    í 	латинская "i" с акутом 	&iacute; 	&#237;
-//    î 	латинская "i" с циркумфлексом 	&icirc; 	&#238;
-//    ï 	латинская "i" с тремой 	&iuml; 	&#239;
-//    ð 	латинская "eth" 	&eth; 	&#240;
-//    ñ 	латинская "n" с тильдой 	&ntilde; 	&#241;
-//    ò 	латинская "o" с грависом 	&ograve; 	&#242;
-//    ó 	латинская "o" с акутом 	&oacute; 	&#243;
-//    ô 	латинская "o" с циркумфлексом 	&ocirc; 	&#244;
-//    õ 	латинская "o" с тильдой 	&otilde; 	&#245;
-//    ö 	латинская "o" с тремой 	&ouml; 	&#246;
-//    ÷ 	знак деления 	&divide; 	&#247;
-//    ø 	латинская "o" диагонально перечёркнутая 	&oslash; 	&#248;
-//    ù 	латинская "u" с грависом 	&ugrave; 	&#249;
-//    ú 	латинская "u" с акутом 	&uacute; 	&#250;
-//    û 	латинская "u" с циркумфлексом 	&ucirc; 	&#251;
-//    ü 	латинская "u" с тремой 	&uuml; 	&#252;
-//    ý 	латинская "y" с акутом 	&yacute; 	&#253;
-//    þ 	латинская буква "торн" (thorn) 	&thorn; 	&#254;
-//    ÿ 	латинская "y" с тремой 	&yuml; 	&#255;
-
-
-//    &fnof; 	&#402;
 //    Греческие
 //    Α 	греческая заглавная альфа 	&Alpha; 	&#913;
 //    Β 	греческая заглавная бета 	&Beta; 	&#914;
@@ -290,64 +283,122 @@ QHash<QString, int> UnicodeDecoding::html_entities = {
 //    € 	евро 	&euro; 	&#8364;
 };
 
-void UnicodeDecoding::toUtf8(const CharsetType & charset, QIODevice * io, QString & result, char & in) {
+HtmlDecoding::CharsetType HtmlDecoding::charsetType(const QString & ch_name) {
+    QString l_name = ch_name.toLower();
+
+    if (l_name == QStringLiteral("utf-8"))
+        return charset_utf8;
+    else if (l_name == QStringLiteral("windows-1251"))
+        return charset_cp1251;
+
+    return charset_unknown;
+}
+
+void HtmlDecoding::decodeMnemonics(QByteArray & val) {
+//    QRegularExpression reg("&([#\\w]+);");
+//    QRegularExpressionMatch match;
+//    int index = 0;
+
+//    while(true) {
+//        index = string.indexOf(reg, index, &match);
+//        if (index == -1) break;
+
+//        int sel_start = match.capturedStart(1);
+//        int sel_length = match.capturedLength(1);
+
+//        QString entity = string.mid(sel_start, sel_length);
+//        QChar res;
+
+//        if (entity.startsWith('#'))
+//            res = QChar(entity.mid(1).toInt());
+//        else {
+//            if (!html_entities.contains(entity)) {
+//                res = ' ';
+//                qDebug() << "HTML ENTITY NOT EXISTS" << entity;
+//            } else
+//                res = html_entities[entity];
+//        }
+
+//        string.replace(match.capturedStart(0), match.capturedLength(0), res);
+//    }
+}
+
+QByteArray & HtmlDecoding::decodeContent(const CharsetType & charset, QByteArray & val) {
     switch(charset) {
-        case charset_utf8: { scanUtf8Char(io, result, in); break;}
-        case charset_cp1251: { scanRuChar(io, result, in); break;}
-        default: result.append(in);
+        case charset_utf8: { scanUtf8Char(val/*io, result, in*/); break;}
+        case charset_cp1251: { scanRuChar(val/*io, result, in*/); break;}
+        default:;
     }
+
+    return val;
 }
 
-void UnicodeDecoding::scanRuChar(QIODevice * /*io*/, QString & result, char & in) {
-    int uc = in < 0 ? in + 256 : in;
-
-    if (uc < 192)
-        uc = cp1251_table[uc - 128];
-    else
-        uc = uc + 848;
-
-    result.append(QChar(uc));
+QByteArray & HtmlDecoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
+    ////            Relative URI	Absolute URI
+    ////            about.html	http://WebReference.com/html/about.html
+    ////            tutorial1/	http://WebReference.com/html/tutorial1/
+    ////            tutorial1/2.html	http://WebReference.com/html/tutorial1/2.html
+    ////            /	http://WebReference.com/
+    ////            //www.internet.com/	http://www.internet.com/
+    ////            /experts/	http://WebReference.com/experts/
+    ////            ../	http://WebReference.com/
+    ////            ../experts/	http://WebReference.com/experts/
+    ////            ../../../	http://WebReference.com/
+    ////            ./	http://WebReference.com/html/
+    ////            ./about.html	http://WebReference.com/html/about.html
 }
 
-void UnicodeDecoding::scanUtf8Char(QIODevice * io, QString & result, char & in) {
-    int need;
-    uint min_uc, uc;
 
-    if ((in & 0xe0) == 0xc0) {
-        uc = in & 0x1f;
-        need = 1;
-        min_uc = 0x80;
-    } else if ((in & 0xf0) == 0xe0) {
-        uc = in & 0x0f;
-        need = 2;
-        min_uc = 0x800;
-    } else if ((in&0xf8) == 0xf0) {
-        uc = in & 0x07;
-        need = 3;
-        min_uc = 0x10000;
-    } else {
-        qDebug() << "BLIA " << in;
-        result.append(in);
-        return;
-    }
+void HtmlDecoding::scanRuChar(QByteArray & val) {
+//    int uc = in < 0 ? in + 256 : in;
 
-//        if (io -> bytesAvailable() < need) { result.append(ch); return;}
+//    if (uc < 192)
+//        uc = cp1251_table[uc - 128];
+//    else
+//        uc = uc + 848;
 
-    for (int i = 0; i < need; ++i) {
-        io -> getChar(&in);
-        if ((in & 0xc0) != 0x80) { qDebug() << "PIPEC" << in; return; }
-        uc = (uc << 6) | (in & 0x3f);
-    }
+//    result.append(QChar(uc));
+}
 
-    if (isUnicodeNonCharacter(uc) || uc >= 0x110000 || (uc < min_uc) || (uc >= 0xd800 && uc <= 0xdfff)) {
-        qDebug() << "UNEBABLE"; return;
-    }
+void HtmlDecoding::scanUtf8Char(QByteArray & val/*QIODevice * io, QString & result, char & in*/) {
+//    int need;
+//    uint min_uc, uc;
 
-    if (QChar::requiresSurrogates(uc)) {
-        result.append(QChar::highSurrogate(uc));
-        result.append(QChar::lowSurrogate(uc));
-    }
-    else result.append(QChar(uc));
+//    if ((in & 0xe0) == 0xc0) {
+//        uc = in & 0x1f;
+//        need = 1;
+//        min_uc = 0x80;
+//    } else if ((in & 0xf0) == 0xe0) {
+//        uc = in & 0x0f;
+//        need = 2;
+//        min_uc = 0x800;
+//    } else if ((in&0xf8) == 0xf0) {
+//        uc = in & 0x07;
+//        need = 3;
+//        min_uc = 0x10000;
+//    } else {
+//        qDebug() << "BLIA " << in;
+//        result.append(in);
+//        return;
+//    }
+
+////        if (io -> bytesAvailable() < need) { result.append(ch); return;}
+
+//    for (int i = 0; i < need; ++i) {
+//        io -> getChar(&in);
+//        if ((in & 0xc0) != 0x80) { qDebug() << "PIPEC" << in; return; }
+//        uc = (uc << 6) | (in & 0x3f);
+//    }
+
+//    if (isUnicodeNonCharacter(uc) || uc >= 0x110000 || (uc < min_uc) || (uc >= 0xd800 && uc <= 0xdfff)) {
+//        qDebug() << "UNEBABLE"; return;
+//    }
+
+//    if (QChar::requiresSurrogates(uc)) {
+//        result.append(QChar::highSurrogate(uc));
+//        result.append(QChar::lowSurrogate(uc));
+//    }
+//    else result.append(QChar(uc));
 }
 
 //    void UnicodeDecoding::scanUtf8Char(char * io, QString & result) { // not worked
@@ -386,43 +437,3 @@ void UnicodeDecoding::scanUtf8Char(QIODevice * io, QString & result, char & in) 
 //        if (QChar::requiresSurrogates(uc)) { result.append(QChar::highSurrogate(uc)); result.append(QChar::lowSurrogate(uc)); }
 //        else result.append(QChar(uc));
 //    }
-
-UnicodeDecoding::CharsetType UnicodeDecoding::toCharsetType(const QString & ch_name) {
-    QString l_name = ch_name.toLower();
-
-    if (l_name == QStringLiteral("utf-8"))
-        return charset_utf8;
-    else if (l_name == QStringLiteral("windows-1251"))
-        return charset_cp1251;
-
-    return charset_unknown;
-}
-
-void UnicodeDecoding::decodeHtmlEntites(QString & string) {
-    QRegularExpression reg("&([#\\w]+);");
-    QRegularExpressionMatch match;
-    int index = 0;
-
-    while(true) {
-        index = string.indexOf(reg, index, &match);
-        if (index == -1) break;
-
-        int sel_start = match.capturedStart(1);
-        int sel_length = match.capturedLength(1);
-
-        QString entity = string.mid(sel_start, sel_length);
-        QChar res;
-
-        if (entity.startsWith('#'))
-            res = QChar(entity.mid(1).toInt());
-        else {
-            if (!html_entities.contains(entity)) {
-                res = ' ';
-                qDebug() << "HTML ENTITY NOT EXISTS" << entity;
-            } else
-                res = html_entities[entity];
-        }
-
-        string.replace(match.capturedStart(0), match.capturedLength(0), res);
-    }
-}

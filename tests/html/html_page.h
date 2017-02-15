@@ -2,7 +2,7 @@
 #define HTML_PAGE_H
 
 #include "html_global.h"
-#include "unicode_decoding.h"
+#include "html_decoding.h"
 
 #include "html_set.h"
 #include "html_tag.h"
@@ -47,7 +47,7 @@ class QDebug;
 
 
 namespace Html {
-    class HTMLSHARED_EXPORT Page : public UnicodeDecoding {
+    class HTMLSHARED_EXPORT Page {
         enum StateFlags {
             sf_none = 0,
             sf_html = 1,
@@ -59,8 +59,8 @@ namespace Html {
             sf_use_user_charset = 128
         };
         enum ParseFlags {
-            pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2,
-            pf_skip_mnemonics_decoding = 4, pf_skip_content_decoding = 8,
+            pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2, pf_skip_mnemonics_decoding = 4,
+            pf_skip_content_decoding = 8, pf_skip_links_decoding = 16,
 
             pf_default = pf_skip_comment | pf_skip_mnemonics_decoding | pf_skip_content_decoding
         };
@@ -100,7 +100,6 @@ namespace Html {
         };
 
         void parse(const char * data, Tag * root_tag);
-//        QString parseCode(char * ch);
 
         void checkCharset(Tag * tag);
         void proceedCharset(Tag * tag);
@@ -108,7 +107,7 @@ namespace Html {
         Tag * root;
         ParseFlags pflags;
         StateFlags sflags;
-        CharsetType charset;
+        HtmlDecoding::CharsetType charset;
 
         Set iframes;
         friend class Tag;
@@ -126,7 +125,7 @@ namespace Html {
 
         inline ~Page() { delete root; }
 
-        inline CharsetType charsetType() const { return charset; }
+        inline HtmlDecoding::CharsetType charsetType() const { return charset; }
 
         inline bool isXml() { return sflags & sf_xml; }
         inline bool isHtml() { return sflags & sf_html; }

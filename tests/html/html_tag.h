@@ -47,10 +47,13 @@ namespace Html {
         inline int level() const { return _level; }
         inline QByteArray name() const { return _name; }
         inline QHash<QByteArray, QByteArray> attributes() const { return _attrs; }
-        inline Set children() const { return _tags; }
         inline QByteArray data(const QByteArray & name) const { return value(QByteArrayLiteral("data-") + name); }
-        inline QByteArray src() const { return value(attr_src); }
+
+        inline QByteArray src() const { return _attrs.value(attr_src); }
         inline QByteArray link() const { return _attrs.value(attr_href); }
+        inline QByteArray action() const { return _attrs.value(attr_action); }
+
+        inline Set children() const { return _tags; }
 
         QByteArray value(const QByteArray & name = attr_default) const;
         QByteArray text() const;
@@ -63,6 +66,16 @@ namespace Html {
         void serializeForm(QUrl & url, QByteArray & payload, const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QUrl serializeFormToUrl(const QHash<QString, QString> & vals = QHash<QString, QString>(), const FormSerializationFlags & flags = fsf_none, const QString & default_url = QString());
         QByteArray toByteArray() const;
+
+//        static QByteArray & decodeMnemonics(QByteArray & val);
+//        static QByteArray & decodeLink(QByteArray & val);
+//        static QByteArray & decodeContent(QByteArray & val);
+
+//        inline bool hasRelativeSrc() {
+//            QByteArray elem_src = src();
+
+//            if (elem_src.isEmpty()) return false;
+//        }
 
         inline bool isSolo() { return solo.contains(name()); }
         static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tag_name); }
