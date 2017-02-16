@@ -83,7 +83,9 @@ private Q_SLOTS:
 
 using namespace Html;
 
-HtmlTest::HtmlTest() {}
+HtmlTest::HtmlTest() {
+    qDebug() << QString(QChar(9830)).toUtf8();
+}
 
 void HtmlTest::measurementSelectionParsing() {
     QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }
@@ -136,7 +138,7 @@ void HtmlTest::testHtmlShortTemplate() {
 
 void HtmlTest::testCoding1251() {
     Page page(TestData::dataHtmlParserCoding1251());
-    QVERIFY2(page.charsetType() == Page::charset_cp1251, "Failure");
+    QVERIFY2(page.charsetType() == HtmlDecoding::charset_cp1251, "Failure");
 }
 void HtmlTest::testCoding1251Decode() {
     Page page(TestData::dataHtmlParserCoding1251());
@@ -150,7 +152,7 @@ void HtmlTest::testCoding1251Decode() {
 
 void HtmlTest::testCodingUtf8() {
     Page page(TestData::dataHtmlParserCodingUtf8());
-    QVERIFY2(page.charsetType() == Page::charset_utf8, "Failure");
+    QVERIFY2(page.charsetType() == HtmlDecoding::charset_utf8, "Failure");
 }
 void HtmlTest::testCodingUtf8Decode() {
     Page page(TestData::dataHtmlParserCodingUtf8());

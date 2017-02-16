@@ -58,17 +58,17 @@
 using namespace Html;
 
 //// remove me later
-Page::Page(Tag * root_tag, const char * str_data, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(Tag * root_tag, const char * str_data, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(str_data, root_tag);
 }
-Page::Page(Tag * root_tag, const QByteArray & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(Tag * root_tag, const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
    : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
    parse(str.constData(), root_tag);
 }
-Page::Page(Tag * root_tag, const QString & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(Tag * root_tag, const QString & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(QSTR_TO_CHAR(str), root_tag);
@@ -77,23 +77,23 @@ Page::Page(Tag * root_tag, const QString & str, const CharsetType & doc_charset,
 //////////////////////////
 
 
-Page::Page(QIODevice * device, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(QIODevice * device, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     QByteArray data = device -> readAll();
     parse(data.constData(), INIT_ROOT_TAG);
 }
-Page::Page(const QByteArray & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(str.constData(), INIT_ROOT_TAG);
 }
-Page::Page(const QString & str, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(const QString & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(QSTR_TO_CHAR(str), INIT_ROOT_TAG);
 }
-Page::Page(const char * str_data, const CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(const char * str_data, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(str_data, INIT_ROOT_TAG);
@@ -388,22 +388,29 @@ void Page::checkCharset(Tag * tag) {
 
 void Page::proceedCharset(Tag * tag) { // refactor me: use qbytearray except string
     if (tag -> isXmlHead()) {
-        QString xml_encoding = tag -> value(tkn_encoding);
+        QByteArray xml_encoding = tag -> value(tkn_encoding);
         if (!xml_encoding.isEmpty()) {
-            charset = HtmlDecoding::toCharsetType(xml_encoding);
+            charset = HtmlDecoding::charsetType(xml_encoding);
             sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     } else {
-        QString meta = tag -> value(tkn_charset);
+        QByteArray meta = tag -> value(tkn_charset);
         if (meta.isEmpty()) {
             if (tag -> value(tkn_http_equiv).toLower() == tkn_content_type) {
                 meta = tag -> value(tkn_content);
-                meta = meta.section(tkn_charset_attr, 1).section(' ', 0);
+
+                int start_index = meta.indexOf(tkn_charset_attr);
+
+                if (start_index != -1) { // not tested
+                    start_index += tkn_charset_attr.length();
+                    int end_index = meta.indexOf(' ', start_index);
+                    meta = meta.mid(start_index, end_index == -1 ? -1 : (end_index - start_index));
+                } else meta.clear();
             }
         }
 
         if (!meta.isEmpty()) {
-            charset = HtmlDecoding::toCharsetType(meta);
+            charset = HtmlDecoding::charsetType(meta);
             sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     }

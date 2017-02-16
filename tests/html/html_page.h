@@ -113,15 +113,15 @@ namespace Html {
         friend class Tag;
 
         /////////////// REMOVE ME AFTER REFACTOR OF TAG // iframe tag should to store pointer on page and use it for parse
-        Page(Tag * root_tag, const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(Tag * root_tag, const QByteArray & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(Tag * root_tag, const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const char * str_data, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const QString & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
         /////////////////////////////////////
     public:
-        Page(QIODevice * device, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(const QString & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(const QByteArray & str, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(const char * str_data, const CharsetType & doc_charset = charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(QIODevice * device, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const QString & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const char * str_data, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
 
         inline ~Page() { delete root; }
 

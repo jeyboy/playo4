@@ -4,7 +4,7 @@
 //#include <qregularexpression.h>
 #include <qdebug.h>
 
-//    ∀ 	для всех 	&forall; 	&#8704;
+// &forall; &#9830; &#x2666;
 
 QHash<QByteArray, int> HtmlDecoding::html_entities = {
     { QByteArrayLiteral("quot"), 34 },
@@ -280,21 +280,21 @@ QHash<QByteArray, int> HtmlDecoding::html_entities = {
     { QByteArrayLiteral("spades"), 9824 },
     { QByteArrayLiteral("clubs"), 9827 },
     { QByteArrayLiteral("hearts"), 9829 },
-    { QByteArrayLiteral("diams"), 9830 },
+    { QByteArrayLiteral("diams"), 9830 }
 };
 
-HtmlDecoding::CharsetType HtmlDecoding::charsetType(const QString & ch_name) {
-    QString l_name = ch_name.toLower();
+HtmlDecoding::CharsetType HtmlDecoding::charsetType(const QByteArray & val) {
+    QByteArray l_name = val.toLower();
 
-    if (l_name == QStringLiteral("utf-8"))
+    if (l_name == QByteArrayLiteral("utf-8"))
         return charset_utf8;
-    else if (l_name == QStringLiteral("windows-1251"))
+    else if (l_name == QByteArrayLiteral("windows-1251"))
         return charset_cp1251;
 
     return charset_unknown;
 }
 
-void HtmlDecoding::decodeMnemonics(QByteArray & val) {
+QByteArray & HtmlDecoding::decodeMnemonics(QByteArray & val) {
 //    QRegularExpression reg("&([#\\w]+);");
 //    QRegularExpressionMatch match;
 //    int index = 0;
