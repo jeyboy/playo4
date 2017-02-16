@@ -107,25 +107,25 @@ namespace Html {
         Tag * root;
         ParseFlags pflags;
         StateFlags sflags;
-        HtmlDecoding::CharsetType charset;
+        Decoding::CharsetType charset;
 
         Set iframes;
         friend class Tag;
 
         /////////////// REMOVE ME AFTER REFACTOR OF TAG // iframe tag should to store pointer on page and use it for parse
-        Page(Tag * root_tag, const char * str_data, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(Tag * root_tag, const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(Tag * root_tag, const QString & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const char * str_data, const Decoding::CharsetType & doc_charset = Decoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const QByteArray & str, const Decoding::CharsetType & doc_charset = Decoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(Tag * root_tag, const QString & str, const Decoding::CharsetType & doc_charset = Decoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
         /////////////////////////////////////
     public:
-        Page(QIODevice * device, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(const QString & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
-        Page(const char * str_data, const HtmlDecoding::CharsetType & doc_charset = HtmlDecoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(QIODevice * device, const Decoding::CharsetType & doc_charset = Decoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const QString & str, const Decoding::CharsetType & doc_charset = Decoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const QByteArray & str, const Decoding::CharsetType & doc_charset = Decoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
+        Page(const char * str_data, const Decoding::CharsetType & doc_charset = Decoding::charset_utf8, const ParseFlags & parse_flags = pf_default);
 
         inline ~Page() { delete root; }
 
-        inline HtmlDecoding::CharsetType charsetType() const { return charset; }
+        inline Decoding::CharsetType charsetType() const { return charset; }
 
         inline bool isXml() { return sflags & sf_xml; }
         inline bool isHtml() { return sflags & sf_html; }

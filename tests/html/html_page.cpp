@@ -58,17 +58,17 @@
 using namespace Html;
 
 //// remove me later
-Page::Page(Tag * root_tag, const char * str_data, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(Tag * root_tag, const char * str_data, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(str_data, root_tag);
 }
-Page::Page(Tag * root_tag, const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(Tag * root_tag, const QByteArray & str, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
    : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
    parse(str.constData(), root_tag);
 }
-Page::Page(Tag * root_tag, const QString & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(Tag * root_tag, const QString & str, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : root(0), pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(QSTR_TO_CHAR(str), root_tag);
@@ -77,23 +77,23 @@ Page::Page(Tag * root_tag, const QString & str, const HtmlDecoding::CharsetType 
 //////////////////////////
 
 
-Page::Page(QIODevice * device, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(QIODevice * device, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     QByteArray data = device -> readAll();
     parse(data.constData(), INIT_ROOT_TAG);
 }
-Page::Page(const QByteArray & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(const QByteArray & str, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(str.constData(), INIT_ROOT_TAG);
 }
-Page::Page(const QString & str, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(const QString & str, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(QSTR_TO_CHAR(str), INIT_ROOT_TAG);
 }
-Page::Page(const char * str_data, const HtmlDecoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
+Page::Page(const char * str_data, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
     parse(str_data, INIT_ROOT_TAG);
@@ -390,7 +390,7 @@ void Page::proceedCharset(Tag * tag) { // refactor me: use qbytearray except str
     if (tag -> isXmlHead()) {
         QByteArray xml_encoding = tag -> value(tkn_encoding);
         if (!xml_encoding.isEmpty()) {
-            charset = HtmlDecoding::charsetType(xml_encoding);
+            charset = Decoding::charsetType(xml_encoding);
             sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     } else {
@@ -410,7 +410,7 @@ void Page::proceedCharset(Tag * tag) { // refactor me: use qbytearray except str
         }
 
         if (!meta.isEmpty()) {
-            charset = HtmlDecoding::charsetType(meta);
+            charset = Decoding::charsetType(meta);
             sflags = (StateFlags)(sflags | sf_use_doc_charset);
         }
     }

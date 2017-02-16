@@ -6,7 +6,9 @@
 
 // &forall; &#9830; &#x2666;
 
-QHash<QByteArray, int> HtmlDecoding::html_entities = {
+using namespace Html;
+
+QHash<QByteArray, int> Decoding::html_entities = {
     { QByteArrayLiteral("quot"), 34 },
     { QByteArrayLiteral("amp"), 38 },
     { QByteArrayLiteral("apos"), 39 },
@@ -283,7 +285,7 @@ QHash<QByteArray, int> HtmlDecoding::html_entities = {
     { QByteArrayLiteral("diams"), 9830 }
 };
 
-HtmlDecoding::CharsetType HtmlDecoding::charsetType(const QByteArray & val) {
+Decoding::CharsetType Decoding::charsetType(const QByteArray & val) {
     QByteArray l_name = val.toLower();
 
     if (l_name == QByteArrayLiteral("utf-8"))
@@ -294,7 +296,7 @@ HtmlDecoding::CharsetType HtmlDecoding::charsetType(const QByteArray & val) {
     return charset_unknown;
 }
 
-QByteArray & HtmlDecoding::decodeMnemonics(QByteArray & val) {
+QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
 //    QRegularExpression reg("&([#\\w]+);");
 //    QRegularExpressionMatch match;
 //    int index = 0;
@@ -323,7 +325,7 @@ QByteArray & HtmlDecoding::decodeMnemonics(QByteArray & val) {
 //    }
 }
 
-QByteArray & HtmlDecoding::decodeContent(const CharsetType & charset, QByteArray & val) {
+QByteArray & Decoding::decodeContent(const CharsetType & charset, QByteArray & val) {
     switch(charset) {
         case charset_utf8: { scanUtf8Char(val/*io, result, in*/); break;}
         case charset_cp1251: { scanRuChar(val/*io, result, in*/); break;}
@@ -333,7 +335,7 @@ QByteArray & HtmlDecoding::decodeContent(const CharsetType & charset, QByteArray
     return val;
 }
 
-QByteArray & HtmlDecoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
+QByteArray & Decoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
     ////            Relative URI	Absolute URI
     ////            about.html	http://WebReference.com/html/about.html
     ////            tutorial1/	http://WebReference.com/html/tutorial1/
@@ -349,7 +351,7 @@ QByteArray & HtmlDecoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
 }
 
 
-void HtmlDecoding::scanRuChar(QByteArray & val) {
+void Decoding::scanRuChar(QByteArray & val) {
 //    int uc = in < 0 ? in + 256 : in;
 
 //    if (uc < 192)
@@ -360,7 +362,7 @@ void HtmlDecoding::scanRuChar(QByteArray & val) {
 //    result.append(QChar(uc));
 }
 
-void HtmlDecoding::scanUtf8Char(QByteArray & val/*QIODevice * io, QString & result, char & in*/) {
+void Decoding::scanUtf8Char(QByteArray & val/*QIODevice * io, QString & result, char & in*/) {
 //    int need;
 //    uint min_uc, uc;
 

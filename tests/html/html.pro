@@ -27,7 +27,8 @@ HEADERS += \
     html_tag.h \
     defines.h \
     list.h \
-    html_decoding.h
+    html_decoding.h \
+    unicode_conv.h
 
 SOURCES += \
     html_page.cpp \
