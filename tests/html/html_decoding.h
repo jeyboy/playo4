@@ -3,6 +3,9 @@
 
 #include <qhash.h>
 
+// use for siquence replacement
+//QByteArray & QByteArray::replace(int pos, int len, const QByteArray & after)
+
 namespace Html {
     class Decoding {
     public:
