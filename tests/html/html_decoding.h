@@ -3,6 +3,8 @@
 
 #include <qhash.h>
 
+#include "unicode_conv.h"
+
 // use for siquence replacement
 //QByteArray & QByteArray::replace(int pos, int len, const QByteArray & after)
 

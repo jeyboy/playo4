@@ -2,6 +2,8 @@
 #define UNICODE_CONV_H
 
 #include <qbytearray.h>
+#include <qstring.h>
+#include <qdebug.h>
 
 #define         MASKBITS                0x3F
 #define         MASKBYTE                0x80
@@ -13,107 +15,118 @@
 
 namespace Html {
     class UnicodeConv {
-        QByteArray unicodeBytes(const unsigned int unicode) {
+    public:
+        static QByteArray bytes(const unsigned int unicode) {
             // 0xxxxxxx
             if (unicode < 0x80)
                 return QByteArray(1, (char)unicode);
             // 110xxxxx 10xxxxxx
             else if(unicode < 0x800) {
-                QByteArray()
-                    << ((char)(MASK2BYTES | unicode >> 6))
-                    << ((char)(MASKBYTE | unicode & MASKBITS));
+                return QByteArray()
+                    .append((char)(MASK2BYTES | unicode >> 6))
+                    .append((char)(MASKBYTE | (unicode & MASKBITS)));
             }
             // 1110xxxx 10xxxxxx 10xxxxxx
             else if(unicode < 0x10000) {
-                QByteArray()
-                    << ((char)(MASK3BYTES | unicode >> 12))
-                    << ((char)(MASKBYTE | unicode >> 6 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode & MASKBITS));
+                return QByteArray()
+                    .append((char)(MASK3BYTES | unicode >> 12))
+                    .append((char)(MASKBYTE | (unicode >> 6 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode & MASKBITS)));
 
             // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
             } else if(unicode < 0x200000) {
-                QByteArray()
-                    << ((char)(MASK4BYTES | unicode >> 18))
-                    << ((char)(MASKBYTE | unicode >> 12 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode >> 6 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode & MASKBITS));
+                return QByteArray()
+                    .append((char)(MASK4BYTES | unicode >> 18))
+                    .append((char)(MASKBYTE | (unicode >> 12 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode >> 6 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode & MASKBITS)));
             }
             // 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
             else if(unicode < 0x4000000) {
-                QByteArray()
-                    << ((char)(MASK5BYTES | unicode >> 24))
-                    << ((char)(MASKBYTE | unicode >> 18 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode >> 12 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode >> 6 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode & MASKBITS));
+                return QByteArray()
+                    .append((char)(MASK5BYTES | unicode >> 24))
+                    .append((char)(MASKBYTE | (unicode >> 18 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode >> 12 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode >> 6 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode & MASKBITS)));
             }
             // 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
             else if(unicode < 0x8000000) {
-                QByteArray()
-                    << ((char)(MASK6BYTES | unicode >> 30))
-                    << ((char)(MASKBYTE | unicode >> 24 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode >> 18 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode >> 12 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode >> 6 & MASKBITS))
-                    << ((char)(MASKBYTE | unicode & MASKBITS));
-            } else {
-                qDebug() << "unicode: sheet happened";
+                return QByteArray()
+                    .append((char)(MASK6BYTES | unicode >> 30))
+                    .append((char)(MASKBYTE | (unicode >> 24 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode >> 18 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode >> 12 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode >> 6 & MASKBITS)))
+                    .append((char)(MASKBYTE | (unicode & MASKBITS)));
             }
+            else qDebug() << "unicode: sheet happened";
+
+            return QByteArray();
         }
 
-        QString bytesToUnicode(const QByteArray & bytes) {
-           for(int i=0; i < input.size();)
-           {
-              Unicode4Bytes ch;
+        static QString str(const QByteArray & bytes) {
+            const unsigned char * data = (const unsigned char *)bytes.constData();
+            QString output;
 
-              // 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-              if((input[i] & MASK6BYTES) == MASK6BYTES)
-              {
-                 ch = ((input[i] & 0x01) << 30) | ((input[i+1] & MASKBITS) << 24)
-                      | ((input[i+2] & MASKBITS) << 18) | ((input[i+3]
-                                & MASKBITS) << 12)
-                      | ((input[i+4] & MASKBITS) << 6) | (input[i+5] & MASKBITS);
-                 i += 6;
-              }
-              // 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-              else if((input[i] & MASK5BYTES) == MASK5BYTES)
-              {
-                 ch = ((input[i] & 0x03) << 24) | ((input[i+1]
-                        & MASKBITS) << 18)
-                      | ((input[i+2] & MASKBITS) << 12) | ((input[i+3]
-                          & MASKBITS) << 6)
-                      | (input[i+4] & MASKBITS);
-                 i += 5;
-              }
-              // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-              else if((input[i] & MASK4BYTES) == MASK4BYTES)
-              {
-                 ch = ((input[i] & 0x07) << 18) | ((input[i+1]
-                        & MASKBITS) << 12)
-                      | ((input[i+2] & MASKBITS) << 6) | (input[i+3] & MASKBITS);
-                 i += 4;
-              }
-              // 1110xxxx 10xxxxxx 10xxxxxx
-              else if((input[i] & MASK3BYTES) == MASK3BYTES)
-              {
-                 ch = ((input[i] & 0x0F) << 12) | ((input[i+1] & MASKBITS) << 6)
-                      | (input[i+2] & MASKBITS);
-                 i += 3;
-              }
-              // 110xxxxx 10xxxxxx
-              else if((input[i] & MASK2BYTES) == MASK2BYTES)
-              {
-                 ch = ((input[i] & 0x1F) << 6) | (input[i+1] & MASKBITS);
-                 i += 2;
-              }
-              // 0xxxxxxx
-              else if(input[i] < MASKBYTE)
-              {
-                 ch = input[i];
-                 i += 1;
-              }
-              output.push_back(ch);
-           }
+            while(*data) {
+                // 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+                if((*data & MASK6BYTES) == MASK6BYTES) {
+                    output.append(
+                        QChar(
+                            ((*data & 0x01) << 30) | ((*(data + 1) & MASKBITS) << 24)
+                            | ((*(data + 2) & MASKBITS) << 18) | ((*(data + 3) & MASKBITS) << 12)
+                            | ((*(data + 4) & MASKBITS) << 6) | (*(data + 5) & MASKBITS)
+                        )
+                   );
+                   data += 6;
+                }
+                // 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+                else if((*data & MASK5BYTES) == MASK5BYTES) {
+                    output.append(
+                        QChar(
+                            ((*data & 0x03) << 24) | ((*(data + 1) & MASKBITS) << 18)
+                            | ((*(data + 2) & MASKBITS) << 12) | ((*(data + 3) & MASKBITS) << 6)
+                            | (*(data + 4) & MASKBITS)
+                        )
+                    );
+                    data += 5;
+                }
+                // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+                else if((*data & MASK4BYTES) == MASK4BYTES) {
+                    output.append(
+                        QChar(
+                            ((*data & 0x07) << 18) | ((*(data + 1) & MASKBITS) << 12)
+                            | ((*(data + 2) & MASKBITS) << 6) | (*(data + 3) & MASKBITS)
+                        )
+                    );
+                    data += 4;
+                }
+                // 1110xxxx 10xxxxxx 10xxxxxx
+                else if((*data & MASK3BYTES) == MASK3BYTES) {
+                    output.append(
+                        QChar(
+                            ((*data & 0x0F) << 12) | ((*(data + 1) & MASKBITS) << 6)
+                            | ((*(data + 2) & MASKBITS))
+                        )
+                    );
+                    data += 3;
+                }
+                // 110xxxxx 10xxxxxx
+                else if((*data & MASK2BYTES) == MASK2BYTES) {
+                    output.append(
+                        QChar(((*data & 0x1F) << 6) | (*(data + 1) & MASKBITS))
+                    );
+                    data += 2;
+                }
+                // 0xxxxxxx
+                else if(*data < MASKBYTE) {
+                    output.append(QChar(*data));
+                    ++data;
+                }
+            }
+
+            return output;
         }
     };
 }

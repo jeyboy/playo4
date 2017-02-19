@@ -18,6 +18,9 @@ private Q_SLOTS:
     void measurementParsing();
     void measurementSelection();
 
+    void testUnicodeToBytes();
+    void testBytesToUnicode();
+
     void testHtmlDoctype();
     void testXmlDoctype();
 
@@ -83,9 +86,7 @@ private Q_SLOTS:
 
 using namespace Html;
 
-HtmlTest::HtmlTest() {
-//    qDebug() << QString(QChar(129)).toUtf8();
-}
+HtmlTest::HtmlTest() {}
 
 void HtmlTest::measurementSelectionParsing() {
     QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }
@@ -100,6 +101,18 @@ void HtmlTest::measurementParsing() {
 void HtmlTest::measurementSelection() {
     Page page(TestData::dataHtmlFourshared());
     QBENCHMARK { page.find(".row"); }
+}
+
+void HtmlTest::testUnicodeToBytes() {
+    QByteArray bytes = UnicodeConv::bytes(9999);
+    QVERIFY2(
+        bytes.size() == 3 && bytes[0] == 226 &&
+            bytes[1] == 156 && bytes[2] == 143,
+        "Failure"
+    );
+}
+void HtmlTest::testBytesToUnicode() {
+
 }
 
 void HtmlTest::testHtmlDoctype() {
