@@ -104,15 +104,21 @@ void HtmlTest::measurementSelection() {
 }
 
 void HtmlTest::testUnicodeToBytes() {
-    QByteArray bytes = UnicodeConv::bytes(9999);
+    QByteArray bytes = UnicodeConv::bytes(32);
+    QByteArray bytes2 = UnicodeConv::bytes(512);
+    QByteArray bytes3 = UnicodeConv::bytes(9999);
+
     QVERIFY2(
-        bytes.size() == 3 && bytes[0] == 226 &&
-            bytes[1] == 156 && bytes[2] == 143,
+        bytes.size() == 1 && (unsigned char)bytes[0] == 32 &&
+        bytes2.size() == 2 && (unsigned char)bytes2[0] == 200 && (unsigned char)bytes2[1] == 128 &&
+        bytes3.size() == 3 && (unsigned char)bytes3[0] == 226 && (unsigned char)bytes3[1] == 156 && (unsigned char)bytes3[2] == 143,
         "Failure"
     );
 }
 void HtmlTest::testBytesToUnicode() {
-
+    QByteArray bytes = QByteArray().append(226).append(156).append(143);
+    QString str = UnicodeConv::str(bytes);
+    QVERIFY2(str.size() == 1 && str[0] == 9999, "Failure");
 }
 
 void HtmlTest::testHtmlDoctype() {
