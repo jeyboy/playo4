@@ -28,7 +28,7 @@ HEADERS += \
     defines.h \
     list.h \
     html_decoding.h \
-    unicode_conv.h
+    unicode.h
 
 SOURCES += \
     html_page.cpp \
@@ -36,7 +36,8 @@ SOURCES += \
     html_selector.cpp \
     html_set.cpp \
     html_tag.cpp \
-    html_decoding.cpp
+    html_decoding.cpp \
+    unicode.cpp
 ### test
 
 

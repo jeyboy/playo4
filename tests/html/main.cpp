@@ -104,9 +104,9 @@ void HtmlTest::measurementSelection() {
 }
 
 void HtmlTest::testUnicodeToBytes() {
-    QByteArray bytes = UnicodeConv::bytes(32);
-    QByteArray bytes2 = UnicodeConv::bytes(512);
-    QByteArray bytes3 = UnicodeConv::bytes(9999);
+    QByteArray bytes = Unicode::Utf8::bytes(32);
+    QByteArray bytes2 = Unicode::Utf8::bytes(512);
+    QByteArray bytes3 = Unicode::Utf8::bytes(9999);
 
     QVERIFY2(
         bytes.size() == 1 && (unsigned char)bytes[0] == 32 &&
@@ -117,7 +117,7 @@ void HtmlTest::testUnicodeToBytes() {
 }
 void HtmlTest::testBytesToUnicode() {
     QByteArray bytes = QByteArray().append(226).append(156).append(143);
-    QString str = UnicodeConv::str(bytes);
+    QString str = Unicode::Utf8::str(bytes);
     QVERIFY2(str.size() == 1 && str[0] == 9999, "Failure");
 }
 

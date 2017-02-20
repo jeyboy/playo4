@@ -292,6 +292,10 @@ Decoding::CharsetType Decoding::charsetType(const QByteArray & val) {
         return charset_utf8;
     else if (l_name == QByteArrayLiteral("windows-1251"))
         return charset_cp1251;
+    else if (l_name == QByteArrayLiteral("windows-1252") || l_name == QByteArrayLiteral("iso-8859-1"))
+        return charset_ansi;
+    else if(l_name == QByteArrayLiteral("us-ascii"))
+        return charset_ascii;
 
     return charset_unknown;
 }
@@ -327,8 +331,10 @@ QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
 
 QByteArray & Decoding::decodeContent(const CharsetType & charset, QByteArray & val) {
     switch(charset) {
-        case charset_utf8: { scanUtf8Char(val/*io, result, in*/); break;}
-        case charset_cp1251: { scanRuChar(val/*io, result, in*/); break;}
+        case charset_ascii:
+        case charset_utf8: { return val; /*scanUtf8Char(val io, result, in);*/ break;}
+//        case charset_cp1251: { scanRuChar(val/*io, result, in*/); break;}
+//        case charset_ansi: { scanRuChar(val/*io, result, in*/); break;}
         default:;
     }
 
@@ -351,91 +357,54 @@ QByteArray & Decoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
 }
 
 
-void Decoding::scanRuChar(QByteArray & val) {
-//    int uc = in < 0 ? in + 256 : in;
+//void Decoding::scanRuChar(QByteArray & val) {
+////    int uc = in < 0 ? in + 256 : in;
 
-//    if (uc < 192)
-//        uc = cp1251_table[uc - 128];
-//    else
-//        uc = uc + 848;
+////    if (uc < 192)
+////        uc = cp1251_table[uc - 128];
+////    else
+////        uc = uc + 848;
 
-//    result.append(QChar(uc));
-}
+////    result.append(QChar(uc));
+//}
 
-void Decoding::scanUtf8Char(QByteArray & val/*QIODevice * io, QString & result, char & in*/) {
-//    int need;
-//    uint min_uc, uc;
+//void Decoding::scanUtf8Char(QByteArray & val/*QIODevice * io, QString & result, char & in*/) {
+////    int need;
+////    uint min_uc, uc;
 
-//    if ((in & 0xe0) == 0xc0) {
-//        uc = in & 0x1f;
-//        need = 1;
-//        min_uc = 0x80;
-//    } else if ((in & 0xf0) == 0xe0) {
-//        uc = in & 0x0f;
-//        need = 2;
-//        min_uc = 0x800;
-//    } else if ((in&0xf8) == 0xf0) {
-//        uc = in & 0x07;
-//        need = 3;
-//        min_uc = 0x10000;
-//    } else {
-//        qDebug() << "BLIA " << in;
-//        result.append(in);
-//        return;
-//    }
+////    if ((in & 0xe0) == 0xc0) {
+////        uc = in & 0x1f;
+////        need = 1;
+////        min_uc = 0x80;
+////    } else if ((in & 0xf0) == 0xe0) {
+////        uc = in & 0x0f;
+////        need = 2;
+////        min_uc = 0x800;
+////    } else if ((in&0xf8) == 0xf0) {
+////        uc = in & 0x07;
+////        need = 3;
+////        min_uc = 0x10000;
+////    } else {
+////        qDebug() << "BLIA " << in;
+////        result.append(in);
+////        return;
+////    }
 
-////        if (io -> bytesAvailable() < need) { result.append(ch); return;}
+//////        if (io -> bytesAvailable() < need) { result.append(ch); return;}
 
-//    for (int i = 0; i < need; ++i) {
-//        io -> getChar(&in);
-//        if ((in & 0xc0) != 0x80) { qDebug() << "PIPEC" << in; return; }
-//        uc = (uc << 6) | (in & 0x3f);
-//    }
+////    for (int i = 0; i < need; ++i) {
+////        io -> getChar(&in);
+////        if ((in & 0xc0) != 0x80) { qDebug() << "PIPEC" << in; return; }
+////        uc = (uc << 6) | (in & 0x3f);
+////    }
 
-//    if (isUnicodeNonCharacter(uc) || uc >= 0x110000 || (uc < min_uc) || (uc >= 0xd800 && uc <= 0xdfff)) {
-//        qDebug() << "UNEBABLE"; return;
-//    }
+////    if (isUnicodeNonCharacter(uc) || uc >= 0x110000 || (uc < min_uc) || (uc >= 0xd800 && uc <= 0xdfff)) {
+////        qDebug() << "UNEBABLE"; return;
+////    }
 
-//    if (QChar::requiresSurrogates(uc)) {
-//        result.append(QChar::highSurrogate(uc));
-//        result.append(QChar::lowSurrogate(uc));
-//    }
-//    else result.append(QChar(uc));
-}
-
-//    void UnicodeDecoding::scanUtf8Char(char * io, QString & result) { // not worked
-//        int need;
-//        uint min_uc, uc;
-
-//        if (((*io) & 0xe0) == 0xc0) {
-//            uc = (*io) & 0x1f;
-//            need = 1;
-//            min_uc = 0x80;
-//        } else if (((*io) & 0xf0) == 0xe0) {
-//            uc = (*io) & 0x0f;
-//            need = 2;
-//            min_uc = 0x800;
-//        } else if (((*io)&0xf8) == 0xf0) {
-//            uc = (*io) & 0x07;
-//            need = 3;
-//            min_uc = 0x10000;
-//        } else {
-//            qDebug() << "BLIA " << (*io);
-//            result.append((*io));
-//            return;
-//        }
-
-////        if (io -> bytesAvailable() < need) { result.append(ch); return;}
-
-//        for (int i = 0; i < need; ++i, io++) {
-//            if (((*io)&0xc0) != 0x80) { qDebug() << "PIPEC" << (*io); return; }
-//            uc = (uc << 6) | ((*io) & 0x3f);
-//        }
-
-//        if (isUnicodeNonCharacter(uc) || uc >= 0x110000 || (uc < min_uc) || (uc >= 0xd800 && uc <= 0xdfff)) {
-//            qDebug() << "UNEBABLE"; return;
-//        }
-
-//        if (QChar::requiresSurrogates(uc)) { result.append(QChar::highSurrogate(uc)); result.append(QChar::lowSurrogate(uc)); }
-//        else result.append(QChar(uc));
-//    }
+////    if (QChar::requiresSurrogates(uc)) {
+////        result.append(QChar::highSurrogate(uc));
+////        result.append(QChar::lowSurrogate(uc));
+////    }
+////    else result.append(QChar(uc));
+//}
