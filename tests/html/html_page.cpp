@@ -15,6 +15,7 @@
 
 //A body element’s end tag may be omitted if the body element is not immediately followed by a comment.
 
+
 //An li element’s end tag may be omitted if the li element is immediately followed by another li element or if there is no more content in the parent element.
 
 //A dt element’s end tag may be omitted if the dt element is immediately followed by another dt element or a dd element.

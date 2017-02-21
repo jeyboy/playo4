@@ -24,6 +24,8 @@ namespace Html {
         Tag * _parent;
     protected:
         const static QHash<QByteArray, bool> solo;
+        const static QHash<QByteArray, int> restricted_solo_by_parent;
+        const static QHash<QByteArray, int> restricted_solo_by_sibling;
 
         QByteArray selectValue() const;
         QByteArray radioValue() const;
@@ -78,6 +80,9 @@ namespace Html {
 //        }
 
         inline bool isSolo() { return solo.contains(name()); }
+        bool isSoloOnParentClosing();
+        bool isSoloOnNewTag(const QByteArray & tag);
+
         static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tag_name); }
         inline bool isClosableBy(const char * data) {
             return _name.startsWith(QByteArray(data, 2).toLower()) && '>' == *(data + _name.length());
