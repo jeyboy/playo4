@@ -46,6 +46,9 @@ namespace Html {
     extern const QByteArray tkn_content_type;
     extern const QByteArray tkn_content;
 
+    extern const QByteArray tkn_scdata;
+    extern const QByteArray tkn_ecdata;
+
     extern const QByteArray attr_name;
     extern const QByteArray attr_action;
     extern const QByteArray attr_href;

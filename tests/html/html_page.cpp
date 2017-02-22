@@ -63,6 +63,7 @@ void Page::parse(const char * data, Tag * root_tag) {
     Tag * elem = root_tag;
     PState state = content;
     const char *pdata = data, *sname = 0, *sval = 0, *ename = 0;
+    bool has_cdata = false; // cdata presents in text
 
     while(*pdata) {
         if (*pdata < 32 && *pdata > 0) { // skip not printable trash
@@ -80,27 +81,37 @@ void Page::parse(const char * data, Tag * root_tag) {
                     break;}
 
                     case open_tag: {
+                        char chr = *(pdata + 2);
+
+                        bool is_service = *(pdata + 1) == service_token;
+
+                        if (is_service) {
+                            if (chr == raw_data_token) {
+                                state = raw_data;
+                                goto next_step;
+                            } else if (chr == comment_token) {
+                                state = comment;
+                                goto next_step;
+                            } else
+                                sflags = (StateFlags)(sflags | sf_html);
+                        } else if (*(pdata + 1) == question_token) {
+                            sflags = (StateFlags)(sflags | sf_xml);
+                        }
+
                         if (NAME_BUFF_VALID) {
-                            if (!(pflags & pf_skip_text))
-                                elem -> appendText(NAME_BUFF);
-                            sname = 0;
+                            if (!(pflags & pf_skip_text))  {
+                                QByteArray ar = NAME_BUFF;
+
+                                if (has_cdata)
+                                    ar.replace(tkn_scdata, 0).replace(tkn_ecdata,  0);
+
+                                elem -> appendText(ar);
+                            }
+                            has_cdata = false;
                         }
 
                         state = tag;
                         sname = pdata + 1;
-
-                        if (*sname == service_token) {
-                            char chr = *(pdata + 2);
-
-                            if (chr == raw_data_token)
-                                state = raw_data;
-                            else if (chr == comment_token)
-                                state = comment;
-                            else
-                                sflags = (StateFlags)(sflags | sf_html);
-                        } else if (*sname == question_token) {
-                            sflags = (StateFlags)(sflags | sf_xml);
-                        }
                     break;}
                 }
             break;}
@@ -174,7 +185,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                 }
             break;}
 
-            case code: {
+            case code: { // TODO: cdata in javascript and styles is not catched by main stream // need to catche it here
                 switch(*pdata) {
                     case space: {
                         if (sname && !NBUFF_VALID) sname++;
@@ -199,9 +210,8 @@ void Page::parse(const char * data, Tag * root_tag) {
                 switch(*pdata) {
                     case close_tag: {
                         if (*(pdata - 1) == raw_data_end_token && *(pdata - 2) == raw_data_end_token) {
-                            // extract cdata from str
                             state = content;
-                            sname = pdata + 1;
+                            has_cdata = true;
                         }
                     break;}
 
@@ -322,7 +332,8 @@ void Page::parse(const char * data, Tag * root_tag) {
             }
         }
 
-        pdata++;
+        next_step:
+            pdata++;
     }
 }
 

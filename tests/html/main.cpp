@@ -203,8 +203,7 @@ void HtmlTest::testCDATAHtml() {
     Tag * div = page.findFirst("div");
 
     QVERIFY2(
-        div &&
-        div -> childrenCount() == 0,
+        div && div -> childrenCount() == 1 && div -> child(0) -> isText(),
         "Failure"
     );
 }

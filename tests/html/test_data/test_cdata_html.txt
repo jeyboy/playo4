@@ -6,10 +6,12 @@
 <body>
 
 <div>
+Lol
 <![CDATA[
 <h1>My Web Page</h1>
 <p id="demo">A Paragraph</p>
 ]]>
+cdata here
 </div>
 </body>
 </html>

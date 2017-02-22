@@ -29,6 +29,10 @@ namespace Html {
     extern const QByteArray tkn_content_type       = QByteArray("content-type");
     extern const QByteArray tkn_content            = QByteArray("content");
 
+
+    extern const QByteArray tkn_scdata             = QByteArray("![CDATA[");
+    extern const QByteArray tkn_ecdata             = QByteArray("]]>");
+
     extern const QByteArray attr_name              = QByteArray("name");
     extern const QByteArray attr_action            = QByteArray("action");
     extern const QByteArray attr_href              = QByteArray("href");
@@ -39,6 +43,8 @@ namespace Html {
     extern const QByteArray attr_default           = QByteArray("value");
     extern const QByteArray attr_checked           = QByteArray("checked");
     extern const QByteArray attr_disabled          = QByteArray("disabled");
+
+
 
 
     extern const QByteArray type_radio             = QByteArray("radio");
