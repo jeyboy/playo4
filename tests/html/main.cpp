@@ -37,6 +37,8 @@ private Q_SLOTS:
 //    void testCDATAJs();
     void testCDATAHtml();
 
+    void testPredicableTagClosure();
+
     void testElementTextExtraction();
     void testElementAttrsExtraction();
     void testElementAttrsWithoutQuotesExtraction();
@@ -206,6 +208,13 @@ void HtmlTest::testCDATAHtml() {
         "Failure"
     );
 }
+
+void HtmlTest::testPredicableTagClosure() {
+    Page page(TestData::dataHtmlParserPredicableTagClosure());
+
+    QVERIFY2(!page.hasErrors(), "Failure");
+}
+
 
 void HtmlTest::testElementTextExtraction() {
     Page page(TestData::dataHtmlParserAttrs());

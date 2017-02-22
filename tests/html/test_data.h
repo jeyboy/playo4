@@ -136,6 +136,12 @@ class TestData {
         static QString data_parser = load(DATA_PATH(QStringLiteral("test_table.txt")));
         return data_parser;
     }
+
+    static QString dataHtmlParserPredicableTagClosure() {
+        static QString data_parser = load(DATA_PATH(QStringLiteral("test_html_predicable_tag_closure.txt")));
+        return data_parser;
+    }
+
     static QString dataHtml5ParserVideo() {
         static QString data_parser = load(DATA_PATH(QStringLiteral("test_video_html5.txt")));
         return data_parser;
