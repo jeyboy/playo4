@@ -162,13 +162,21 @@ void HtmlTest::testCoding1251() {
     QVERIFY2(page.charsetType() == Decoding::charset_cp1251, "Failure");
 }
 void HtmlTest::testCoding1251Decode() {
-    Page page(TestData::dataHtmlParserCoding1251());
+    Page page(TestData::dataHtmlRustorka());
     Tag * title_tag = page.findFirst("title");
 
     QVERIFY2(
-        title_tag && title_tag -> text() == QByteArray("Кодировка"),
+        title_tag && title_tag -> text() == QByteArray("Главная :: Международный торрент-трекер Rustorka | Русторь до последнего!"),
         "Failure"
     );
+
+//    Page page(TestData::dataHtmlParserCoding1251());
+//    Tag * title_tag = page.findFirst("title");
+
+//    QVERIFY2(
+//        title_tag && title_tag -> text() == QByteArray("Кодировка"),
+//        "Failure"
+//    );
 }
 
 void HtmlTest::testCodingUtf8() {

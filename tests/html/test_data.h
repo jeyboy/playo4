@@ -30,6 +30,10 @@ class TestData {
 
     static QString dataLoad(const QByteArray & name) { return load(DATA_PATH(name)); }
 
+    static QString dataHtmlRustorka() {
+        static QString data_fourshared = load(DATA_PATH(QStringLiteral("rustorka.txt")));
+        return data_fourshared;
+    }
     static QString dataHtmlFourshared() {
         static QString data_fourshared = load(DATA_PATH(QStringLiteral("fourshared.txt")));
         return data_fourshared;
