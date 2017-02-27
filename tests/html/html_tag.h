@@ -24,6 +24,7 @@ namespace Html {
         Tag * _parent;
     protected:
         const static QHash<QByteArray, bool> solo;
+        const static QHash<QByteArray, bool> parent_blockable;
 //        const static QHash<QByteArray, int> restricted_solo_by_parent;
 //        const static QHash<QByteArray, int> restricted_solo_by_sibling;
 
@@ -144,7 +145,7 @@ namespace Html {
         //TODO: rewrite
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links);
 
-        inline void addAttr(const QByteArray & name, const QByteArray & val) { _attrs.insert(name.toLower(), val); }
+        inline void addAttr(const QByteArray & name, const QByteArray & val) { _attrs.insert(name.toLower().trimmed(), val.trimmed()); }
         Tag * appendTag(const QByteArray & tname);
         void appendText(const QByteArray & val);
         void appendComment(const QByteArray & val);

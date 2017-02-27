@@ -11,7 +11,20 @@ using namespace Html;
 const QHash<QByteArray, bool> Tag::solo = QHash<QByteArray, bool>{
     {HTML_BR_TAG, true}, {HTML_META_TAG, true}, {HTML_LINK_TAG, true},
     {HTML_IMG_TAG, true}, {HTML_HR_TAG, true}, {HTML_DOCTYPE_TAG, true},
-    {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}, {HTML_BASE_TAG, true}
+    {HTML_XML_TAG, true}, {HTML_INPUT_TAG, true}, {HTML_BASE_TAG, true},
+    {HTML_EMBED_TAG, true}, {QByteArrayLiteral("area"), true}, {QByteArrayLiteral("col"), true},
+    {QByteArrayLiteral("command"), true}, {QByteArrayLiteral("keygen"), true},
+    {QByteArrayLiteral("param"), true}, {QByteArrayLiteral("source"), true},
+    {QByteArrayLiteral("track"), true}, {QByteArrayLiteral("wbr"), true}
+};
+
+const QHash<QByteArray, bool> Tag::parent_blockable = QHash<QByteArray, bool>{
+    {QByteArrayLiteral("colgroup"), true},
+    {QByteArrayLiteral("div"), true},
+    {QByteArrayLiteral("fieldset"), true},
+    {QByteArrayLiteral("menu"), true},
+    {QByteArrayLiteral("object"), true},
+    {QByteArrayLiteral("section"), true},
 };
 
 //const QHash<QByteArray, bool> restricted_solo_by_parent = QHash<QByteArray, bool>{
@@ -240,13 +253,13 @@ Tag * Tag::findFirst(const Selector * selector) const {
 //}
 
 Tag * Tag::appendTag(const QByteArray & tname) {
-    Tag * newTag = new Tag(tname.toLower(), this);
+    Tag * newTag = new Tag(tname.toLower().trimmed(), this);
     _tags.append(newTag);
     return newTag;
 }
 void Tag::appendText(const QByteArray & val) {
     Tag * newTag = appendTag(tkn_text_block);
-    newTag -> addAttr(tkn_text_block, val);
+    newTag -> addAttr(tkn_text_block, val.trimmed());
 }
 void Tag::appendComment(const QByteArray & val) {
     Tag * newTag = appendTag(tkn_comment_block);

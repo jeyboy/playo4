@@ -88,7 +88,14 @@ private Q_SLOTS:
 
 using namespace Html;
 
-HtmlTest::HtmlTest() {}
+HtmlTest::HtmlTest() {
+//    Page(TestData::dataHtmlRustorka());
+//    Page(TestData::dataHtmlFourshared());
+//    Page(TestData::dataHtmlGoogle());
+//    Page(TestData::dataHtmlYoutube());
+//    Page(TestData::dataHtmlKivy());
+//    Page(TestData::dataHtmlStackOverflow());
+}
 
 void HtmlTest::measurementSelectionParsing() {
     QBENCHMARK { Selector(TestData::dataSelectorParsingHuge()); }

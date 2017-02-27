@@ -63,7 +63,7 @@ void Page::parse(const char * data, Tag * root_tag) {
     Tag * elem = root_tag;
     PState state = content;
     const char *pdata = data, *sname = 0, *sval = 0, *ename = 0;
-    bool has_cdata = false; // cdata presents in text
+    bool has_cdata = false, is_xml = false; // cdata presents in text
 
     while(*pdata) {
         if (*pdata < 32 && *pdata > 0) { // skip not printable trash
@@ -95,6 +95,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                             } else
                                 sflags = (StateFlags)(sflags | sf_html);
                         } else if (*(pdata + 1) == question_token) {
+                            is_xml = true;
                             sflags = (StateFlags)(sflags | sf_xml);
                         }
 
@@ -162,7 +163,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                             checkCharset(elem);
 
 //                      use this check for strict verification (open tag is eql to close)
-                        if (*(pdata - 1) == close_tag_predicate || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF)) {
+                        if ((is_xml && *(pdata - 1) == close_tag_predicate) || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF.toLower())) {
                             if (elem -> isFrame()) {
                                 iframes << elem;
                                 sflags = (StateFlags)(sflags | sf_has_iframes);
@@ -176,7 +177,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                             }
                         } else {
                             sflags = (StateFlags)(sflags | sf_has_errors);
-                            qDebug() << "IGNORE CLOSING OF TAG";
+                            qDebug() << "IGNORE CLOSING OF TAG: " << NAME_BUFF << " around " << QByteArray(pdata - 60, 60);
                         }
 
                         state = content;
@@ -185,7 +186,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                 }
             break;}
 
-            case code: { // TODO: cdata in javascript and styles is not catched by main stream // need to catche it here
+            case code: { // TODO: cdata in javascript and styles is not catched by main stream // need to catch it here
                 switch(*pdata) {
                     case space: {
                         if (sname && !NBUFF_VALID) sname++;
