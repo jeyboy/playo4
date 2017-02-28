@@ -90,11 +90,11 @@ using namespace Html;
 
 HtmlTest::HtmlTest() {
     Page(TestData::dataHtmlRustorka());
-//    Page(TestData::dataHtmlFourshared());
-//    Page(TestData::dataHtmlGoogle());
-//    Page(TestData::dataHtmlYoutube());
-//    Page(TestData::dataHtmlKivy());
-//    Page(TestData::dataHtmlStackOverflow());
+    Page(TestData::dataHtmlFourshared());
+    Page(TestData::dataHtmlGoogle());
+    Page(TestData::dataHtmlYoutube());
+    Page(TestData::dataHtmlKivy());
+    Page(TestData::dataHtmlStackOverflow());
 }
 
 void HtmlTest::measurementSelectionParsing() {

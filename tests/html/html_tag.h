@@ -24,7 +24,7 @@ namespace Html {
         Tag * _parent;
     protected:
         const static QHash<QByteArray, bool> solo;
-        const static QHash<QByteArray, bool> parent_blockable;
+        const static QHash<QByteArray, bool> acceptable_by_parent;
 //        const static QHash<QByteArray, int> restricted_solo_by_parent;
 //        const static QHash<QByteArray, int> restricted_solo_by_sibling;
 

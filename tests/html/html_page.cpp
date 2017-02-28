@@ -163,7 +163,11 @@ void Page::parse(const char * data, Tag * root_tag) {
                             checkCharset(elem);
 
 //                      use this check for strict verification (open tag is eql to close)
-                        if ((is_xml && *(pdata - 1) == close_tag_predicate) || elem -> isSolo() || (sname && elem -> name() == NAME_BUFF.toLower())) {
+                        if (
+                            (is_xml && *(pdata - 1) == close_tag_predicate) ||
+                            elem -> isSolo() || //TODO: add check on parent container closing // table, select and etc
+                            (sname && elem -> name() == NAME_BUFF.toLower())
+                        ) {
                             if (elem -> isFrame()) {
                                 iframes << elem;
                                 sflags = (StateFlags)(sflags | sf_has_iframes);
