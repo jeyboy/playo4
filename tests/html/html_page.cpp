@@ -178,6 +178,23 @@ void Page::parse(const char * data, Tag * root_tag) {
                         } else {
                             sflags = (StateFlags)(sflags | sf_has_errors);
                             qDebug() << "IGNORE CLOSING OF TAG: " << NAME_BUFF << " around " << QByteArray(pdata - 60, 60);
+
+                            Tag * curr = elem -> parent();
+                            QByteArray block_name = NAME_BUFF.toLower();
+                            QByteArray buf;
+
+                            // drop elem to nearest compatible tag
+                            while(curr) {
+                                buf.append(curr -> name()).append(" -> ");
+
+                                if (curr -> name() == block_name) {
+                                    elem = curr -> parent();
+                                    qDebug() << "+++ TREE STATE CORRECTION: " << buf.append(elem -> name());
+                                    break;
+                                }
+
+                                curr = curr -> parent();
+                            }
                         }
 
                         state = content;

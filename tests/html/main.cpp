@@ -89,7 +89,7 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
-//    Page(TestData::dataHtmlRustorka());
+    Page(TestData::dataHtmlRustorka());
 //    Page(TestData::dataHtmlFourshared());
 //    Page(TestData::dataHtmlGoogle());
 //    Page(TestData::dataHtmlYoutube());
