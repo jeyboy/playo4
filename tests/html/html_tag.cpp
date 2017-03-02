@@ -8,6 +8,29 @@
 
 using namespace Html;
 
+QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
+    { QByteArrayLiteral("html"), 1 }, { QByteArrayLiteral("head"), 2 }, { QByteArrayLiteral("body"), 3 },
+    { QByteArrayLiteral("colgroup"), 4 }, { QByteArrayLiteral("caption"), 5 }, { QByteArrayLiteral("i"), 6 },
+    { QByteArrayLiteral("li"), 7 }, { QByteArrayLiteral("dt"), 8 }, { QByteArrayLiteral("dd"), 9 },
+    { QByteArrayLiteral("p"), 10 }, { QByteArrayLiteral("address"), 10 }, { QByteArrayLiteral("article"), 11 },
+    { QByteArrayLiteral("aside"), 12 }, { QByteArrayLiteral("blockquote"), 13 }, { QByteArrayLiteral("details"), 14 },
+    { QByteArrayLiteral("div"), 15 }, { QByteArrayLiteral("dl"), 16 }, { QByteArrayLiteral("fieldset"), 17 },
+    { QByteArrayLiteral("figcaption"), 18 }, { QByteArrayLiteral("figure"), 19 }, { QByteArrayLiteral("footer"), 20 },
+    { QByteArrayLiteral("form"), 21 }, { QByteArrayLiteral("h1"), 22 }, { QByteArrayLiteral("h2"), 23 },
+    { QByteArrayLiteral("h3"), 24 }, { QByteArrayLiteral("h4"), 25 }, { QByteArrayLiteral("h5"), 26 },
+    { QByteArrayLiteral("h6"), 27 }, { QByteArrayLiteral("header"), 28 }, { QByteArrayLiteral("hr"), 29 },
+    { QByteArrayLiteral("main"), 30 }, { QByteArrayLiteral("menu"), 31 }, { QByteArrayLiteral("nav"), 32 },
+    { QByteArrayLiteral("ol"), 33 }, { QByteArrayLiteral("p"), 34 }, { QByteArrayLiteral("pre"), 35 },
+    { QByteArrayLiteral("section"), 36 }, { QByteArrayLiteral("table"), 37 }, { QByteArrayLiteral("ul"), 38 },
+    { QByteArrayLiteral("a"), 39 }, { QByteArrayLiteral("audio"), 40 }, { QByteArrayLiteral("del"), 41 },
+    { QByteArrayLiteral("ins"), 42 }, { QByteArrayLiteral("map"), 43 }, { QByteArrayLiteral("noscript"), 44 },
+    { QByteArrayLiteral("video"), 45 }, { QByteArrayLiteral("rt"), 46 }, { QByteArrayLiteral("rp"), 47 },
+    { QByteArrayLiteral("optgroup"), 48 }, { QByteArrayLiteral("option"), 49 }, { QByteArrayLiteral("thead"), 50 },
+    { QByteArrayLiteral("tbody"), 51 }, { QByteArrayLiteral("tfoot"), 52 }, { QByteArrayLiteral("tr"), 53 },
+    { QByteArrayLiteral("td"), 54 }, { QByteArrayLiteral("th"), 55 }
+};
+
+
 const QHash<QByteArray, bool> Tag::solo = QHash<QByteArray, bool>{
     {HTML_BR_TAG, true},
     {HTML_META_TAG, true},
@@ -83,13 +106,6 @@ const QHash<QByteArray, bool> Tag::acceptable_by_parent = QHash<QByteArray, bool
 // tr -> next tr or parent close
 // td -> next td or th or parent close
 // th -> next td or th or parent close
-
-//bool Tag::isSoloOnParentClosing() {
-
-//}
-//bool Tag::isSoloOnNewTag(const QByteArray & tag) {
-
-//}
 
 QByteArray Tag::selectValue() const {
     Html::Set options = find("option[selected]");

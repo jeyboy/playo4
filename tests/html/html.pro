@@ -28,7 +28,8 @@ HEADERS += \
     defines.h \
     list.h \
     html_decoding.h \
-    unicode.h
+    unicode.h \
+    memory.h
 
 SOURCES += \
     html_page.cpp \
@@ -46,3 +47,5 @@ SOURCES += main.cpp
 
 HEADERS += \
     test_data.h
+
+win32:LIBS += -lpsapi

@@ -5,6 +5,8 @@
 
 #include "test_data.h"
 
+#include "memory.h"
+
 //QSKIP("This test requires the SQLITE database driver");
 
 class HtmlTest : public QObject {
@@ -89,12 +91,16 @@ private Q_SLOTS:
 using namespace Html;
 
 HtmlTest::HtmlTest() {
+    qDebug() << "MEMS" << Memory::usageStr();
+
     Page(TestData::dataHtmlRustorka());
     Page(TestData::dataHtmlFourshared());
     Page(TestData::dataHtmlGoogle());
     Page(TestData::dataHtmlYoutube());
     Page(TestData::dataHtmlKivy());
     Page(TestData::dataHtmlStackOverflow());
+
+    qDebug() << "MEME" << Memory::usageStr();
 }
 
 void HtmlTest::measurementSelectionParsing() {
