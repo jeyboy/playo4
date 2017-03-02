@@ -39,37 +39,36 @@ QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
     { QByteArrayLiteral("td"), Tag::tg_td }
 };
 
-
-const QHash<QByteArray, bool> Tag::solo = QHash<QByteArray, bool>{
-    {HTML_BR_TAG, true},
-    {HTML_META_TAG, true},
-    {HTML_LINK_TAG, true},
-    {HTML_IMG_TAG, true},
-    {HTML_HR_TAG, true},
-    {HTML_DOCTYPE_TAG, true},
-    {HTML_XML_TAG, true},
-    {HTML_INPUT_TAG, true},
-    {HTML_BASE_TAG, true},
-    {HTML_EMBED_TAG, true},
-    {QByteArrayLiteral("area"), true},
-    {QByteArrayLiteral("col"), true},
-    {QByteArrayLiteral("command"), true},
-    {QByteArrayLiteral("keygen"), true},
-    {QByteArrayLiteral("param"), true},
-    {QByteArrayLiteral("source"), true},
-    {QByteArrayLiteral("track"), true},
-    {QByteArrayLiteral("wbr"), true}
+const QHash<int, bool> Tag::solo = QHash<int, bool>{
+    { Tag::tg_br, true },
+    { Tag::tg_meta, true },
+    { Tag::tg_link, true },
+    { Tag::tg_img, true },
+    { Tag::tg_hr, true },
+    { Tag::tg_doctype, true },
+    { Tag::tg_xml, true },
+    { Tag::tg_input, true },
+    { Tag::tg_base, true },
+    { Tag::tg_embed, true },
+    { Tag::tg_area, true },
+    { Tag::tg_col, true },
+    { Tag::tg_command, true },
+    { Tag::tg_keygen, true },
+    { Tag::tg_param, true },
+    { Tag::tg_source, true },
+    { Tag::tg_track, true },
+    { Tag::tg_wbr, true }
 };
 
 //INFO: some elements missing?
-const QHash<QByteArray, bool> Tag::acceptable_by_parent = QHash<QByteArray, bool>{
-    {QByteArrayLiteral("colgroup"), true},
-    {QByteArrayLiteral("div"), true},
-    {QByteArrayLiteral("fieldset"), true},
-    {QByteArrayLiteral("menu"), true},
-    {QByteArrayLiteral("object"), true},
-    {QByteArrayLiteral("section"), true},
-    {QByteArrayLiteral("span"), true}
+const QHash<int, bool> Tag::acceptable_by_parent = QHash<int, bool>{
+    { Tag::tg_colgroup, true },
+    { Tag::tg_div, true },
+    { Tag::tg_fieldset, true },
+    { Tag::tg_menu, true },
+    { Tag::tg_object, true },
+    { Tag::tg_section, true },
+    { Tag::tg_span, true }
 };
 
 //const QHash<QByteArray, bool> restricted_solo_by_parent = QHash<QByteArray, bool>{

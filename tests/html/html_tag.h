@@ -24,8 +24,8 @@ namespace Html {
         Tag * _parent;
     protected:
         static QHash<QByteArray, int> list;
-        const static QHash<QByteArray, bool> solo;
-        const static QHash<QByteArray, bool> acceptable_by_parent;
+        const static QHash<int, bool> solo;
+        const static QHash<int, bool> acceptable_by_parent;
 
         QByteArray selectValue() const;
         QByteArray radioValue() const;
@@ -95,7 +95,27 @@ namespace Html {
             tg_tfoot,
             tg_tr,
             tg_td,
-            tg_th
+            tg_th,
+
+            tg_br,
+            tg_meta,
+            tg_link,
+            tg_img,
+            tg_doctype,
+            tg_xml,
+            tg_input,
+            tg_base,
+            tg_embed,
+            tg_area,
+            tg_col,
+            tg_command,
+            tg_keygen,
+            tg_param,
+            tg_source,
+            tg_track,
+            tg_wbr,
+            tg_object,
+            tg_span
         };
 
         static Tag * stub() { return new Tag(HTML_ANY_TAG); }
