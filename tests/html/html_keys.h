@@ -4,19 +4,8 @@
 #include "defines.h"
 //#include <qbytearray.h>
 
-#define HTML_ANY_TAG QByteArray("*")
-
-#define HTML_BR_TAG QByteArray("br")
-#define HTML_HR_TAG QByteArray("hr")
-#define HTML_META_TAG QByteArray("meta")
-#define HTML_LINK_TAG QByteArray("link")
-#define HTML_IMG_TAG QByteArray("img")
-#define HTML_DOCTYPE_TAG QByteArray("!doctype")
-#define HTML_XML_TAG QByteArray("?xml")
-#define HTML_INPUT_TAG QByteArray("input")
-#define HTML_BASE_TAG QByteArray("base")
-#define HTML_EMBED_TAG QByteArray("embed")
-#define HTML_ATTR_TYPE QByteArray("type")
+#define HTML_ANY_TAG QByteArrayLiteral("*")
+#define HTML_ATTR_TYPE QByteArrayLiteral("type")
 
 namespace Html {
     extern const QByteArray tag_doctype;

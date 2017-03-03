@@ -9,6 +9,7 @@
 using namespace Html;
 
 QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
+    { HTML_ANY_TAG, Tag::tg_any },
     { QByteArrayLiteral("html"), Tag::tg_html }, { QByteArrayLiteral("head"), Tag::tg_head },
     { QByteArrayLiteral("body"), Tag::tg_body }, { QByteArrayLiteral("colgroup"), Tag::tg_colgroup },
     { QByteArrayLiteral("caption"), Tag::tg_caption }, { QByteArrayLiteral("i"), Tag::tg_i },
@@ -36,7 +37,7 @@ QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
     { QByteArrayLiteral("optgroup"), Tag::tg_optgroup }, { QByteArrayLiteral("option"), Tag::tg_option },
     { QByteArrayLiteral("thead"), Tag::tg_thead }, { QByteArrayLiteral("tbody"), Tag::tg_tbody },
     { QByteArrayLiteral("tfoot"), Tag::tg_tfoot }, { QByteArrayLiteral("tr"), Tag::tg_tr },
-    { QByteArrayLiteral("td"), Tag::tg_td }
+    { QByteArrayLiteral("td"), Tag::tg_td }, { tkn_text_block, Tag::tg_text }
 };
 
 const QHash<int, bool> Tag::solo = QHash<int, bool>{
@@ -126,10 +127,10 @@ QByteArray Tag::value(const QByteArray & name) const {
     bool is_default_val = name == attr_default;
 
     if (is_default_val) {
-        if (_name == tag_select)
+        if (_tag_id == tg_select)
             return selectValue();
 
-        if (_name == tag_textarea)
+        if (_tag_id == tg_textarea)
             return textareaValue();
 
         if (_attrs.value(attr_type) == type_radio)
@@ -140,7 +141,7 @@ QByteArray Tag::value(const QByteArray & name) const {
 }
 
 QByteArray Tag::text() const {
-    const Tag * text = (_name == tkn_text_block ? this : child(tkn_text_block));
+    const Tag * text = (_tag_id == tg_text ? this : child(tkn_text_block));
     return text ? text -> _attrs.value(tkn_text_block) : QByteArray();
 }
 QByteArray Tag::texts() const {
@@ -236,9 +237,12 @@ QByteArray Tag::toByteArray() const {
 }
 
 Tag * Tag::child(const QByteArray & name_predicate, const int & pos) const {
-    int i = 0;
+    int i = 0, stag_id = tagId(name_predicate, false);
+
+    if (stag_id == -1) return 0;
+
     for(Set::ConstIterator tag = _tags.cbegin(); tag != _tags.cend(); tag++) {
-        if ((*tag) -> _name == name_predicate)
+        if ((*tag) -> _tag_id == stag_id)
             if (i++ == pos) return (*tag);
     }
 

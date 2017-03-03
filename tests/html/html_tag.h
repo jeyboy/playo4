@@ -17,7 +17,9 @@ namespace Html {
 
     class HTMLSHARED_EXPORT Tag {
         int _level;
-        QByteArray _name;
+//        QByteArray _name;
+        int _tag_id;
+        int _tag_len;
         QHash<QByteArray, QByteArray> _attrs;
         QHash<QByteArray, bool> * _classes;
         Set _tags;
@@ -40,6 +42,11 @@ namespace Html {
 
         enum Tags {
             tg_none = 0,
+
+            /// special
+            tg_any,
+            tg_text,
+            ////////////
 
             tg_html,
             tg_head,
@@ -115,19 +122,34 @@ namespace Html {
             tg_track,
             tg_wbr,
             tg_object,
-            tg_span
+            tg_span,
+            tg_iframe,
+            tg_style,
+            tg_script,
+            tg_select,
+            tg_textarea,
+
+            tg_appendable = 255
         };
 
         static Tag * stub() { return new Tag(HTML_ANY_TAG); }
 
-        inline Tag(const QByteArray & tag, Tag * parent_tag = 0) : _level(parent_tag ? parent_tag -> _level + 1 : 0), _name(tag), _classes(0), _parent(parent_tag) {}
+        inline Tag(const QByteArray & tag, Tag * parent_tag = 0) :
+            _level(parent_tag ? parent_tag -> _level + 1 : 0), _tag_id(tagId(tag)), _tag_len(tag.length()), _classes(0), _parent(parent_tag) {}
         inline ~Tag() {
             qDeleteAll(_tags);
             delete _classes;
         }
 
+        static int tagId(const QByteArray & tag, bool append = true) {
+            if (append && !list.contains(tag))
+                list.insert(tag, list.size() + tg_appendable);
+
+            return list.value(tag, -1);
+        }
+
         inline int level() const { return _level; }
-        inline QByteArray name() const { return _name; }
+        inline QByteArray name() const { return list.key(_tag_id); }
         inline QHash<QByteArray, QByteArray> attributes() const { return _attrs; }
         inline QByteArray data(const QByteArray & name) const { return value(QByteArrayLiteral("data-") + name); }
 
@@ -159,35 +181,35 @@ namespace Html {
 //            if (elem_src.isEmpty()) return false;
 //        }
 
-        inline bool isSolo() { return solo.contains(name()); }
+        inline bool isSolo() { return solo.contains(_tag_id); }
 
-        static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tag_name); }
+        static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tagId(tag_name)); }
         inline bool isClosableBy(const char * data) {
-            return _name.startsWith(QByteArray(data, 2).toLower()) && '>' == *(data + _name.length());
+            return '>' == *(data + _tag_len) && _tag_id == tagId(QByteArray(data, _tag_len).toLower(), false);
         }
 
-        inline bool isStub() { return _name == tkn_any_elem; }
-        inline bool isText() { return _name == tkn_text_block; }
-        inline bool isLink() { return _name == tag_a; }
-        inline bool isBody() { return _name == tag_body; }
-        inline bool isMeta() { return _name == tag_meta; }
+        inline bool isStub() { return _tag_id == tg_any; }
+        inline bool isText() { return _tag_id == tg_text; }
+        inline bool isLink() { return _tag_id == tg_a; }
+        inline bool isBody() { return _tag_id == tg_body; }
+        inline bool isMeta() { return _tag_id == tg_meta; }
 
-        inline bool isHead() { return _name == tag_head; }
-        inline bool isXmlHead() { return _name == tag_xml; }
+        inline bool isHead() { return _tag_id == tg_head; }
+        inline bool isXmlHead() { return _tag_id == tg_xml; }
 
-        inline bool isFrame() { return _name == tag_iframe; }
-        inline bool isFrameRequireInit() { return _name == tag_iframe && _tags.isEmpty(); }
+        inline bool isFrame() { return _tag_id == tg_iframe; }
+        inline bool isFrameRequireInit() { return isFrame() && _tags.isEmpty(); }
 
-        inline bool isScript() { return _name == tag_script; }
-        inline bool isStyle() { return _name == tag_style; }
-        inline bool isCodeBlock() { return _name == tag_script || _name == tag_style; }
+        inline bool isScript() { return _tag_id == tg_script; }
+        inline bool isStyle() { return _tag_id == tg_style; }
+        inline bool isCodeBlock() { return isScript() || isStyle(); }
 
         inline bool isFormProceable() const {
             if (hasAttr(attr_disabled)) return false;
 
-            if (_name == tag_select || _name == tag_textarea) return true;
+            if (_tag_id == tg_select || _tag_id == tg_textarea) return true;
 
-            if (_name == tag_input) {
+            if (_tag_id == tg_input) {
                 bool is_radio = _attrs.value(attr_type) == type_radio;
                 bool is_checkbox = _attrs.value(attr_type) == type_checkbox;
 
