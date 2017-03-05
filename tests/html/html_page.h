@@ -8,7 +8,7 @@
 #include "html_tag.h"
 #include "html_selector.h"
 
-#define INIT_ROOT_TAG (root = new Tag(HTML_ANY_TAG))
+#define INIT_ROOT_TAG (root = Tag::stub())
 
 #define NAME_BUFF QByteArray(sname, (ename ? ename : pdata) - sname)
 #define NBUFF_VALID ((pdata - sname) > 0)

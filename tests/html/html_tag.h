@@ -190,6 +190,9 @@ namespace Html {
         inline bool isClosableBy(const char * data) {
             return '>' == *(data + _tag_len) && _tag_id == tagId(QByteArray(data, _tag_len).toLower(), false);
         }
+        inline bool isClosableBy(const QByteArray & tag_name) {
+            return tag_name.length() == _tag_len && _tag_id == tagId(tag_name, false);
+        }
 
         inline bool isStub() { return _tag_id == tg_any; }
         inline bool isText() { return _tag_id == tg_text; }

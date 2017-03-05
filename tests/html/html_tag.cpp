@@ -8,10 +8,12 @@
 
 using namespace Html;
 
+
+
 QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
-    { HTML_ANY_TAG, Tag::tg_any },
-    { QByteArrayLiteral("html"), Tag::tg_html }, { QByteArrayLiteral("head"), Tag::tg_head },
-    { QByteArrayLiteral("body"), Tag::tg_body }, { QByteArrayLiteral("colgroup"), Tag::tg_colgroup },
+    { HTML_ANY_TAG, Tag::tg_any }, { HTML_TEXT_BLOCK, Tag::tg_text },
+    { QByteArrayLiteral("html"), Tag::tg_html }, { HTML_TAG_HEAD, Tag::tg_head },
+    { HTML_TAG_BODY, Tag::tg_body }, { QByteArrayLiteral("colgroup"), Tag::tg_colgroup },
     { QByteArrayLiteral("caption"), Tag::tg_caption }, { QByteArrayLiteral("i"), Tag::tg_i },
     { QByteArrayLiteral("li"), Tag::tg_li }, { QByteArrayLiteral("dt"), Tag::tg_dt },
     { QByteArrayLiteral("dd"), Tag::tg_dd }, { QByteArrayLiteral("p"), Tag::tg_p },
@@ -27,17 +29,29 @@ QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
     { QByteArrayLiteral("header"), Tag::tg_header }, { QByteArrayLiteral("hr"), Tag::tg_hr },
     { QByteArrayLiteral("main"), Tag::tg_main }, { QByteArrayLiteral("menu"), Tag::tg_menu },
     { QByteArrayLiteral("nav"), Tag::tg_nav }, { QByteArrayLiteral("ol"), Tag::tg_ol },
-    { QByteArrayLiteral("pre"), Tag::tg_pre }, { QByteArrayLiteral("th"), Tag::tg_th },
-    { QByteArrayLiteral("section"), Tag::tg_section }, { QByteArrayLiteral("table"), Tag::tg_table },
-    { QByteArrayLiteral("ul"), Tag::tg_ul }, { QByteArrayLiteral("a"), Tag::tg_a },
-    { QByteArrayLiteral("audio"), Tag::tg_audio }, { QByteArrayLiteral("del"), Tag::tg_del },
-    { QByteArrayLiteral("ins"), Tag::tg_ins }, { QByteArrayLiteral("map"), Tag::tg_map },
-    { QByteArrayLiteral("noscript"), Tag::tg_noscript }, { QByteArrayLiteral("video"), Tag::tg_video },
+    { QByteArrayLiteral("pre"), Tag::tg_pre }, { QByteArrayLiteral("section"), Tag::tg_section },
+    { QByteArrayLiteral("table"), Tag::tg_table }, { QByteArrayLiteral("ul"), Tag::tg_ul },
+    { HTML_TAG_A, Tag::tg_a }, { QByteArrayLiteral("audio"), Tag::tg_audio },
+    { QByteArrayLiteral("del"), Tag::tg_del }, { QByteArrayLiteral("ins"), Tag::tg_ins },
+    { QByteArrayLiteral("map"), Tag::tg_map }, { QByteArrayLiteral("noscript"), Tag::tg_noscript },
+    { QByteArrayLiteral("video"), Tag::tg_video },
     { QByteArrayLiteral("rt"), Tag::tg_rt }, { QByteArrayLiteral("rp"), Tag::tg_rp },
     { QByteArrayLiteral("optgroup"), Tag::tg_optgroup }, { QByteArrayLiteral("option"), Tag::tg_option },
     { QByteArrayLiteral("thead"), Tag::tg_thead }, { QByteArrayLiteral("tbody"), Tag::tg_tbody },
     { QByteArrayLiteral("tfoot"), Tag::tg_tfoot }, { QByteArrayLiteral("tr"), Tag::tg_tr },
-    { QByteArrayLiteral("td"), Tag::tg_td }, { HTML_TEXT_BLOCK, Tag::tg_text }
+    { QByteArrayLiteral("td"), Tag::tg_td }, { QByteArrayLiteral("th"), Tag::tg_th },
+    { HTML_TAG_BR, Tag::tg_br }, { HTML_TAG_META, Tag::tg_meta },
+    { HTML_TAG_LINK, Tag::tg_link }, { HTML_TAG_IMG, Tag::tg_img },
+    { HTML_TAG_DOCTYPE, Tag::tg_doctype }, { HTML_TAG_XML, Tag::tg_xml },
+    { HTML_TAG_INPUT, Tag::tg_input }, { QByteArrayLiteral("base"), Tag::tg_base },
+    { QByteArrayLiteral("embed"), Tag::tg_embed }, { QByteArrayLiteral("area"), Tag::tg_area },
+    { QByteArrayLiteral("col"), Tag::tg_col }, { QByteArrayLiteral("command"), Tag::tg_command },
+    { QByteArrayLiteral("keygen"), Tag::tg_keygen }, { QByteArrayLiteral("param"), Tag::tg_param },
+    { QByteArrayLiteral("source"), Tag::tg_source }, { QByteArrayLiteral("track"), Tag::tg_track },
+    { QByteArrayLiteral("wbr"), Tag::tg_wbr }, { QByteArrayLiteral("object"), Tag::tg_object },
+    { QByteArrayLiteral("span"), Tag::tg_span }, { HTML_TAG_IFRAME, Tag::tg_iframe },
+    { HTML_TAG_STYLE, Tag::tg_style }, { HTML_TAG_SCRIPT, Tag::tg_script },
+    { HTML_TAG_SELECT, Tag::tg_select }, { HTML_TAG_TEXTAREA, Tag::tg_textarea }
 };
 
 const QHash<int, bool> Tag::solo = QHash<int, bool>{

@@ -166,7 +166,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                         if (
                             (is_xml && *(pdata - 1) == close_tag_predicate) ||
                             elem -> isSolo() || //TODO: add check on parent container closing // table, select and etc
-                            (sname && elem -> name() == NAME_BUFF.toLower())
+                            (sname && elem -> isClosableBy(NAME_BUFF.toLower()))
                         ) {
                             if (elem -> isFrame()) {
                                 iframes << elem;

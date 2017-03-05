@@ -1,21 +1,21 @@
 #include "html_keys.h"
 
 namespace Html {
-    extern const QByteArray tag_doctype            = QByteArrayLiteral("!doctype");
-    extern const QByteArray tag_input              = QByteArrayLiteral("input");
-    extern const QByteArray tag_select             = QByteArrayLiteral("select");
-    extern const QByteArray tag_textarea           = QByteArrayLiteral("textarea");
-    extern const QByteArray tag_img                = QByteArrayLiteral("img");
-    extern const QByteArray tag_br                 = QByteArrayLiteral("br");
-    extern const QByteArray tag_a                  = QByteArrayLiteral("a");
-    extern const QByteArray tag_script             = QByteArrayLiteral("script");
-    extern const QByteArray tag_style              = QByteArrayLiteral("style");
-    extern const QByteArray tag_head               = QByteArrayLiteral("head");
-    extern const QByteArray tag_body               = QByteArrayLiteral("body");
-    extern const QByteArray tag_meta               = QByteArrayLiteral("meta");
-    extern const QByteArray tag_xml                = QByteArrayLiteral("?xml");
-    extern const QByteArray tag_link               = QByteArrayLiteral("link");
-    extern const QByteArray tag_iframe             = QByteArrayLiteral("iframe");
+    extern const QByteArray tag_doctype            = HTML_TAG_DOCTYPE;
+    extern const QByteArray tag_input              = HTML_TAG_INPUT;
+    extern const QByteArray tag_select             = HTML_TAG_SELECT;
+    extern const QByteArray tag_textarea           = HTML_TAG_TEXTAREA;
+    extern const QByteArray tag_img                = HTML_TAG_IMG;
+    extern const QByteArray tag_br                 = HTML_TAG_BR;
+    extern const QByteArray tag_a                  = HTML_TAG_A;
+    extern const QByteArray tag_script             = HTML_TAG_SCRIPT;
+    extern const QByteArray tag_style              = HTML_TAG_STYLE;
+    extern const QByteArray tag_head               = HTML_TAG_HEAD;
+    extern const QByteArray tag_body               = HTML_TAG_BODY;
+    extern const QByteArray tag_meta               = HTML_TAG_META;
+    extern const QByteArray tag_xml                = HTML_TAG_XML;
+    extern const QByteArray tag_link               = HTML_TAG_LINK;
+    extern const QByteArray tag_iframe             = HTML_TAG_IFRAME;
 
 //    extern const char tkn_split                    = ' ';
     extern const QByteArray tkn_any_elem           = HTML_ANY_TAG;
