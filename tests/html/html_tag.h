@@ -17,7 +17,6 @@ namespace Html {
 
     class HTMLSHARED_EXPORT Tag {
         int _level;
-//        QByteArray _name;
         int _tag_id;
         int _tag_len;
         QHash<QByteArray, QByteArray> _attrs;
@@ -26,6 +25,7 @@ namespace Html {
         Tag * _parent;
     protected:
         static QHash<QByteArray, int> list;
+
         const static QHash<int, bool> solo;
         const static QHash<int, bool> acceptable_by_parent;
 
@@ -128,8 +128,10 @@ namespace Html {
             tg_script,
             tg_select,
             tg_textarea,
+            tg_ruby,
 
-            tg_appendable = 255
+            //...
+            tg_appendable
         };
 
         static Tag * stub() { return new Tag(HTML_ANY_TAG); }
@@ -185,14 +187,20 @@ namespace Html {
 //        }
 
         inline bool isSolo() { return solo.contains(_tag_id); }
-
         static inline bool isSolo(const QByteArray & tag_name) { return solo.contains(tagId(tag_name)); }
+
         inline bool isClosableBy(const char * data) {
             return '>' == *(data + _tag_len) && _tag_id == tagId(QByteArray(data, _tag_len).toLower(), false);
         }
         inline bool isClosableBy(const QByteArray & tag_name) {
             return tag_name.length() == _tag_len && _tag_id == tagId(tag_name, false);
         }
+        inline bool isClosableBy(const int & tag_id, const int & tag_len) {
+            return tag_len == _tag_len && _tag_id == tag_id;
+        }
+
+        bool isRequireUpParent(const int & tag_id);
+        bool isRequireUpParentOnClose(const int & tag_id);
 
         inline bool isStub() { return _tag_id == tg_any; }
         inline bool isText() { return _tag_id == tg_text; }
@@ -210,20 +218,7 @@ namespace Html {
         inline bool isStyle() { return _tag_id == tg_style; }
         inline bool isCodeBlock() { return isScript() || isStyle(); }
 
-        inline bool isFormProceable() const {
-            if (hasAttr(attr_disabled)) return false;
-
-            if (_tag_id == tg_select || _tag_id == tg_textarea) return true;
-
-            if (_tag_id == tg_input) {
-                bool is_radio = _attrs.value(attr_type) == type_radio;
-                bool is_checkbox = _attrs.value(attr_type) == type_checkbox;
-
-                return (!is_radio && !is_checkbox) || hasAttr(attr_checked);
-            }
-
-            return false;
-        }
+        bool isFormProceable() const;
 
         inline Tag * parent() { return _parent; }
         inline Tag * child(const int & pos) const { return pos < _tags.size() ? _tags[pos] : 0; }

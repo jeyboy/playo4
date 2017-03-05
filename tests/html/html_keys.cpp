@@ -29,8 +29,6 @@ namespace Html {
     extern const QByteArray attr_disabled          = QByteArrayLiteral("disabled");
 
 
-
-
     extern const QByteArray type_radio             = QByteArrayLiteral("radio");
     extern const QByteArray type_checkbox          = QByteArrayLiteral("checkbox");
 }

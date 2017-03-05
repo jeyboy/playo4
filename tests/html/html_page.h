@@ -104,6 +104,21 @@ namespace Html {
         void checkCharset(Tag * tag);
         void proceedCharset(Tag * tag);
 
+        bool checkTagClose(Tag *& elem, const QByteArray & tag) {
+            int tag_id = Tag::tagId(tag, false);
+            if (tag_id == -1) return false;
+
+            if (elem -> isClosableBy(tag_id, tag.size()))
+                return true;
+
+            if (elem -> isRequireUpParentOnClose(tag_id)) {
+                elem = elem -> parent();
+                return true;
+            }
+
+            return false;
+        }
+
         Tag * root;
         ParseFlags pflags;
         StateFlags sflags;
@@ -132,7 +147,7 @@ namespace Html {
 
         inline QByteArray toByteArray() { return root -> toByteArray(); }
 
-        inline bool hasErrors() const { return sf_has_errors; }
+        inline bool hasErrors() const { return sflags & sf_has_errors; }
         inline bool hasIframes() const { return sflags & sf_has_iframes; }
         inline bool hasChildren(const char * predicate) const { return root -> hasChildren(predicate); }
 

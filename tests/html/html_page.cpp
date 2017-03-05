@@ -165,8 +165,7 @@ void Page::parse(const char * data, Tag * root_tag) {
 //                      use this check for strict verification (open tag is eql to close)
                         if (
                             (is_xml && *(pdata - 1) == close_tag_predicate) ||
-                            elem -> isSolo() || //TODO: add check on parent container closing // table, select and etc
-                            (sname && elem -> isClosableBy(NAME_BUFF.toLower()))
+                            elem -> isSolo() || (sname && checkTagClose(elem, NAME_BUFF.toLower()))
                         ) {
                             if (elem -> isFrame()) {
                                 iframes << elem;
@@ -179,7 +178,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                                 elem = root;
                                 sflags = (StateFlags)(sflags | sf_has_errors);
                             }
-                        } else {
+                        } else {                           
                             sflags = (StateFlags)(sflags | sf_has_errors);
                             qDebug() << "IGNORE CLOSING OF TAG: " << NAME_BUFF << " around " << QByteArray(pdata - 60, 60);
 

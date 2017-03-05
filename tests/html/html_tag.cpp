@@ -1,3 +1,33 @@
+// html -> immediately not comment
+// body -> immediately not comment
+// head -> immediately not comment or space
+// colgroup -> immediately not comment or space
+// caption -> immediately not comment or space
+
+// --------- next already realized ----------
+// i -> parent close ?
+// li -> next li or parent close
+// dt -> next dt or dd
+// dd -> next dt or parent close
+
+// p -> next is address, article, aside, blockquote, details, div, dl, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hr, main, menu, nav, ol, p, pre, section, table, or ul
+//      and parent not eql to a, audio, del, ins, map, noscript, video
+//      parent close
+
+// rt -> next rt or rp or parent close
+// rp -> next rt or rp or parent close
+
+// optgroup -> next optgroup or parent close
+// option -> next option or optgroup or parent close
+
+// thead -> next tbody or tfoot
+// tbody -> next tbody or tfoot or parent close
+// tfoot -> next tbody or parent close
+// tr -> next tr or parent close
+// td -> next td or th or parent close
+// th -> next td or th or parent close
+
+
 #include "html_tag.h"
 
 #include <qurl.h>
@@ -7,8 +37,6 @@
 #include "html_page.h"
 
 using namespace Html;
-
-
 
 QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
     { HTML_ANY_TAG, Tag::tg_any }, { HTML_TEXT_BLOCK, Tag::tg_text },
@@ -51,7 +79,8 @@ QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
     { QByteArrayLiteral("wbr"), Tag::tg_wbr }, { QByteArrayLiteral("object"), Tag::tg_object },
     { QByteArrayLiteral("span"), Tag::tg_span }, { HTML_TAG_IFRAME, Tag::tg_iframe },
     { HTML_TAG_STYLE, Tag::tg_style }, { HTML_TAG_SCRIPT, Tag::tg_script },
-    { HTML_TAG_SELECT, Tag::tg_select }, { HTML_TAG_TEXTAREA, Tag::tg_textarea }
+    { HTML_TAG_SELECT, Tag::tg_select }, { HTML_TAG_TEXTAREA, Tag::tg_textarea },
+    { QByteArrayLiteral("ruby"), Tag::tg_ruby },
 };
 
 const QHash<int, bool> Tag::solo = QHash<int, bool>{
@@ -85,50 +114,6 @@ const QHash<int, bool> Tag::acceptable_by_parent = QHash<int, bool>{
     { Tag::tg_section, true },
     { Tag::tg_span, true }
 };
-
-//const QHash<QByteArray, bool> restricted_solo_by_parent = QHash<QByteArray, bool>{
-//    {QByteArrayLiteral("li"), 1}, {QByteArrayLiteral("dd"), 2}, {QByteArrayLiteral("p"), 3},
-//    {QByteArrayLiteral("rt"), 4}, {QByteArrayLiteral("rp"), 4}, {QByteArrayLiteral("optgroup"), 5},
-//    {QByteArrayLiteral("option"), 6}, {QByteArrayLiteral("tbody"), 7}, {QByteArrayLiteral("tfoot"), 8},
-//    {QByteArrayLiteral("tr"), 9}, {QByteArrayLiteral("td"), 10}, {QByteArrayLiteral("th"), 11}
-//};
-//const QHash<QByteArray, bool> restricted_solo_by_sibling = QHash<QByteArray, bool>{
-//    {QByteArrayLiteral("html"), 1}, {QByteArrayLiteral("head"), 2}, {QByteArrayLiteral("body"), 3},
-//    {QByteArrayLiteral("li"), 4}, {QByteArrayLiteral("dt"), 5}, {QByteArrayLiteral("dd"), 5},
-//    {QByteArrayLiteral("p"), 6}, {QByteArrayLiteral("rt"), 7}, {QByteArrayLiteral("rp"), 7},
-//    {QByteArrayLiteral("optgroup"), 8}, {QByteArrayLiteral("option"), 9}, {QByteArrayLiteral("colgroup"), 10},
-//    {QByteArrayLiteral("caption"), 11}, {QByteArrayLiteral("thead"), 12}, {QByteArrayLiteral("tbody"), 13},
-//    {QByteArrayLiteral("tfoot"), 14}, {QByteArrayLiteral("tr"), 15}, {QByteArrayLiteral("td"), 16},
-//    {QByteArrayLiteral("th"), 17}
-//};
-
-// html -> immediately not comment
-// body -> immediately not comment
-// head -> immediately not comment or space
-// colgroup -> immediately not comment or space
-// caption -> immediately not comment or space
-
-// i -> parent close ?
-// li -> next li or parent close
-// dt -> next dt or dd
-// dd -> next dt or parent close
-
-// p -> next is address, article, aside, blockquote, details, div, dl, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hr, main, menu, nav, ol, p, pre, section, table, or ul
-//      and parent not eql to a, audio, del, ins, map, noscript, video
-//      parent close
-
-// rt -> next rt or rp or parent close
-// rp -> next rt or rp or parent close
-
-// optgroup -> next optgroup or parent close
-// option -> next option or optgroup or parent close
-
-// thead -> next tbody or tfoot
-// tbody -> next tbody or tfoot or parent close
-// tfoot -> next tbody or parent close
-// tr -> next tr or parent close
-// td -> next td or th or parent close
-// th -> next td or th or parent close
 
 QByteArray Tag::selectValue() const {
     Html::Set options = find("option[selected]");
@@ -250,6 +235,120 @@ QByteArray Tag::toByteArray() const {
     }
 }
 
+bool Tag::isRequireUpParent(const int & tag_id) {
+    if (tag_id == _tag_id)
+        return !acceptable_by_parent.contains(tag_id);
+    else {
+        switch(_tag_id) {
+            case tg_dd: return tag_id == tg_dt;
+            case tg_dt: return tag_id == tg_dd;
+            case tg_rt: return tag_id == tg_rp;
+            case tg_rp: return tag_id == tg_rt;
+            case tg_option: return tag_id == tg_optgroup;
+            case tg_head: return tag_id == tg_tbody || tag_id == tg_tfoot;
+            case tg_tbody: return tag_id == tg_tfoot;
+            case tg_tfoot: return tag_id == tg_tbody;
+            case tg_td: return tag_id == tg_th;
+            case tg_th: return tag_id == tg_td;
+            case tg_p: {
+                int parent_tag_id = _parent ? _parent -> _tag_id : -1;
+
+                switch(parent_tag_id) {
+                    case -1:
+                    case tg_a:
+                    case tg_audio:
+                    case tg_del:
+                    case tg_ins:
+                    case tg_map:
+                    case tg_noscript:
+                    case tg_video: return false;
+                    default: {
+                        switch(tag_id) {
+                            case tg_address:
+                            case tg_article:
+                            case tg_aside:
+                            case tg_blockquote:
+                            case tg_details:
+                            case tg_div:
+                            case tg_dl:
+                            case tg_fieldset:
+                            case tg_figure:
+                            case tg_figcaption:
+                            case tg_footer:
+                            case tg_form:
+                            case tg_h1:
+                            case tg_h2:
+                            case tg_h3:
+                            case tg_h4:
+                            case tg_h5:
+                            case tg_h6:
+                            case tg_header:
+                            case tg_hr:
+                            case tg_main:
+                            case tg_menu:
+                            case tg_nav:
+                            case tg_ol:
+                            case tg_p:
+                            case tg_pre:
+                            case tg_section:
+                            case tg_table:
+                            case tg_ul:
+                                return true;
+
+                            default:;
+                        }
+                    }
+                }
+            }
+
+            default:;
+        }
+    }
+
+    return false;
+}
+bool Tag::isRequireUpParentOnClose(const int & tag_id) {
+//    Tag * par_tag = parent();
+//    if (!par_tag) return false;
+
+//    int parent_tag_id = par_tag -> _tag_id;
+
+    switch(_tag_id) {
+        case tg_p:
+        case tg_i:
+            return true;
+
+        case tg_li: return tag_id == tg_ul;
+        case tg_dd: return tag_id == tg_dl;
+        case tg_rt:
+        case tg_rp: return tag_id == tg_ruby;
+        case tg_optgroup:
+        case tg_option: return tag_id == tg_select;
+        case tg_tbody:
+        case tg_tfoot:
+        case tg_tr: return tag_id == tg_table;
+        case tg_td:
+        case tg_th: return tag_id == tg_tr;
+    }
+
+    return false;
+}
+
+bool Tag::isFormProceable() const {
+    if (hasAttr(attr_disabled)) return false;
+
+    if (_tag_id == tg_select || _tag_id == tg_textarea) return true;
+
+    if (_tag_id == tg_input) {
+        bool is_radio = _attrs.value(attr_type) == type_radio;
+        bool is_checkbox = _attrs.value(attr_type) == type_checkbox;
+
+        return (!is_radio && !is_checkbox) || hasAttr(attr_checked);
+    }
+
+    return false;
+}
+
 Tag * Tag::child(const QByteArray & name_predicate, const int & pos) const {
     int i = 0, stag_id = tagId(name_predicate, false);
 
@@ -314,7 +413,7 @@ Tag * Tag::appendTag(const QByteArray & tname) {
     // if name of tag eql to child tag - append child to parent
     Tag * newTag = new Tag(
         tag_id, nname.length(),
-        tag_id == _tag_id && !acceptable_by_parent.contains(tag_id) ? parent() : this
+        isRequireUpParent(tag_id) ? parent() : this
     );
     _tags.append(newTag);
     return newTag;
