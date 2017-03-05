@@ -1,22 +1,6 @@
 #include "html_keys.h"
 
 namespace Html {
-    extern const QByteArray tag_doctype            = HTML_TAG_DOCTYPE;
-    extern const QByteArray tag_input              = HTML_TAG_INPUT;
-    extern const QByteArray tag_select             = HTML_TAG_SELECT;
-    extern const QByteArray tag_textarea           = HTML_TAG_TEXTAREA;
-    extern const QByteArray tag_img                = HTML_TAG_IMG;
-    extern const QByteArray tag_br                 = HTML_TAG_BR;
-    extern const QByteArray tag_a                  = HTML_TAG_A;
-    extern const QByteArray tag_script             = HTML_TAG_SCRIPT;
-    extern const QByteArray tag_style              = HTML_TAG_STYLE;
-    extern const QByteArray tag_head               = HTML_TAG_HEAD;
-    extern const QByteArray tag_body               = HTML_TAG_BODY;
-    extern const QByteArray tag_meta               = HTML_TAG_META;
-    extern const QByteArray tag_xml                = HTML_TAG_XML;
-    extern const QByteArray tag_link               = HTML_TAG_LINK;
-    extern const QByteArray tag_iframe             = HTML_TAG_IFRAME;
-
 //    extern const char tkn_split                    = ' ';
     extern const QByteArray tkn_any_elem           = HTML_ANY_TAG;
     extern const QByteArray tkn_text_block         = HTML_TEXT_BLOCK;

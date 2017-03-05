@@ -25,22 +25,6 @@
 #define HTML_ATTR_TYPE QByteArrayLiteral("type")
 
 namespace Html {
-    extern const QByteArray tag_doctype;
-    extern const QByteArray tag_input;
-    extern const QByteArray tag_select;
-    extern const QByteArray tag_textarea;
-    extern const QByteArray tag_img;
-    extern const QByteArray tag_br;
-    extern const QByteArray tag_a;
-    extern const QByteArray tag_script;
-    extern const QByteArray tag_style;
-    extern const QByteArray tag_head;
-    extern const QByteArray tag_body;
-    extern const QByteArray tag_xml;
-    extern const QByteArray tag_meta;
-    extern const QByteArray tag_link;
-    extern const QByteArray tag_iframe;
-
 //    extern const char tkn_split;
     extern const QByteArray tkn_any_elem;
     extern const QByteArray tkn_text_block;
