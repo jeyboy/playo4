@@ -23,7 +23,7 @@ Set & Set::find(const Selector * selector, Set & set, const bool & find_first) c
         bool is_forward_selector = has_next_selector && selector -> next -> isForward();
 
         if (!has_children && has_next_selector && is_forward_selector) continue; // ignore leafs if selector has next segment
-        if ((*tag) -> isText() && selector -> _token != tkn_text_block) continue; // ignore text block if it not required directly in selector
+        if ((*tag) -> isText() && selector -> _token_id != Tag::tg_text) continue; // ignore text block if it not required directly in selector
 
         if ((*tag) -> validTo(selector)) {
                 if (has_next_selector) {

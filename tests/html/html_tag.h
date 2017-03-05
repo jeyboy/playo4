@@ -136,6 +136,9 @@ namespace Html {
 
         inline Tag(const QByteArray & tag, Tag * parent_tag = 0) :
             _level(parent_tag ? parent_tag -> _level + 1 : 0), _tag_id(tagId(tag)), _tag_len(tag.length()), _classes(0), _parent(parent_tag) {}
+        inline Tag(const int & tag_id, const int & tag_length, Tag * parent_tag = 0) :
+            _level(parent_tag ? parent_tag -> _level + 1 : 0), _tag_id(tag_id), _tag_len(tag_length), _classes(0), _parent(parent_tag) {}
+
         inline ~Tag() {
             qDeleteAll(_tags);
             delete _classes;

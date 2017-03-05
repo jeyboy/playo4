@@ -37,7 +37,7 @@ QHash<QByteArray, int> Tag::list = QHash<QByteArray, int> {
     { QByteArrayLiteral("optgroup"), Tag::tg_optgroup }, { QByteArrayLiteral("option"), Tag::tg_option },
     { QByteArrayLiteral("thead"), Tag::tg_thead }, { QByteArrayLiteral("tbody"), Tag::tg_tbody },
     { QByteArrayLiteral("tfoot"), Tag::tg_tfoot }, { QByteArrayLiteral("tr"), Tag::tg_tr },
-    { QByteArrayLiteral("td"), Tag::tg_td }, { tkn_text_block, Tag::tg_text }
+    { QByteArrayLiteral("td"), Tag::tg_td }, { HTML_TEXT_BLOCK, Tag::tg_text }
 };
 
 const QHash<int, bool> Tag::solo = QHash<int, bool>{
@@ -145,7 +145,7 @@ QByteArray Tag::text() const {
     return text ? text -> _attrs.value(tkn_text_block) : QByteArray();
 }
 QByteArray Tag::texts() const {
-    if (_name == tkn_text_block)
+    if (_tag_id == tg_text)
         return _attrs.value(tkn_text_block);
     else {
         QByteArray result;
@@ -212,15 +212,15 @@ QUrl Tag::serializeFormToUrl(const QHash<QString, QString> & vals, const FormSer
 }
 
 QByteArray Tag::toByteArray() const {
-    if (_name == tkn_text_block)
+    if (_tag_id == tg_text)
         return _attrs.value(tkn_text_block);
     else {
         QByteArray result;
-        bool root = _name == tkn_any_elem;
+        bool root = _tag_id == tg_any;
 
 
         if (!root) {
-            result = '<' % _name;
+            result = '<' % name();
 
             for(QHash<QByteArray, QByteArray>::ConstIterator attr = _attrs.cbegin(); attr != _attrs.cend(); attr++)
                 result = result % ' ' % attr.key() % (attr.value().isNull() ? QByteArray() : (QByteArray("=\"") % attr.value() % '"'));
@@ -232,7 +232,7 @@ QByteArray Tag::toByteArray() const {
             result += (*tag) -> toByteArray();
 
 
-        return root || (solo.contains(_name) && _tags.isEmpty()) ? result : QByteArray(result % QByteArray("</") % _name % '>');
+        return root || (solo.contains(_tag_id) && _tags.isEmpty()) ? result : QByteArray(result % QByteArray("</") % name() % '>');
     }
 }
 
@@ -295,10 +295,12 @@ Tag * Tag::findFirst(const Selector * selector) const {
 
 Tag * Tag::appendTag(const QByteArray & tname) {
     QByteArray nname = tname.toLower().trimmed();
+    int tag_id = tagId(nname);
+
     // if name of tag eql to child tag - append child to parent
     Tag * newTag = new Tag(
-        nname,
-        nname == _name && !acceptable_by_parent.contains(nname) ? parent() : this
+        tag_id, nname.length(),
+        tag_id == _tag_id && !acceptable_by_parent.contains(tag_id) ? parent() : this
     );
     _tags.append(newTag);
     return newTag;
@@ -312,8 +314,8 @@ void Tag::appendComment(const QByteArray & val) {
     newTag -> addAttr(tkn_comment_block, val);
 }
 
-bool Tag::validTo(const Selector * selector) {
-    if (!(selector -> _token == tkn_any_elem || selector -> _token == _name))
+bool Tag::validTo(const Selector * selector) {    
+    if (selector -> _token_id == -1 || !(selector -> _token_id == tg_any || selector -> _token_id == _tag_id))
         return false;
 
     if (selector -> pos_limit != -1) {

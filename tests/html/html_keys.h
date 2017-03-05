@@ -5,6 +5,7 @@
 //#include <qbytearray.h>
 
 #define HTML_ANY_TAG QByteArrayLiteral("*")
+#define HTML_TEXT_BLOCK QByteArrayLiteral("text")
 #define HTML_ATTR_TYPE QByteArrayLiteral("type")
 
 namespace Html {

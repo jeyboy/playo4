@@ -19,7 +19,7 @@ namespace Html {
 
 //    extern const char tkn_split                    = ' ';
     extern const QByteArray tkn_any_elem           = HTML_ANY_TAG;
-    extern const QByteArray tkn_text_block         = QByteArrayLiteral("text");
+    extern const QByteArray tkn_text_block         = HTML_TEXT_BLOCK;
     extern const QByteArray tkn_comment_block      = QByteArrayLiteral("comment");
 
     extern const QByteArray tkn_charset            = QByteArrayLiteral("charset");

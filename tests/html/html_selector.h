@@ -95,11 +95,7 @@ namespace Html {
 
         Selector(const char * predicate);
 
-        inline Selector(const STurn & turn = any, Selector * prev = 0)
-            : _token(tkn_any_elem), turn(turn), pos_limit(-1), prev(prev), next(0), has_error(false), error(0)
-        {
-            if (prev) prev -> next = this;
-        }
+        Selector(const STurn & turn = any, Selector * prev = 0);
         inline ~Selector() {
             delete next;
             delete error;
@@ -113,7 +109,7 @@ namespace Html {
         inline bool isForward() const { return turn == any || turn == parent; }
 
         QList<QPair<char, QByteArray> > _classes;
-        QByteArray _token;
+        int _token_id;
         QHash<QByteArray, QPair<char, QByteArray> > _attrs;
         STurn turn;
         int pos_limit;

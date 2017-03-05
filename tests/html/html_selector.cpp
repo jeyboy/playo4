@@ -1,4 +1,5 @@
 #include "html_selector.h"
+#include "html_tag.h"
 #include <qdebug.h>
 
 using namespace Html;
@@ -14,7 +15,7 @@ const QHash<QByteArray, QByteArray> Selector::attr_predifinitions = QHash<QByteA
 
 bool Selector::addPredicate(const SState & state, const QByteArray & token) {
     switch(state) {
-        case st_tag: { _token = token.toLower(); break;}
+        case st_tag: { _token_id = Tag::tagId(token.toLower(), false); break;}
         case st_id: { _attrs.insert(attr_id, QPair<char, QByteArray>(sel_attr_eq, token)); break; }
         case st_class: { SELECTOR_PROCEED_CLASSES(sel_attr_eq, token); break;}
         case st_attr_type: {
@@ -50,7 +51,13 @@ void Selector::addAttr(const QByteArray & name, const QByteArray & val, const ch
     }
 }
 
-Selector::Selector(const char * predicate) : _token(tkn_any_elem), turn(any),
+Selector::Selector(const STurn & turn, Selector * prev)
+    : _token_id(Tag::tg_any), turn(turn), pos_limit(-1), prev(prev), next(0), has_error(false), error(0)
+{
+    if (prev) prev -> next = this;
+}
+
+Selector::Selector(const char * predicate) : _token_id(Tag::tg_any), turn(any),
     pos_limit(-1), prev(0), next(0), has_error(false), error(0)
 {
     SState state = st_tag;
