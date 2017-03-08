@@ -337,6 +337,9 @@ QByteArray & Decoding::decodeContent(const CharsetType & charset, QByteArray & v
         default:;
     }
 
+    qDebug() << QByteArray("Кодировка");
+    qDebug() << val;
+
     return val;
 }
 

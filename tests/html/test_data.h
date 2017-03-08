@@ -9,6 +9,22 @@
 
 class TestData {
   public:
+    static void convert(const QString & path, const char * codec = "UTF-8") {
+        QFile f(path);
+        if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QFile fout(path + ".conv");
+            if (fout.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                QTextStream outs(&fout);
+                outs.setCodec(codec);
+                outs << f.readAll();
+                outs.flush();
+                fout.close();
+            }
+
+            f.close();
+        }
+    }
+
     static QString load(const QString & path, const char * codec = "UTF-8") {
         QString res;
         QFile f(path);

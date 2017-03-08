@@ -23,7 +23,6 @@ Page::Page(Tag * root_tag, const QString & str, const Decoding::CharsetType & do
 //////////////////////////
 //////////////////////////
 
-
 Page::Page(QIODevice * device, const Decoding::CharsetType & doc_charset, const ParseFlags & parse_flags)
     : pflags(parse_flags), sflags(sf_none), charset(doc_charset)
 {
