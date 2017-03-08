@@ -9,11 +9,14 @@
 
 class TestData {
   public:
-    static QString load(const QString & path) {
+    static QString load(const QString & path, const char * codec = "UTF-8") {
         QString res;
         QFile f(path);
         if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            res = f.readAll();
+            QTextStream outs(&f);
+            outs.setCodec(codec);
+
+            res = outs.readAll();
             f.close();
         }
         else qDebug() << "Error file opening" << path;
@@ -73,9 +76,14 @@ class TestData {
         return data_parser_monotags;
     }
     static QString dataHtmlParserCoding1251() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_1251_head.txt")));
+        static QString data_parser = load(DATA_PATH(QStringLiteral("test_1251_head.txt")), "Windows-1251");
         return data_parser;
     }
+    static QString dataHtmlParserCoding1252() {
+        static QString data_parser = load(DATA_PATH(QStringLiteral("test_1252_head.txt")), "Windows-1252");
+        return data_parser;
+    }
+
     static QString dataHtmlParserCodingUtf8() {
         static QString data_parser = load(DATA_PATH(QStringLiteral("test_utf8_head.txt")));
         return data_parser;

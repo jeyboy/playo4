@@ -18,7 +18,6 @@ uint Utf8::CP1251Table[256] = {
     1096,1097,1098,1099,1100,1101,1102,1103
 };
 
-
 bool Utf8::isNonCharacter(const uint & unicode) {
     // Unicode has a couple of "non-characters" that one can use internally,
     // but are not allowed to be used for text interchange.
@@ -31,25 +30,31 @@ bool Utf8::isNonCharacter(const uint & unicode) {
 }
 
 QByteArray Utf8::bytes(const uint & unicode) {
+    QByteArray res;
+    bytes(unicode, res);
+    return res;
+}
+
+void Utf8::bytes(const uint & unicode, QByteArray & res) {
     // 0xxxxxxx
     if (unicode < 0x80)
-        return QByteArray(1, (char)unicode);
+        res.append((char)unicode);
     // 110xxxxx 10xxxxxx
     else if(unicode < 0x800) {
-        return QByteArray()
+        res
             .append((char)(MASK2BYTES | unicode >> 6))
             .append((char)(MASKBYTE | (unicode & MASKBITS)));
     }
     // 1110xxxx 10xxxxxx 10xxxxxx
     else if(unicode < 0x10000) {
-        return QByteArray()
+        res
             .append((char)(MASK3BYTES | unicode >> 12))
             .append((char)(MASKBYTE | (unicode >> 6 & MASKBITS)))
             .append((char)(MASKBYTE | (unicode & MASKBITS)));
 
     // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
     } else if(unicode < 0x200000) {
-        return QByteArray()
+        res
             .append((char)(MASK4BYTES | unicode >> 18))
             .append((char)(MASKBYTE | (unicode >> 12 & MASKBITS)))
             .append((char)(MASKBYTE | (unicode >> 6 & MASKBITS)))
@@ -57,7 +62,7 @@ QByteArray Utf8::bytes(const uint & unicode) {
     }
     // 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
     else if(unicode < 0x4000000) {
-        return QByteArray()
+        res
             .append((char)(MASK5BYTES | unicode >> 24))
             .append((char)(MASKBYTE | (unicode >> 18 & MASKBITS)))
             .append((char)(MASKBYTE | (unicode >> 12 & MASKBITS)))
@@ -66,7 +71,7 @@ QByteArray Utf8::bytes(const uint & unicode) {
     }
     // 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
     else if(unicode < 0x8000000) {
-        return QByteArray()
+        res
             .append((char)(MASK6BYTES | unicode >> 30))
             .append((char)(MASKBYTE | (unicode >> 24 & MASKBITS)))
             .append((char)(MASKBYTE | (unicode >> 18 & MASKBITS)))
@@ -75,8 +80,6 @@ QByteArray Utf8::bytes(const uint & unicode) {
             .append((char)(MASKBYTE | (unicode & MASKBITS)));
     }
     else qDebug() << "unicode: sheet happened";
-
-    return QByteArray();
 }
 
 QString Utf8::str(const QByteArray & bytes) {
@@ -145,52 +148,35 @@ QString Utf8::str(const QByteArray & bytes) {
 
 QByteArray Utf8::bytesCP1251(const QByteArray & iso_bytes) {
     const unsigned char * data = (const unsigned char *)iso_bytes.constData();
-    QByteArray bytes;
+    QByteArray res;
 
     while(*data) {
-        uint ch = CP1251Table[(unsigned char)*data];
-
-        if(ch < 0x80)
-            bytes.append(ch);
-        else if(ch < 0x800) {
-            bytes
-                .append(ch >> 6 | 0xc0)
-                .append(ch & 0x3f | 0x80);
-        }
-        else if(ch < 0x10000) {
-            bytes
-                .append(ch >> 12 | 0xe0)
-                .append(ch >> 6 & 0x3f | 0x80)
-                .append(ch & 0x3f | 0x80);
-        }
-        else if(ch < 0x200000) {
-            bytes
-                .append(ch >> 18 | 0xf0)
-                .append(ch >> 12 & 0x3f | 0x80)
-                .append(ch >> 6 & 0x3f | 0x80)
-                .append(ch & 0x3f | 0x80);
-        }
-        else qDebug() << "cp1251 <-> unicode: sheet happened";
+        bytes(CP1251Table[*data], res);
+        data++;
     }
 
-    return bytes;
+    return res;
 }
 
 QByteArray Utf8::bytesCP1252(const QByteArray & iso_bytes) {
     const unsigned char * data = (const unsigned char *)iso_bytes.constData();
-    QByteArray bytes;
+    QByteArray res;
 
     while(*data) {
-        if (*data < 0x80)
-            bytes.append(*data);
-        else {
-            bytes
+//        bytes((unsigned char)*data, res);
+
+        if (*data < 0x80) {
+            res.append(*data);
+        } else {
+            res
                 .append(0xc0 | *data >> 6)
                 .append(0x80 | (*data & 0x3f));
         }
+
+        data++;
     }
 
-    return iso_bytes;
+    return res;
 }
 
 

@@ -17,6 +17,17 @@
 #define VBUFF_VALID ((pdata - sval) > 0)
 #define VAL_BUFF_VALID (sval && VBUFF_VALID)
 
+
+#define DECODE_NAME(val)({ \
+    QByteArray v = val;\
+    if (tag_flags & Decoding::decode_content)\
+        Decoding::decodeContent(charset, v);\
+    if (tag_flags & Decoding::decode_mnemo)\
+        Decoding::decodeMnemonics(v);\
+    tag_flags = 0;\
+    v; \
+})
+
 class QIODevice;
 class QDebug;
 
@@ -59,10 +70,11 @@ namespace Html {
             sf_use_user_charset = 128
         };
         enum ParseFlags {
-            pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2, pf_skip_mnemonics_decoding = 4,
-            pf_skip_content_decoding = 8, pf_skip_links_decoding = 16,
+            pf_none = 0, pf_skip_text = 1, pf_skip_comment = 2,
+//            pf_skip_mnemonics_decoding = 4, pf_skip_content_decoding = 8,
+            pf_skip_links_decoding = 16,
 
-            pf_default = pf_skip_comment | pf_skip_mnemonics_decoding | pf_skip_content_decoding
+            pf_default = pf_skip_comment // | pf_skip_mnemonics_decoding | pf_skip_content_decoding
         };
 
         enum PState {

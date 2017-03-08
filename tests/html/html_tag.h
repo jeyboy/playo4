@@ -19,6 +19,7 @@ namespace Html {
         int _level;
         int _tag_id;
         int _tag_len;
+
         QHash<QByteArray, QByteArray> _attrs;
         QHash<QByteArray, bool> * _classes;
         Set _tags;

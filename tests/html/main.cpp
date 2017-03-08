@@ -93,6 +93,10 @@ using namespace Html;
 HtmlTest::HtmlTest() {
     qDebug() << "MEMS" << Memory::usageStr();
 
+    Page(TestData::dataHtmlParserCoding1251());
+    Page(TestData::dataHtmlParserCoding1252());
+
+
     Page(TestData::dataHtmlRustorka());
     Page(TestData::dataHtmlFourshared());
     Page(TestData::dataHtmlGoogle());

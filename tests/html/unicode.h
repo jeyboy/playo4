@@ -21,6 +21,7 @@ namespace Unicode {
         static bool isNonCharacter(const uint & unicode);
 
         static QByteArray bytes(const uint & unicode);
+        static void bytes(const uint & unicode, QByteArray & res);
         static QString str(const QByteArray & bytes);
 
         // not tested

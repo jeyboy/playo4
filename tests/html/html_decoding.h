@@ -12,11 +12,18 @@ namespace Html {
     class Decoding {
     public:
         enum CharsetType {
-            charset_unknown,
-            charset_ascii,
-            charset_cp1251,
-            charset_ansi, // cp1252 // ISO-8859-1
-            charset_utf8
+            charset_utf8 = 0,
+            charset_ascii = 1,
+            charset_cp1251 = 2,
+            charset_ansi = 4, // cp1252 // ISO-8859-1
+
+            charset_max = 8,
+        };
+
+        enum DecodingFlags {
+            decode_none = 0,
+            decode_content = charset_max * 2,
+            decode_mnemo = decode_content * 2
         };
 
         static QHash<QByteArray, int> html_entities;

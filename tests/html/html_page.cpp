@@ -64,8 +64,19 @@ void Page::parse(const char * data, Tag * root_tag) {
     PState state = content;
     const char *pdata = data, *sname = 0, *sval = 0, *ename = 0;
     bool has_cdata = false, is_xml = false; // cdata presents in text
+    quint8 tag_flags = 0; // charset
 
     while(*pdata) {
+        if (*pdata < 0) {
+            tag_flags |= Decoding::decode_content;
+            pdata++;
+            continue;
+        }
+
+        if (*pdata == code_start && (state == in_val || state == code || state == raw_data)) {
+            tag_flags |= Decoding::decode_mnemo;
+        }
+
         if (*pdata < 32 && *pdata > 0) { // skip not printable trash
             if (sname && !NBUFF_VALID) sname++;
 
@@ -106,7 +117,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                                 if (has_cdata)
                                     ar.replace(tkn_scdata, 0).replace(tkn_ecdata,  0);
 
-                                elem -> appendText(ar);
+                                elem -> appendText(DECODE_NAME(ar));
                             }
                             has_cdata = false;
                         }
@@ -121,7 +132,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                 switch(*pdata) {
                     case close_tag:
                     case space: {
-                        elem -> addAttr(NAME_BUFF, VAL_BUFF);
+                        elem -> addAttr(NAME_BUFF, DECODE_NAME(VAL_BUFF));
                         sname = 0; sval = 0; ename = 0;
                         state = attr;
                         continue;
@@ -135,7 +146,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                     case content_del2: {
                         if (*sval == *pdata) {
                             sval++;
-                            elem -> addAttr(NAME_BUFF, VAL_BUFF);
+                            elem -> addAttr(NAME_BUFF, DECODE_NAME(VAL_BUFF));
                             sname = 0; sval = 0; ename = 0;
                             state = attr;
                         }
@@ -178,7 +189,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                                 elem = root;
                                 sflags = (StateFlags)(sflags | sf_has_errors);
                             }
-                        } else {                           
+                        } else {
                             sflags = (StateFlags)(sflags | sf_has_errors);
                             qDebug() << "IGNORE CLOSING OF TAG: " << NAME_BUFF << " around " << QByteArray(pdata - 60, 60);
 
@@ -285,7 +296,7 @@ void Page::parse(const char * data, Tag * root_tag) {
                         }
                     break;}
 
-                    case attr_rel: {                   
+                    case attr_rel: {
                         ename = pdata;
                         sval = pdata + 1;
                         if (*sval == content_del1 || *sval == content_del2) {

@@ -4,8 +4,6 @@
 //#include <qregularexpression.h>
 #include <qdebug.h>
 
-// &forall; &#9830; &#x2666;
-
 using namespace Html;
 
 QHash<QByteArray, int> Decoding::html_entities = {
@@ -297,10 +295,11 @@ Decoding::CharsetType Decoding::charsetType(const QByteArray & val) {
     else if(l_name == QByteArrayLiteral("us-ascii"))
         return charset_ascii;
 
-    return charset_unknown;
+    return charset_utf8;
 }
 
 QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
+    int i = 0;
 //    QRegularExpression reg("&([#\\w]+);");
 //    QRegularExpressionMatch match;
 //    int index = 0;
@@ -331,10 +330,10 @@ QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
 
 QByteArray & Decoding::decodeContent(const CharsetType & charset, QByteArray & val) {
     switch(charset) {
+        case charset_cp1251: { val = Unicode::Utf8::bytesCP1251(val); break;}
+        case charset_ansi: { val = Unicode::Utf8::bytesCP1252(val); break; }
         case charset_ascii:
-        case charset_utf8: { return val; /*scanUtf8Char(val io, result, in);*/ break;}
-//        case charset_cp1251: { scanRuChar(val/*io, result, in*/); break;}
-//        case charset_ansi: { scanRuChar(val/*io, result, in*/); break;}
+        case charset_utf8:
         default:;
     }
 
