@@ -25,14 +25,11 @@ class TestData {
         }
     }
 
-    static QString load(const QString & path, const char * codec = "UTF-8") {
-        QString res;
+    static QByteArray load(const QString & path) {
+        QByteArray res;
         QFile f(path);
-        if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream outs(&f);
-            outs.setCodec(codec);
-
-            res = outs.readAll();
+        if (f.open(QIODevice::ReadOnly)) {
+            res = f.readAll();
             f.close();
         }
         else qDebug() << "Error file opening" << path;
@@ -47,136 +44,136 @@ class TestData {
         }
     }
 
-    static QString dataLoad(const QByteArray & name) { return load(DATA_PATH(name)); }
+    static QByteArray dataLoad(const QByteArray & name) { return load(DATA_PATH(name)); }
 
-    static QString dataHtmlRustorka() {
-        static QString data_fourshared = load(DATA_PATH(QStringLiteral("rustorka.txt")));
+    static QByteArray dataHtmlRustorka() {
+        static QByteArray data_fourshared = load(DATA_PATH(QStringLiteral("rustorka.txt")));
         return data_fourshared;
     }
-    static QString dataHtmlFourshared() {
-        static QString data_fourshared = load(DATA_PATH(QStringLiteral("fourshared.txt")));
+    static QByteArray dataHtmlFourshared() {
+        static QByteArray data_fourshared = load(DATA_PATH(QStringLiteral("fourshared.txt")));
         return data_fourshared;
     }
-    static QString dataHtmlGoogle() {
-        static QString data_google = load(DATA_PATH(QStringLiteral("google.txt")));
+    static QByteArray dataHtmlGoogle() {
+        static QByteArray data_google = load(DATA_PATH(QStringLiteral("google.txt")));
         return data_google;
     }
-    static QString dataHtmlYoutube() {
-        static QString data_youtube = load(DATA_PATH(QStringLiteral("youtube.txt")));
+    static QByteArray dataHtmlYoutube() {
+        static QByteArray data_youtube = load(DATA_PATH(QStringLiteral("youtube.txt")));
         return data_youtube;
     }
-    static QString dataHtmlKivy() {
-        static QString data_kivy = load(DATA_PATH(QStringLiteral("kivy.txt")));
+    static QByteArray dataHtmlKivy() {
+        static QByteArray data_kivy = load(DATA_PATH(QStringLiteral("kivy.txt")));
         return data_kivy;
     }
-    static QString dataHtmlStackOverflow() {
-        static QString data_stackoverflow = load(DATA_PATH(QStringLiteral("stack.txt")));
+    static QByteArray dataHtmlStackOverflow() {
+        static QByteArray data_stackoverflow = load(DATA_PATH(QStringLiteral("stack.txt")));
         return data_stackoverflow;
     }
 
-    static QString dataXmlParser() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_xml.txt")));
+    static QByteArray dataXmlParser() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_xml.txt")));
         return data_parser;
     }
 
-    static QString dataHtmlParserJs() {
-        static QString data_parser_js = load(DATA_PATH(QStringLiteral("test_js_parsing.txt")));
+    static QByteArray dataHtmlParserJs() {
+        static QByteArray data_parser_js = load(DATA_PATH(QStringLiteral("test_js_parsing.txt")));
         return data_parser_js;
     }
-    static QString dataHtmlParserJs2() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_js.txt")));
+    static QByteArray dataHtmlParserJs2() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_js.txt")));
         return data_parser;
     }
-    static QString dataHtmlParserMonotags() {
-        static QString data_parser_monotags = load(DATA_PATH(QStringLiteral("test_monotags.txt")));
+    static QByteArray dataHtmlParserMonotags() {
+        static QByteArray data_parser_monotags = load(DATA_PATH(QStringLiteral("test_monotags.txt")));
         return data_parser_monotags;
     }
-    static QString dataHtmlParserCoding1251() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_1251_head.txt")), "Windows-1251");
+    static QByteArray dataHtmlParserCoding1251() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_1251_head.txt")));
         return data_parser;
     }
-    static QString dataHtmlParserCoding1252() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_1252_head.txt")), "Windows-1252");
-        return data_parser;
-    }
-
-    static QString dataHtmlParserCodingUtf8() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_utf8_head.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserAttrs() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_attr.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserAttrsWithoutQuotes() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_attr_without_quotas.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserBaseTemplate() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_base_template.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserShortTemplate() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_base_short_template.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserClasses() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_classes.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserConditionalComments() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_conditional_comments.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserHiddenComments() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_hidden_comments.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserCdataJs() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_cdata_js.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserCdataHtml() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_cdata_html.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserCheckboxes() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_post_form_checkbox.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserRadios() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_post_form_radio.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserSelects() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_post_form_select.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserTexts() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_post_form_text.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserIFrame() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_iframe.txt")));
-        return data_parser;
-    }
-    static QString dataHtmlParserTable() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_table.txt")));
+    static QByteArray dataHtmlParserCoding1252() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_1252_head.txt")));
         return data_parser;
     }
 
-    static QString dataHtmlParserPredicableTagClosure() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_html_predicable_tag_closure.txt")));
+    static QByteArray dataHtmlParserCodingUtf8() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_utf8_head.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserAttrs() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_attr.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserAttrsWithoutQuotes() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_attr_without_quotas.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserBaseTemplate() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_base_template.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserShortTemplate() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_base_short_template.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserClasses() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_classes.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserConditionalComments() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_conditional_comments.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserHiddenComments() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_hidden_comments.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserCdataJs() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_cdata_js.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserCdataHtml() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_cdata_html.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserCheckboxes() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_post_form_checkbox.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserRadios() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_post_form_radio.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserSelects() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_post_form_select.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserTexts() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_post_form_text.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserIFrame() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_iframe.txt")));
+        return data_parser;
+    }
+    static QByteArray dataHtmlParserTable() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_table.txt")));
         return data_parser;
     }
 
-    static QString dataHtml5ParserVideo() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_video_html5.txt")));
+    static QByteArray dataHtmlParserPredicableTagClosure() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_html_predicable_tag_closure.txt")));
         return data_parser;
     }
 
-    static QString dataHtmlParserErrorWrongCloseTag() {
-        static QString data_parser = load(DATA_PATH(QStringLiteral("test_wrong_tags_closing.txt")));
+    static QByteArray dataHtml5ParserVideo() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_video_html5.txt")));
+        return data_parser;
+    }
+
+    static QByteArray dataHtmlParserErrorWrongCloseTag() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_wrong_tags_closing.txt")));
         return data_parser;
     }
 

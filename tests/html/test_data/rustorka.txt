@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html dir="ltr">
 <head>
- <title>Главная :: Международный торрент-трекер Rustorka | Русторь до последнего!</title>
  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+ <title>Главная :: Международный торрент-трекер Rustorka | Русторь до последнего!</title>
  <meta http-equiv="Content-Style-Type" content="text/css" />
  <meta name="keywords" content="rustorka, русторка, бесплатно, новости, россия, игровые, битторент, трекер, торрент, скачать, музыка, mp3, lossless, новинки, компьютерные, консольные, games, игры, repack, фильмы, кино, сериалы, аниме, тв, программы, Fenixx, GameWorks, ReCoding, RustorRippers, Shinobi" />
  <meta name="description" content="Главная" />
