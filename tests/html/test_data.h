@@ -88,6 +88,12 @@ class TestData {
         static QByteArray data_parser_monotags = load(DATA_PATH(QStringLiteral("test_monotags.txt")));
         return data_parser_monotags;
     }
+
+    static QByteArray dataHtmlParserMnemonics() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_mnemonics_decoding.txt")));
+        return data_parser;
+    }
+
     static QByteArray dataHtmlParserCoding1251() {
         static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_1251_head.txt")));
         return data_parser;

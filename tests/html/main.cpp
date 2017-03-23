@@ -35,6 +35,8 @@ private Q_SLOTS:
     void testCodingUtf8();
     void testCodingUtf8Decode();
 
+    void testMnemonicsDecode();
+
     void testJS();
 //    void testCDATAJs();
     void testCDATAHtml();
@@ -208,6 +210,21 @@ void HtmlTest::testCodingUtf8Decode() {
     Tag * title_tag = page.findFirst("title");
     QVERIFY2(
         title_tag && title_tag -> text() == QByteArrayLiteral("My First HTML"),
+        "Failure"
+    );
+}
+
+void HtmlTest::testMnemonicsDecode() {
+    Page page(TestData::dataHtmlParserMnemonics());
+
+    Tag * h2_tag = page.findFirst("h2");
+    Tag * p_tag = page.findFirst("p");
+
+
+    QVERIFY2(
+        h2_tag && p_tag &&
+            h2_tag -> text() == QByteArrayLiteral("The title A attribute") &&
+            p_tag -> attr(QByteArrayLiteral("title")) == QByteArrayLiteral("I'm a tooltip & sheet"),
         "Failure"
     );
 }

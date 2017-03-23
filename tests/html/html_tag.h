@@ -165,6 +165,8 @@ namespace Html {
 
         inline Set children() const { return _tags; }
 
+        // alias
+        inline QByteArray attr(const QByteArray & name = attr_default) const { return value(name); }
         QByteArray value(const QByteArray & name = attr_default) const;
         QByteArray text() const;
         QByteArray texts() const;

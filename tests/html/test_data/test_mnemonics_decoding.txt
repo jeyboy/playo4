@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>The title &#65; attribute</h2>
+<div> I am not the title attribute</div>
+<div>The pithe</div>
+
+<p title="I'm a tooltip &amp; sheet">a</p>
+
+</body>
+</html>
