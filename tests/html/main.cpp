@@ -98,6 +98,8 @@ HtmlTest::HtmlTest() {
 //    TestData::convert(DATA_PATH(QStringLiteral("test_1251_head.txt")), "Windows-1251");
 //    TestData::convert(DATA_PATH(QStringLiteral("test_1252_head.txt")), "Windows-1252");
 
+    Page page(TestData::dataHtmlParserMnemonics());
+
     Page(TestData::dataHtmlParserCoding1251());
     Page(TestData::dataHtmlParserCoding1252());
 

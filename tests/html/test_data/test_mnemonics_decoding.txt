@@ -8,5 +8,7 @@
 
 <p title="I'm a tooltip &amp; sheet">a</p>
 
+<h1 title="I'm &amp; tooltip &amp; sheet">a</h1>
+
 </body>
 </html>

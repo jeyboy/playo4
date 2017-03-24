@@ -72,7 +72,7 @@ void Page::parse(const char * data, Tag * root_tag) {
             continue;
         }
 
-        if (*pdata == code_start && (state == in_val || state == code || state == raw_data)) {
+        if (*pdata == code_start && (state == in_val || state == code || state == raw_data || state == content)) {
             tag_flags |= Decoding::decode_mnemo;
         }
 

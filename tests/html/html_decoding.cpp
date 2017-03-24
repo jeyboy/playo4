@@ -1,7 +1,5 @@
 #include "html_decoding.h"
 #include <defines.h>
-
-//#include <qregularexpression.h>
 #include <qdebug.h>
 
 using namespace Html;
@@ -299,7 +297,7 @@ Decoding::CharsetType Decoding::charsetType(const QByteArray & val) {
 }
 
 QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
-    int pos = 0, start = -1, roffset = 0; // &#65; // A
+    int pos = 0, start = -1, roffset = 0, length; // &#65; // A
     bool is_unicode = false;
 
     const char * data = val.constData();
@@ -313,18 +311,21 @@ QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
                 is_unicode = (*(data - 1) == 38);
             break;}
 
-
-            //            case 48:
-            //            case 57: {
-            //                i
-            //            break;}
-
             case 59: { // ;
                 if (start != -1) {
-                    roffset = differce between old and new value
+                    length = pos - start;
 
-                    val.replace(start, pos - start, const QByteArray & after);
+                    QByteArray arg = is_unicode ?
+                        val.mid(start + 2, length - 2) : val.mid(start + 1, length - 1);
+
+                    QByteArray after =
+                        Unicode::Utf8::bytes(
+                            is_unicode ? arg.toUInt() : html_entities[arg]
+                        );
+
+                    val.replace(start, pos - start + 1, after);
                     start = -1;
+                    roffset += length - 1;
                 }
             }
             case 32: {
@@ -337,37 +338,6 @@ QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
         data++;
         pos++;
     }
-
-    if (data - sdata > 0)
-        _classes -> insert(QByteArray(sdata, data - sdata), true);
-
-
-//    QRegularExpression reg("&([#\\w]+);");
-//    QRegularExpressionMatch match;
-//    int index = 0;
-
-//    while(true) {
-//        index = string.indexOf(reg, index, &match);
-//        if (index == -1) break;
-
-//        int sel_start = match.capturedStart(1);
-//        int sel_length = match.capturedLength(1);
-
-//        QString entity = string.mid(sel_start, sel_length);
-//        QChar res;
-
-//        if (entity.startsWith('#'))
-//            res = QChar(entity.mid(1).toInt());
-//        else {
-//            if (!html_entities.contains(entity)) {
-//                res = ' ';
-//                qDebug() << "HTML ENTITY NOT EXISTS" << entity;
-//            } else
-//                res = html_entities[entity];
-//        }
-
-//        string.replace(match.capturedStart(0), match.capturedLength(0), res);
-//    }
 }
 
 QByteArray & Decoding::decodeContent(const CharsetType & charset, QByteArray & val) {
