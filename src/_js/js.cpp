@@ -2,7 +2,6 @@
 
 #include <variant_convertor.h>
 
-//call + "(\"" + arg + "\")
 QString Js::callBuilder(const QString & func_name, const QVariantList & args) {
     QString res = func_name % '(';
     QString args_str;

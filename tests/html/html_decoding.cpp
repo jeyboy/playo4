@@ -1,5 +1,6 @@
 #include "html_decoding.h"
 #include <defines.h>
+
 #include <qdebug.h>
 
 using namespace Html;
@@ -353,6 +354,53 @@ QByteArray & Decoding::decodeContent(const CharsetType & charset, QByteArray & v
 }
 
 QByteArray & Decoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
+    if (!base_url || url.contains(QByteArrayLiteral("://")))
+        return url;
+
+    if (url[0] == '/') {
+        if (url.length() == 1 || url[1] != '/') {
+            int i = url.indexOf('/', 9);
+
+            if (i == -1)
+                return (url = *base_url);
+            else
+                return (url = base_url -> mid(0, i));
+        }
+        else return (url = QByteArrayLiteral("http:") + url);
+    } else {
+        QByteArray base = *base_url;
+        const char * ch = url.constData();
+        int counter = 0;
+
+        while(*ch) {
+            switch(*ch) {
+                case '/': {
+                    if (*(ch - 1) == '.' && *(ch - 2) == '.') {
+                        const char * ich = base.constData();
+                        int ipos = 0;
+
+                        while(*ch && (*ch) != '/') { ipos++; ich--;}
+                        base.remove(base.length() - ipos, ipos);
+                    }
+                break;}
+
+                case '.': {break;}
+
+                default:
+                    if (counter > 0)
+                        url.remove(0, counter);
+
+                    goto exit;
+            }
+
+            ch++; counter++;
+        }
+
+        exit:
+            return url.prepend(base);
+    }
+
+
     ////            Relative URI	Absolute URI
     ////            about.html	http://WebReference.com/html/about.html
     ////            tutorial1/	http://WebReference.com/html/tutorial1/

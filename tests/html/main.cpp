@@ -57,6 +57,7 @@ private Q_SLOTS:
     void testFormTextArea();
 
     void testIframe();
+    void testIframeSrc();
     void testIframeLoading();
 //    void testTable(); //TEST_TABLE_PATH
 //    void testVideo(); //TEST_VIDEO_HTML5_PATH
@@ -392,6 +393,46 @@ void HtmlTest::testIframe() {
     Page page(TestData::dataHtmlParserIFrame());
     QVERIFY2(page.hasIframes(), "Failure");
 }
+
+void HtmlTest::testIframeSrc() {
+    Page page(TestData::dataHtmlParserIFrameSrc());
+
+    bool res = page.hasIframes();
+    if (res) {
+        QByteArray base_url = QByteArrayLiteral("http://WebReference.com/html/");
+
+        Set iframes = page.iframesList();
+        QStringList answers = QStringList() <<
+            QStringLiteral("http://WebReference.com/") <<
+            QStringLiteral("http://WebReference.com/html/about.html") <<
+            QStringLiteral("http://WebReference.com/html/tutorial1/") <<
+            QStringLiteral("http://WebReference.com/html/tutorial1/2.html") <<
+            QStringLiteral("http://WebReference.com/") <<
+            QStringLiteral("http://www.internet.com/") <<
+            QStringLiteral("http://WebReference.com/experts/") <<
+            QStringLiteral("http://WebReference.com/") <<
+            QStringLiteral("http://WebReference.com/experts/") <<
+            QStringLiteral("http://WebReference.com/") <<
+            QStringLiteral("http://WebReference.com/html/") <<
+            QStringLiteral("http://WebReference.com/html/about.html");
+
+
+        if ((res = iframes.length() == answers.length())) {
+            for(int pos = 0; pos < iframes.length(); pos++) {
+                Tag * frame = iframes[pos];
+                QByteArray src = frame -> src(&base_url);
+
+                qDebug() << pos << src << answers[pos];
+
+                if (!(res = src == answers[pos]))
+                    break;
+            }
+        }
+    }
+
+    QVERIFY2(res, "Failure");
+}
+
 void HtmlTest::testIframeLoading() {
     Page page(TestData::dataHtmlParserIFrame());
 

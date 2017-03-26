@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<iframe src="http://WebReference.com/"></iframe>
+<iframe src="about.html"></iframe>
+<iframe src="tutorial1/"></iframe>
+<iframe src="tutorial1/2.html"></iframe>
+<iframe src="/"></iframe>
+<iframe src="//www.internet.com/"></iframe>
+<iframe src="/experts/"></iframe>
+<iframe src="../"></iframe>
+<iframe src="../experts/"></iframe>
+<iframe src="../../../"></iframe>
+<iframe src="./"></iframe>
+<iframe src="./about.html"></iframe>
+
+</body>
+</html>

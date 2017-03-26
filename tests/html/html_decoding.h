@@ -5,9 +5,6 @@
 
 #include "unicode.h"
 
-// use for siquence replacement
-//QByteArray & QByteArray::replace(int pos, int len, const QByteArray & after)
-
 namespace Html {
     class Decoding {
     public:
@@ -33,26 +30,6 @@ namespace Html {
         static QByteArray & decodeMnemonics(QByteArray & val);
         static QByteArray & decodeContent(const CharsetType & charset, QByteArray & val);
         static QByteArray & decodeUrl(QByteArray & url, QByteArray * base_url = 0);
-
-        //QString Page::parseCode(char * ch) {
-        //    QString code;
-        //    bool is_unicode = false;
-        //    while(ch) {
-        //        switch(*ch) {
-        //            case code_unicode: { is_unicode = true; break;}
-        //            case code_end: return QChar(is_unicode ? code.toInt() : html_entities.value(code));
-        //            default:
-        //                if (*ch < 123 && (*ch > 96 || (*ch < 58 && *ch > 47)))
-        ////                    if ((*ch > 47 && *ch < 58) || (*ch > 96 && *ch < 123))
-        //                    code.append(*ch);
-        //                else { --ch; return code.prepend('&'); }
-        //        }
-
-        //        ch++;
-        //    }
-
-        //    return code.prepend('&');
-        //}
     };
 }
 

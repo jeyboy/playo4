@@ -160,6 +160,7 @@ namespace Html {
         inline QByteArray data(const QByteArray & name) const { return value(QByteArrayLiteral("data-") + name); }
 
         inline QByteArray src() const { return _attrs.value(attr_src); }
+        QByteArray src(QByteArray * base_url) const;
         inline QByteArray link() const { return _attrs.value(attr_href); }
         inline QByteArray action() const { return _attrs.value(attr_action); }
 

@@ -122,6 +122,11 @@ QByteArray Tag::selectValue() const {
 QByteArray Tag::radioValue() const { return hasAttr(attr_checked) ? _attrs[attr_default] : QByteArray(); }
 QByteArray Tag::textareaValue() const { return text(); }
 
+QByteArray Tag::src(QByteArray * base_url) const {
+    QByteArray val = src();
+    return Decoding::decodeUrl(val, base_url);
+}
+
 QByteArray Tag::value(const QByteArray & name) const {
     bool is_default_val = name == attr_default;
 

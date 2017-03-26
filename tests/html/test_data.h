@@ -159,6 +159,11 @@ class TestData {
         static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_post_form_text.txt")));
         return data_parser;
     }
+
+    static QByteArray dataHtmlParserIFrameSrc() {
+        static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_iframe_src.txt")));
+        return data_parser;
+    }
     static QByteArray dataHtmlParserIFrame() {
         static QByteArray data_parser = load(DATA_PATH(QStringLiteral("test_iframe.txt")));
         return data_parser;
