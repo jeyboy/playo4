@@ -339,6 +339,8 @@ QByteArray & Decoding::decodeMnemonics(QByteArray & val) {
         data++;
         pos++;
     }
+
+    return val;
 }
 
 QByteArray & Decoding::decodeContent(const CharsetType & charset, QByteArray & val) {
@@ -359,37 +361,38 @@ QByteArray & Decoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
 
     if (url[0] == '/') {
         if (url.length() == 1 || url[1] != '/') {
-            int i = url.indexOf('/', 9);
-
-            if (i == -1)
-                return (url = *base_url);
-            else
-                return (url = base_url -> mid(0, i));
+            int i = base_url -> indexOf('/', 9);
+            return (url = base_url -> mid(0, i) + url);
         }
         else return (url = QByteArrayLiteral("http:") + url);
     } else {
         QByteArray base = *base_url;
         const char * ch = url.constData();
         int counter = 0;
+        bool block_decreasing = false;
 
         while(*ch) {
             switch(*ch) {
                 case '/': {
                     if (*(ch - 1) == '.' && *(ch - 2) == '.') {
-                        const char * ich = base.constData();
-                        int ipos = 0;
+                        if (!block_decreasing) {
+                            int start_offset = base.endsWith('/') ? 1 : 0;
+                            int length = base.length();
+                            const char * ich = base.constData() + length - 1 - start_offset;
+                            int ipos = start_offset;
 
-                        while(*ch && (*ch) != '/') { ipos++; ich--;}
-                        base.remove(base.length() - ipos, ipos);
+                            while(ipos < length && (*ich) != '/') { ipos++; ich--;}
+                            if (*(ich - 1) != '/')
+                                base.remove(base.length() - ipos, ipos);
+                            else
+                                block_decreasing = true;
+                        }
                     }
                 break;}
 
                 case '.': {break;}
 
                 default:
-                    if (counter > 0)
-                        url.remove(0, counter);
-
                     goto exit;
             }
 
@@ -397,6 +400,8 @@ QByteArray & Decoding::decodeUrl(QByteArray & url, QByteArray * base_url) {
         }
 
         exit:
+            if (counter > 0)
+                url.remove(0, counter);
             return url.prepend(base);
     }
 
