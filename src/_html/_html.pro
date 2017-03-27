@@ -11,25 +11,29 @@ defined(STATIC_BUILD) {
 }
 
 INCLUDE_HEADERS = \
+    html_decoding.h \
     html_global.h \
-    html_page.h \
-    unicode_decoding.h \
     html_keys.h \
+    html_page.h \
     html_selector.h \
     html_set.h \
-    html_tag.h
+    html_tag.h \
+    unicode.h
+
 
 HEADERS += \
     $${INCLUDE_HEADERS}
 
 
 SOURCES += \
-    html_page.cpp \
-    unicode_decoding.cpp \
+    html_decoding.cpp \
     html_keys.cpp \
+    html_page.cpp \
     html_selector.cpp \
     html_set.cpp \
-    html_tag.cpp
+    html_tag.cpp \
+    unicode.cpp
+
 
 
 ######## setup block

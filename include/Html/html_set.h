@@ -10,18 +10,18 @@ namespace Html {
     class Selector;
 
     class HTMLSHARED_EXPORT Set : public QList<Tag *> {
-        Set & find(const Selector * selector, Set & set, const bool & findFirst = false) const;
+        Set & find(const Selector * selector, Set & set, const bool & find_first = false) const;
         friend class Tag;
     public:
-        QString link();
-        QString text();
-        QString value(const QString & name = attr_default);
+        QByteArray link();
+        QByteArray text();
+        QByteArray value(const QByteArray & name = attr_default);
 
-        inline Set find(const Selector * selector, bool findFirst = false) const {
+        inline Set find(const Selector * selector, const bool & find_first = false) const {
             Set set;
-            return find(selector, set, findFirst);
+            return find(selector, set, find_first);
         }
-        Set find(const char * predicate, const bool & findFirst = false) const;
+        Set find(const char * predicate, const bool & find_first) const;
         inline Tag * findFirst(const char * predicate) const {
             Set set = find(predicate, true);
             return set.isEmpty() ? 0 : set.first();
@@ -34,6 +34,7 @@ namespace Html {
         //TODO: rewrite on using of usuall find
 //        QHash<QString, QString> & findLinks(const Selector * selector, QHash<QString, QString> & links) const;
         inline Set & operator <<(const Set & l) { *this += l; return *this; }
+        inline Set & operator <<(Tag * t) { append(t); return *this; }
     };
 }
 

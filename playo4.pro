@@ -4,10 +4,10 @@ CONFIG += ordered
 
 SUBDIRS += \
     src/__curl \
-    src/__tag_lib \
-    src/_js \
-    src/_json \
-    src/_html \
+    src/__tag_lib \ # done
+    src/_js \ # done
+    src/_json \ # done
+    src/_html \ # done
     src/_web_manager \
     src/_api \
     src/_player \
