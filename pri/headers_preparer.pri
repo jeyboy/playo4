@@ -36,4 +36,14 @@ for(header, ADDITIONAL_HEADERS) {
     post_link += $(COPY_FILE) "$$shell_path($${INNER_INC_PATH}/$$header)" "$$hpath" $$escape_expand(\\n\\t)
 }
 
+
+for(lib, IMPORT_LIBRARIES) {
+    post_link += $(COPY_FILE) "$$shell_path($${IMPORT_LIBRARIES_PATH}/$$lib)" "$$shell_path($${BIN_PATH}/$$lib)" $$escape_expand(\\n\\t)
+}
+
+for(lib, IMPORT_LIBRARIES_SET) {
+    post_link += $(COPY_DIR) "$$shell_path($${IMPORT_LIBRARIES_PATH}/$$lib)" "$$shell_path($${BIN_PATH})" $$escape_expand(\\n\\t)
+}
+
+
 QMAKE_POST_LINK = $$post_link

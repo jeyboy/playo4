@@ -15,6 +15,11 @@ INCLUDE_HEADERS = \
     webmanager_global.h \ # remove for static linking
     webmanager.h
 
+IMPORT_LIBRARIES_SET = \
+    QT \
+    BASS
+
+
 HEADERS += \
     $${INCLUDE_HEADERS}
 

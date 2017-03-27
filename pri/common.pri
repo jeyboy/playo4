@@ -17,10 +17,12 @@ CONFIG(debug, debug|release) {
 LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/
 INC_PATH = $${PROJECT_ROOT_PATH}/include/
 IMPORT_PATH = $${PROJECT_ROOT_PATH}/import/
+IMPORT_LIBRARIES_PATH = $${PROJECT_ROOT_PATH}/import/libraries/$${OS_SUFFIX}/
 BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}/
 INNER_INC_PATH = $$PROJECT_ROOT_PATH/src/include/
 
 LIBS += -L$${LIBS_PATH}/
+LIBS += -L$${IMPORT_LIBRARIES_PATH}/
 
 linux-g++: QMAKE_CXXFLAGS += -std=c++11
 
