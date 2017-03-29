@@ -26,33 +26,33 @@
 
 namespace Html {
 //    extern const char tkn_split;
-    extern const QByteArray tkn_any_elem;
-    extern const QByteArray tkn_text_block;
-    extern const QByteArray tkn_comment_block;
+    Q_DECL_EXPORT extern const QByteArray tkn_any_elem;
+    Q_DECL_EXPORT extern const QByteArray tkn_text_block;
+    Q_DECL_EXPORT extern const QByteArray tkn_comment_block;
 
-    extern const QByteArray tkn_charset;
-    extern const QByteArray tkn_encoding;
-    extern const QByteArray tkn_charset_attr;
-    extern const QByteArray tkn_http_equiv;
-    extern const QByteArray tkn_content_type;
-    extern const QByteArray tkn_content;
+    Q_DECL_EXPORT extern const QByteArray tkn_charset;
+    Q_DECL_EXPORT extern const QByteArray tkn_encoding;
+    Q_DECL_EXPORT extern const QByteArray tkn_charset_attr;
+    Q_DECL_EXPORT extern const QByteArray tkn_http_equiv;
+    Q_DECL_EXPORT extern const QByteArray tkn_content_type;
+    Q_DECL_EXPORT extern const QByteArray tkn_content;
 
-    extern const QByteArray tkn_scdata;
-    extern const QByteArray tkn_ecdata;
+    Q_DECL_EXPORT extern const QByteArray tkn_scdata;
+    Q_DECL_EXPORT extern const QByteArray tkn_ecdata;
 
-    extern const QByteArray attr_name;
-    extern const QByteArray attr_action;
-    extern const QByteArray attr_href;
-    extern const QByteArray attr_src;
-    extern const QByteArray attr_id;
-    extern const QByteArray attr_class;
-    extern const QByteArray attr_type;
-    extern const QByteArray attr_default;
-    extern const QByteArray attr_checked;
-    extern const QByteArray attr_disabled;
+    Q_DECL_EXPORT extern const QByteArray attr_name;
+    Q_DECL_EXPORT extern const QByteArray attr_action;
+    Q_DECL_EXPORT extern const QByteArray attr_href;
+    Q_DECL_EXPORT extern const QByteArray attr_src;
+    Q_DECL_EXPORT extern const QByteArray attr_id;
+    Q_DECL_EXPORT extern const QByteArray attr_class;
+    Q_DECL_EXPORT extern const QByteArray attr_type;
+    Q_DECL_EXPORT extern const QByteArray attr_default;
+    Q_DECL_EXPORT extern const QByteArray attr_checked;
+    Q_DECL_EXPORT extern const QByteArray attr_disabled;
 
-    extern const QByteArray type_radio;
-    extern const QByteArray type_checkbox;
+    Q_DECL_EXPORT extern const QByteArray type_radio;
+    Q_DECL_EXPORT extern const QByteArray type_checkbox;
 }
 
 #endif // HTML_PARSER_KEYS

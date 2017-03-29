@@ -1,6 +1,8 @@
 #ifndef UNICODE_UTF8_H
 #define UNICODE_UTF8_H
 
+#include "html_global.h"
+
 #include <qbytearray.h>
 #include <qstring.h>
 #include <qdebug.h>
@@ -14,7 +16,7 @@
 #define         MASK6BYTES              0xFC
 
 namespace Unicode {
-    class Utf8 {
+    class HTMLSHARED_EXPORT Utf8 {
         static uint CP1251Table[256];
 
     public:

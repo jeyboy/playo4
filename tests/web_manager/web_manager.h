@@ -20,7 +20,7 @@
 #include <qapplication.h>
 #include <qpixmap.h>
 
-#include <html_page.h>
+#include "html_page.h"
 #include "func.h"
 #include "web_headers.h"
 
