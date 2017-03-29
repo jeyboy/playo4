@@ -28,6 +28,8 @@ SOURCES += \
     webmanager.cpp
 
 ######## setup block
+registerInnerInclusion('singleton')
+registerInnerInclusion('func')
 include($${PROJECT_ROOT_PATH}/pri/headers_preparer.pri)
 ####### end setup block
 

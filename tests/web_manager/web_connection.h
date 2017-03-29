@@ -4,39 +4,37 @@
 #include <QtConcurrent/QtConcurrentRun>
 #include <qfuturewatcher.h>
 
-#include "modules/core/interfaces/singleton.h"
+#include "singleton.h"
 
-namespace Core {
-    namespace Web {
-        class WebConnection : public QObject, public Singleton<WebConnection> {
-            Q_OBJECT
+namespace Web {
+    class WebConnection : public QObject, public Singleton<WebConnection> {
+        Q_OBJECT
 
-            QFutureWatcher<void> * connection_checker;
+        QFutureWatcher<void> * connection_checker;
 
-            void checkConnection(QFutureWatcher<void> * checker);
+        void checkConnection(QFutureWatcher<void> * checker);
 
-            friend class Singleton<WebConnection>;
-            WebConnection() : connection_checker(0) {}
-            ~WebConnection() {
-                if (connection_checker)
-                    connection_checker -> cancel();
+        friend class Singleton<WebConnection>;
+        WebConnection() : connection_checker(0) {}
+        ~WebConnection() {
+            if (connection_checker)
+                connection_checker -> cancel();
+        }
+    public:
+        bool status() { return connection_checker == 0; }
+
+        void check() {
+            if (!connection_checker) {
+                qDebug() << "~~~ CONNESTION LOST";
+                emit connectionStatus(false);
+                connection_checker = new QFutureWatcher<void>();
+                connection_checker -> setFuture(QtConcurrent::run(this, &WebConnection::checkConnection, connection_checker));
             }
-        public:
-            bool status() { return connection_checker == 0; }
+        }
 
-            void check() {
-                if (!connection_checker) {
-                    qDebug() << "~~~ CONNESTION LOST";
-                    emit connectionStatus(false);
-                    connection_checker = new QFutureWatcher<void>();
-                    connection_checker -> setFuture(QtConcurrent::run(this, &WebConnection::checkConnection, connection_checker));
-                }
-            }
-
-        signals:
-            void connectionStatus(bool);
-        };
-    }
+    signals:
+        void connectionStatus(bool);
+    };
 }
 
 #endif // WEB_CONNECTION

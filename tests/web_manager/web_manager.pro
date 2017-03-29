@@ -1,7 +1,7 @@
 include(../../pri/tests.pri)
 
-QT       += testlib network
-QT       -= gui
+QT       += testlib network gui widgets
+#QT       -= gui
 
 TARGET = main
 CONFIG   += console
@@ -11,16 +11,21 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 TEMPLATE = app
 
-INCLUDEPATH += $${INC_PATH}/CurlLib
-DEPENDPATH += $${INC_PATH}/CurlLib
-LIBS += -lCurlLib$${LIB_VERSION}
+INCLUDEPATH += $${INC_PATH}/Html
+DEPENDPATH += $${INC_PATH}/Html
+LIBS += -lHtml$${LIB_VERSION}
 
-SOURCES += main.cpp
-#    web_connection.cpp \
-#    web_manager.cpp
+#INCLUDEPATH += $${INC_PATH}/CurlLib
+#DEPENDPATH += $${INC_PATH}/CurlLib
+#LIBS += -lCurlLib$${LIB_VERSION}
 
-#HEADERS += \
-#    web_connection.h \
-#    web_headers.h \
-#    web_manager.h \
-#    func.h
+SOURCES += main.cpp \
+    web_connection.cpp \
+    web_manager.cpp
+
+HEADERS += \
+    singleton.h \
+    web_connection.h \
+    web_headers.h \
+    web_manager.h \
+    func.h

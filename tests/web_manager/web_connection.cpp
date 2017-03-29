@@ -2,7 +2,7 @@
 
 #include "web_manager.h"
 
-using namespace Core::Web;
+using namespace Web;
 
 void WebConnection::checkConnection(QFutureWatcher<void> * checker) {
     Manager * manager = Manager::prepare();
