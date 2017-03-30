@@ -6,7 +6,7 @@
 #include "unicode.h"
 
 namespace Html {
-    class Decoding {
+    class HTMLSHARED_EXPORT Decoding {
     public:
         enum CharsetType {
             charset_utf8 = 0,
