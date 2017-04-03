@@ -4,149 +4,23 @@
 //#include <QtNetwork>
 
 #include "qnetworkaccessmanager.h"
-#include "qnetworkcookie.h"
-#include "qnetworkcookiejar.h"
 //#include "qnetworkproxy.h"
-#include "qnetworkreply.h"
-#include "qnetworkrequest.h"
+
+#include "web_cookies.h"
+#include "web_request.h"
+#include "web_response.h"
 
 #include <qurl.h>
 #include <qurlquery.h>
 
-#include <qjsonobject.h>
-#include <qjsonarray.h>
-#include <qjsondocument.h>
-
 #include <qapplication.h>
-#include <qpixmap.h>
 
-#include "html_page.h"
 #include "func.h"
-#include "web_headers.h"
-
-#define REQUEST_DELAY 260 // ms
-#define COOKIES_KEY QStringLiteral("cookies")
-
-#define JSON_ERR_FIELD QStringLiteral("json_err")
-#define DEF_JSON_FIELD QStringLiteral("response")
-#define USER_AGENT_HEADER_NAME QStringLiteral("User-Agent")
-#define FORM_URLENCODE QStringLiteral("application/x-www-form-urlencoded")
 
 #define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
 
-#ifdef Q_OS_WIN
-    #define DEFAULT_AGENT QStringLiteral("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0")
-#elif Q_OS_MAC // there should be agent for mac
-    #define DEFAULT_AGENT QStringLiteral("Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/50.0")
-#else
-    #define DEFAULT_AGENT QStringLiteral("Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/50.0")
-#endif
-
 namespace Web {
     class ManagerController;
-
-    class Cookies : public QNetworkCookieJar {
-    public:
-        inline explicit Cookies(QObject * parent = 0) : QNetworkCookieJar(parent) {}
-        inline QList<QNetworkCookie> allCookies() const { return QNetworkCookieJar::allCookies(); }
-    };
-
-    class Response : public QNetworkReply {
-    public:
-        static Response * fromReply(QNetworkReply * reply);
-
-        void setUrl(const QUrl & url) { QNetworkReply::setUrl(url); }
-
-        inline void printHeaders() {
-            QList<RawHeaderPair> headers = rawHeaderPairs();
-
-            qDebug() << "------------ HEADERS LIST ----------------";
-
-            for(QList<RawHeaderPair>::ConstIterator it = headers.cbegin(); it != headers.cend(); it++)
-                qDebug() << (*it).first << (*it).second;
-
-            qDebug() << "------------ END OF LIST ----------------";
-        }
-
-        inline QByteArray encoding() {
-            QString content_type = header(QNetworkRequest::ContentTypeHeader).toString();
-            QStringList parts = content_type.split(QStringLiteral("charset="));
-
-            if (parts.length() == 1)
-                return QStringLiteral("utf-8").toUtf8();
-            else
-                return parts.last().toUtf8();
-        }
-        inline bool hasErrors() { return error() != NoError; }
-        inline int status() { return attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt(); }
-        inline QUrl redirectUrl() {
-            QVariant possibleRedirectUrl = attribute(QNetworkRequest::RedirectionTargetAttribute);
-            if (possibleRedirectUrl.isValid()) {
-                QUrl new_url = possibleRedirectUrl.toUrl();
-
-                if (new_url.isRelative())
-                    new_url = url().resolved(new_url);
-
-                return new_url;
-
-            } else return QUrl();
-        }
-        inline void appendHeaders(QUrl & url) {
-            QString urlStr = QStringLiteral("%1\r\nReferer: %2").arg(url.toString(), QString(request().rawHeader("Referer")));
-            url = QUrl(urlStr);
-        }
-        inline QString paramVal(const QString & param) { return QUrlQuery(url()).queryItemValue(param); }
-
-        Response * followByRedirect(QHash<QUrl, bool> prev_urls = QHash<QUrl, bool>());
-        QUrlQuery toQuery(bool destroy = true);
-        QByteArray toBytes(bool destroy = true);
-        QString toText(bool destroy = true);
-        QJsonObject toJson(const QString & wrap = QString(), bool destroy = true);
-        Html::Page toHtml(bool destroy = true);
-        QPixmap toPixmap(bool destroy = true);
-        QUrl toUrl(bool destroy = true);
-        QUrl toRedirectUrl(bool destroy = true);
-        QString toHeader(const QString & header_field, bool destroy = true) {
-            QByteArray field_name = header_field.toUtf8();
-            if (destroy) deleteLater();
-
-            if (hasRawHeader(field_name))
-                return QString(rawHeader(field_name));
-
-            return QString();
-        }
-        Response * output() {
-            qDebug() << "-------------------------";
-            qDebug() << "URL:" << toUrl(false);
-            qDebug() << "REDIRECT URL:" << toRedirectUrl(false);
-            qDebug() << "HEADERS:" << rawHeaderPairs();
-            qDebug() << "-------------------------";
-
-            return this;
-        }
-    };
-
-    class Manager;
-
-    class Request : public QNetworkRequest {
-    public:
-        inline Request(Manager * manager, const QString & url_str) : QNetworkRequest(QUrl(url_str)), manager(manager) {}
-        inline Request(Manager * manager, const QUrl & url = QUrl()) : QNetworkRequest(url), manager(manager) {}
-
-        Request withHeaders(const Headers & headers);
-        Response * viaGet(bool async = false);
-        Response * viaPost(const QByteArray & data = QByteArray(), const QString & content_type = FORM_URLENCODE, bool async = false);
-        Response * viaPut(const QByteArray & data = QByteArray(), const QString & content_type = FORM_URLENCODE, bool async = false);
-        Response * viaForm(const QByteArray & data = QByteArray(), bool async = false);
-
-        static QByteArray extractParams(QUrl & url) {
-            QByteArray params = url.query().toUtf8();
-            url.setQuery(QString());
-            return params;
-        }
-    private:
-        Manager * manager;
-    };
 
     class Manager : public QNetworkAccessManager {
         Q_OBJECT

@@ -21,11 +21,18 @@ LIBS += -lHtml$${LIB_VERSION}
 
 SOURCES += main.cpp \
     web_connection.cpp \
-    web_manager.cpp
+    web_manager.cpp \
+    web_cookies.cpp \
+    web_request.cpp \
+    web_response.cpp
 
 HEADERS += \
     singleton.h \
     web_connection.h \
     web_headers.h \
     web_manager.h \
-    func.h
+    func.h \
+    webmanager_global.h \
+    web_cookies.h \
+    web_request.h \
+    web_response.h
