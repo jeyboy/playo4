@@ -6,6 +6,8 @@
 #include "qnetworkaccessmanager.h"
 //#include "qnetworkproxy.h"
 
+#include "web_manager_global.h"
+
 #include "web_cookies.h"
 #include "web_request.h"
 #include "web_response.h"
@@ -20,7 +22,7 @@
 #define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
 
 namespace Web {
-    class ManagerController;
+    class WEBMANAGERSHARED_EXPORT ManagerController;
 
     class Manager : public QNetworkAccessManager {
         Q_OBJECT

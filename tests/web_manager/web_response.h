@@ -1,6 +1,8 @@
 #ifndef WEB_RESPONSE_H
 #define WEB_RESPONSE_H
 
+#include "web_manager_global.h"
+
 #include <qnetworkreply.h>
 
 #include "html_page.h"
@@ -11,7 +13,7 @@
 #include <qpixmap.h>
 
 namespace Web {
-    class Response : public QNetworkReply {
+    class WEBMANAGERSHARED_EXPORT Response : public QNetworkReply {
     public:
         static Response * fromReply(QNetworkReply * reply);
 

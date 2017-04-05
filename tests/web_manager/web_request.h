@@ -1,6 +1,8 @@
 #ifndef WEB_REQUEST_H
 #define WEB_REQUEST_H
 
+#include "web_manager_global.h"
+
 #include "qnetworkrequest.h"
 
 namespace Web {
@@ -8,7 +10,7 @@ namespace Web {
     class Manager;
     class Response;
 
-    class Request : public QNetworkRequest {
+    class WEBMANAGERSHARED_EXPORT Request : public QNetworkRequest {
     public:
         inline Request(Manager * manager, const QString & url_str) : QNetworkRequest(QUrl(url_str)), manager(manager) {}
         inline Request(Manager * manager, const QUrl & url = QUrl()) : QNetworkRequest(url), manager(manager) {}

@@ -32,7 +32,8 @@ HEADERS += \
     web_headers.h \
     web_manager.h \
     func.h \
-    webmanager_global.h \
     web_cookies.h \
     web_request.h \
-    web_response.h
+    web_response.h \
+    web_manager_params.h \
+    web_manager_global.h

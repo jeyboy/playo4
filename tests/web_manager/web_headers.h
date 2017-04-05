@@ -1,11 +1,13 @@
 #ifndef WEB_HEADERS
 #define WEB_HEADERS
 
+#include "web_manager_global.h"
+
 #include <qhash.h>
 #include <qregularexpression.h>
 
 namespace Web {
-    class Headers : public QHash<QString, QString> {
+    class WEBMANAGERSHARED_EXPORT Headers : public QHash<QString, QString> {
     public:
         inline Headers() : QHash<QString, QString>() {}
         #ifdef Q_COMPILER_INITIALIZER_LISTS

@@ -1,13 +1,15 @@
 #ifndef WEB_CONNECTION
 #define WEB_CONNECTION
 
+#include "web_manager_global.h"
+
 #include <QtConcurrent/QtConcurrentRun>
 #include <qfuturewatcher.h>
 
 #include "singleton.h"
 
 namespace Web {
-    class WebConnection : public QObject, public Singleton<WebConnection> {
+    class WEBMANAGERSHARED_EXPORT WebConnection : public QObject, public Singleton<WebConnection> {
         Q_OBJECT
 
         QFutureWatcher<void> * connection_checker;
