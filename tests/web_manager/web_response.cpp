@@ -6,11 +6,45 @@
 
 using namespace Web;
 
+// TODO: need correct type conversation
 Response * Response::fromReply(QNetworkReply * reply) {
-    Response * resp = (Response *)reply;
-    ((Manager *)reply -> manager()) -> setStatusCode(resp -> status());
-    return resp;
+    return (Response *)reply;
 }
+
+QByteArray Response::encoding() {
+    QByteArray content_type = header(QNetworkRequest::ContentTypeHeader).toByteArray();
+    QList<QByteArray> parts = content_type.split(QByteArrayLiteral("charset="));
+
+    if (parts.length() == 1)
+        return QByteArrayLiteral("utf-8");
+    else
+        return parts.last();
+}
+
+Response * Response::print() {
+    qDebug() << "-------------------------";
+    qDebug() << "URL:" << toUrl(false);
+    qDebug() << "REDIRECT URL:" << toRedirectUrl(false);
+    qDebug() << "HEADERS:" << rawHeaderPairs();
+    qDebug() << "-------------------------";
+
+    return this;
+}
+
+void Response::printHeaders() {
+    QList<RawHeaderPair> headers = rawHeaderPairs();
+
+    qDebug() << "------------ HEADERS LIST ----------------";
+
+    for(QList<RawHeaderPair>::ConstIterator it = headers.cbegin(); it != headers.cend(); it++)
+        qDebug() << (*it).first << (*it).second;
+
+    qDebug() << "------------ END OF LIST ----------------";
+}
+
+
+
+
 
 Response * Response::followByRedirect(QHash<QUrl, bool> prev_urls) {
     QUrl new_url = redirectUrl();

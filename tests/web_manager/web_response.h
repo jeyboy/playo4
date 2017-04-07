@@ -17,30 +17,24 @@ namespace Web {
     public:
         static Response * fromReply(QNetworkReply * reply);
 
-        void setUrl(const QUrl & url) { QNetworkReply::setUrl(url); }
-
-        inline void printHeaders() {
-            QList<RawHeaderPair> headers = rawHeaderPairs();
-
-            qDebug() << "------------ HEADERS LIST ----------------";
-
-            for(QList<RawHeaderPair>::ConstIterator it = headers.cbegin(); it != headers.cend(); it++)
-                qDebug() << (*it).first << (*it).second;
-
-            qDebug() << "------------ END OF LIST ----------------";
-        }
-
-        inline QByteArray encoding() {
-            QString content_type = header(QNetworkRequest::ContentTypeHeader).toString();
-            QStringList parts = content_type.split(QStringLiteral("charset="));
-
-            if (parts.length() == 1)
-                return QStringLiteral("utf-8").toUtf8();
-            else
-                return parts.last().toUtf8();
-        }
+        inline int statusCode() const { return attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt(); }
         inline bool hasErrors() { return error() != NoError; }
-        inline int status() { return attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt(); }
+        inline void setUrl(const QUrl & url) { QNetworkReply::setUrl(url); }
+
+        QByteArray encoding();
+
+        Response * print();
+        void printHeaders();
+
+
+
+        inline void appendHeaders(QUrl & url) {
+            QString urlStr = QStringLiteral("%1\r\nReferer: %2").arg(url.toString(), QString(request().rawHeader("Referer")));
+            url = QUrl(urlStr);
+        }
+//        inline QString paramVal(const QString & param) { return QUrlQuery(url()).queryItemValue(param); }
+
+
         inline QUrl redirectUrl() {
             QVariant possibleRedirectUrl = attribute(QNetworkRequest::RedirectionTargetAttribute);
             if (possibleRedirectUrl.isValid()) {
@@ -53,11 +47,6 @@ namespace Web {
 
             } else return QUrl();
         }
-        inline void appendHeaders(QUrl & url) {
-            QString urlStr = QStringLiteral("%1\r\nReferer: %2").arg(url.toString(), QString(request().rawHeader("Referer")));
-            url = QUrl(urlStr);
-        }
-        inline QString paramVal(const QString & param) { return QUrlQuery(url()).queryItemValue(param); }
 
         Response * followByRedirect(QHash<QUrl, bool> prev_urls = QHash<QUrl, bool>());
         QUrlQuery toQuery(bool destroy = true);
@@ -76,15 +65,6 @@ namespace Web {
                 return QString(rawHeader(field_name));
 
             return QString();
-        }
-        Response * output() {
-            qDebug() << "-------------------------";
-            qDebug() << "URL:" << toUrl(false);
-            qDebug() << "REDIRECT URL:" << toRedirectUrl(false);
-            qDebug() << "HEADERS:" << rawHeaderPairs();
-            qDebug() << "-------------------------";
-
-            return this;
         }
     };
 }

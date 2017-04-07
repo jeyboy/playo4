@@ -22,9 +22,9 @@
 #define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
 
 namespace Web {
-    class WEBMANAGERSHARED_EXPORT ManagerController;
+    class ManagerController;
 
-    class Manager : public QNetworkAccessManager {
+    class WEBMANAGERSHARED_EXPORT Manager : public QNetworkAccessManager {
         Q_OBJECT
 
         QSsl::SslProtocol protocol;

@@ -36,4 +36,5 @@ HEADERS += \
     web_request.h \
     web_response.h \
     web_manager_params.h \
-    web_manager_global.h
+    web_manager_global.h \
+    web_utils.h
