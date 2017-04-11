@@ -7,18 +7,8 @@
 #include <qregularexpression.h>
 
 namespace Web {
-    class WEBMANAGERSHARED_EXPORT Headers : public QHash<QString, QString> {
+    class WEBMANAGERSHARED_EXPORT Headers : public QHash<QByteArray, QByteArray> {
     public:
-        inline Headers() : QHash<QString, QString>() {}
-        #ifdef Q_COMPILER_INITIALIZER_LISTS
-            inline Headers(std::initializer_list<std::pair<QString, QString> > list) : QHash<QString, QString>(list) {}
-        #endif
-
-        inline Headers(QHash<QString, QString> & hsh) {
-            for(QHash<QString, QString>::ConstIterator it = hsh.constBegin(); it != hsh.constEnd(); it++)
-                insert(it.key(), it.value());
-        }
-
         static inline Headers extract(const QString & url) {
             QStringList heads = url.split(QRegularExpression("%0D%0A|\\r\\n"), QString::SkipEmptyParts);
             Headers res;
@@ -27,7 +17,7 @@ namespace Web {
 
                 while(!heads.isEmpty()) {
                     QStringList parts =  heads.takeLast().split(QStringLiteral(": "), QString::SkipEmptyParts);
-                    res.insert(parts.first(), parts.last());
+                    res.insert(parts.first().toUtf8(), parts.last().toUtf8());
                 }
             }
 
@@ -40,7 +30,19 @@ namespace Web {
             return headers;
         }
 
-        Headers & unite(const Headers & other) { return (Headers &) QHash<QString, QString>::unite((QHash<QString, QString>)other); }
+        inline Headers() : QHash<QByteArray, QByteArray>() {}
+        #ifdef Q_COMPILER_INITIALIZER_LISTS
+            inline Headers(std::initializer_list<std::pair<QByteArray, QByteArray> > list) : QHash<QByteArray, QByteArray>(list) {}
+        #endif
+
+        inline Headers(QHash<QByteArray, QByteArray> & hsh) {
+            for(QHash<QByteArray, QByteArray>::ConstIterator it = hsh.constBegin(); it != hsh.constEnd(); it++)
+                insert(it.key(), it.value());
+        }
+
+        Headers & unite(const Headers & other) {
+            return (Headers &) QHash<QByteArray, QByteArray>::unite((QHash<QByteArray, QByteArray>)other);
+        }
     };
 }
 

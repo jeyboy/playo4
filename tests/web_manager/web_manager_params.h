@@ -5,8 +5,9 @@
 
 namespace Web {
     class WEBMANAGERSHARED_EXPORT ManagerParams {
+        bool extract_params_to_payload;
     public:
-
+//        extract_params_to_payload(true)
     };
 }
 

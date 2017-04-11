@@ -15,8 +15,6 @@
 #include <qurl.h>
 #include <qurlquery.h>
 
-#include <qapplication.h>
-
 #include "func.h"
 
 #define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
@@ -29,45 +27,19 @@ namespace Web {
 
         QSsl::SslProtocol protocol;
         QSslSocket::PeerVerifyMode mode;
-        int last_code;
-        bool extract_params_to_payload;
 
-        static Cookies * cookies;
+        static QThread * main_thread;
+
         static QHash<QObject *, Manager *> managers;
         friend class ManagerController;
     public:
+//        QApplication::instance() -> thread()
+        static setMainThreadSync(QThread * main) { main_thread = main; }
+
         static Manager * prepare();
 
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
 
-        bool isExtractParamsToPayload() { return extract_params_to_payload; }
-        void setExtractParamsToPayload(bool extract = true) { extract_params_to_payload = extract; }
-
-        void setStatusCode(int code) { last_code = code; }
-        int statusCode() { return last_code; }
-
-        static inline void addCookie(const QString & cookie_str) {
-            QList<QNetworkCookie> items = QNetworkCookie::parseCookies(cookie_str.toUtf8());
-            for(QNetworkCookie & item: items)
-                cookies -> insertCookie(item);
-        }
-
-        static void removeCookies(const QUrl & url = QUrl()) {
-            const QList<QNetworkCookie> items = url.isEmpty() ? cookies -> allCookies() : cookies -> cookiesForUrl(url);
-            for(QList<QNetworkCookie>::ConstIterator cookie = items.cbegin(); cookie != items.cend(); cookie++)
-                cookies -> deleteCookie(*cookie);
-        }
-
-        static inline void printCookies() {
-//                qDebug() << "COOKIE" << cookies -> allCookies();
-
-            qDebug() << " ----------------------- COOKIES LIST ----------------------------";
-
-            for(QNetworkCookie cookie : cookies -> allCookies())
-                qDebug() << cookie.toRawForm();
-
-            qDebug() << " -----------------------------------------------------------------";
-        }
         static inline QString headersStr(const Request & request) {
             QList<QByteArray> heads = request.rawHeaderList();
             QString res;
@@ -79,46 +51,22 @@ namespace Web {
 
             return res;
         }
-        static inline QString cookiesAsHeaderStr(QUrl url = QUrl(), QHash<QString, bool> acceptable = QHash<QString, bool>()) {
-            QString res;
-            bool ignore_filter = acceptable.isEmpty();
-
-            const QList<QNetworkCookie> items = url.isEmpty() ? cookies -> allCookies() : cookies -> cookiesForUrl(url);
-            for(QList<QNetworkCookie>::ConstIterator cookie = items.cbegin(); cookie != items.cend(); cookie++) {
-                QString name = QString((*cookie).name());
-                if (ignore_filter || acceptable.contains(name))
-                    res = res % name % '=' % (*cookie).value() % QStringLiteral("; ");
-            }
-
-            return QStringLiteral("Cookie: ") % res;
-        }
-        static inline QString cookie(const QString & name, QUrl url = QUrl()) {
-            const QList<QNetworkCookie> items = url.isEmpty() ? cookies -> allCookies() : cookies -> cookiesForUrl(url);
-            for(QList<QNetworkCookie>::ConstIterator cookie = items.cbegin(); cookie != items.cend(); cookie++)
-                if ((*cookie).name() == name)
-                    return QString((*cookie).value());
-
-            return QString();
-        }
-        static void loadCookies(const QJsonObject & store);
-        static void saveCookies(QJsonObject & store, const QUrl & url = QUrl());
-
         static inline QString paramVal(const QUrl & url, const QString & param) { return QUrlQuery(url).queryItemValue(param); }
 
         Response * get(const Request & request, bool async = false) {
-            qInfo() << "*** GET" << (async ? "ASYNC" : "") << request.url().toString() << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());
+//            qInfo() << "*** GET" << (async ? "ASYNC" : "") << request.url().toString() << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());
             QNetworkReply * m_http = QNetworkAccessManager::get(request);
-            return async ? (Response *)m_http : synchronizeRequest(m_http);
+            return async ? Response::fromReply(m_http) : synchronizeRequest(m_http);
         }
         Response * post(const Request & request, const QByteArray & data, bool async = false) {
-            qInfo() << "*** POST" << (async ? "ASYNC" : "")<< request.url().toString() << "*** P:" << data  << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());;
+//            qInfo() << "*** POST" << (async ? "ASYNC" : "")<< request.url().toString() << "*** P:" << data  << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());;
             QNetworkReply * m_http = QNetworkAccessManager::post(request, data);
-            return async ? (Response *)m_http : synchronizeRequest(m_http);
+            return async ? Response::fromReply(m_http) : synchronizeRequest(m_http);
         }
         Response * put(const Request & request, const QByteArray & data, bool async = false) {
-            qInfo() << "*** PUT" << (async ? "ASYNC" : "")<< request.url().toString() << "*** P:" << data  << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());;
+//            qInfo() << "*** PUT" << (async ? "ASYNC" : "")<< request.url().toString() << "*** P:" << data  << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());;
             QNetworkReply * m_http = QNetworkAccessManager::put(request, data);
-            return async ? (Response *)m_http : synchronizeRequest(m_http);
+            return async ? Response::fromReply(m_http) : synchronizeRequest(m_http);
         }
 
         inline Request requestTo(const QString & url) {

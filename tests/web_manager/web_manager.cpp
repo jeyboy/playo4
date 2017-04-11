@@ -7,27 +7,9 @@
 using namespace Web;
 
 //////////////////////////     WEB_MANAGER     /////////////////////////////
-
+QThread * Manager::main_thread = 0;
 QHash<QObject *, Manager *> Manager::managers = QHash<QObject *, Manager *>();
-Cookies * Manager::cookies = new Cookies(QApplication::instance());
-
-void Manager::loadCookies(const QJsonObject & store) {
-    QJsonArray arr = store.value(COOKIES_KEY).toArray();
-    for(QJsonValue const & cookie: arr) {
-        QList<QNetworkCookie> items = QNetworkCookie::parseCookies(cookie.toString().toUtf8());
-        for(QNetworkCookie & item: items)
-            cookies -> insertCookie(item);
-    }
-}
-
-void Manager::saveCookies(QJsonObject & store, const QUrl & url) {
-    QList<QNetworkCookie> cookiesList = url.isEmpty() ? cookies -> allCookies() : cookies -> cookiesForUrl(url);
-    QJsonArray cookiesArray;
-    for(auto const & cookie: cookiesList)
-        cookiesArray << QJsonValue::fromVariant(cookie.toRawForm());
-
-    store.insert(COOKIES_KEY, cookiesArray);
-}
+//Cookies * Manager::cookies = new Cookies(QApplication::instance());
 
 Manager * Manager::prepare() {
     QThread * thread = QThread::currentThread();
@@ -35,17 +17,16 @@ Manager * Manager::prepare() {
         qDebug() << "!!!!!!!!!!!!!!!!!!!! REGISTRATE MANAGER";
         managers.insert(thread, new Manager());
 
-        if (thread != QApplication::instance() -> thread())
+        if (thread != main_thread)
             connect(thread, SIGNAL(finished()), new ManagerController(), SLOT(disconnectThread()));
     }
     return managers[thread];
 }
 
-Manager::Manager(QObject * parent, QSsl::SslProtocol protocol, QSslSocket::PeerVerifyMode mode)
-    : QNetworkAccessManager(parent), extract_params_to_payload(true) {
+Manager::Manager(QObject * parent, QSsl::SslProtocol protocol, QSslSocket::PeerVerifyMode mode) : QNetworkAccessManager(parent) {
     this -> protocol = protocol;
     this -> mode = mode;
-    this -> setCookieJar(Manager::cookies);
+//    this -> setCookieJar(Manager::cookies);
 }
 
 Response * Manager::synchronizeRequest(QNetworkReply * m_http) {
