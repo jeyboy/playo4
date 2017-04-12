@@ -16,7 +16,7 @@ namespace Web {
                 const_cast<QString &>(url) = heads.takeFirst();
 
                 while(!heads.isEmpty()) {
-                    QStringList parts =  heads.takeLast().split(QStringLiteral(": "), QString::SkipEmptyParts);
+                    QStringList parts = heads.takeLast().split(QStringLiteral(": "), QString::SkipEmptyParts);
                     res.insert(parts.first().toUtf8(), parts.last().toUtf8());
                 }
             }

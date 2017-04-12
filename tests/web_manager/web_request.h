@@ -21,11 +21,18 @@ namespace Web {
         Response * viaPut(const QByteArray & data = QByteArray(), const QString & content_type = FORM_URLENCODE, bool async = false);
         Response * viaForm(const QByteArray & data = QByteArray(), bool async = false);
 
-        static QByteArray extractParams(QUrl & url) {
-            QByteArray params = url.query().toUtf8();
-            url.setQuery(QString());
-            return params;
+        QByteArray headersStr() {
+            QList<QByteArray> heads = rawHeaderList();
+            QByteArray res;
+
+            for(QList<QByteArray>::ConstIterator h = heads.cbegin(); h != heads.cend(); h++) {
+                QByteArray val = request.rawHeader(*h);
+                res = res % (*h) % ' ' % ':' % val % ';' % ' ';
+            }
+
+            return res;
         }
+
     private:
         Manager * manager;
     };

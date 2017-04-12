@@ -9,7 +9,7 @@ using namespace Web;
 //////////////////////////     WEB_MANAGER     /////////////////////////////
 QThread * Manager::main_thread = 0;
 QHash<QObject *, Manager *> Manager::managers = QHash<QObject *, Manager *>();
-//Cookies * Manager::cookies = new Cookies(QApplication::instance());
+Cookies * Manager::default_cookies = new Cookies();
 
 Manager * Manager::prepare() {
     QThread * thread = QThread::currentThread();
@@ -26,7 +26,7 @@ Manager * Manager::prepare() {
 Manager::Manager(QObject * parent, QSsl::SslProtocol protocol, QSslSocket::PeerVerifyMode mode) : QNetworkAccessManager(parent) {
     this -> protocol = protocol;
     this -> mode = mode;
-//    this -> setCookieJar(Manager::cookies);
+//    this -> setCookieJar(Manager::default_cookies);
 }
 
 Response * Manager::synchronizeRequest(QNetworkReply * m_http) {
