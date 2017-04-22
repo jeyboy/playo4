@@ -46,18 +46,19 @@ namespace Web {
                 cookies -> deleteCookie(*cookie);
         }
 
-        void printCookies() {
+        void print(const QUrl & url = QUrl()) {
 //                qDebug() << "COOKIE" << cookies -> allCookies();
 
             qDebug() << " ----------------------- COOKIES LIST ----------------------------";
 
-            for(QNetworkCookie cookie : cookies -> allCookies())
-                qDebug() << cookie.toRawForm();
+            const QList<QNetworkCookie> items = url.isEmpty() ? cookies -> allCookies() : cookies -> cookiesForUrl(url);
+            for(QList<QNetworkCookie>::ConstIterator cookie = items.cbegin(); cookie != items.cend(); cookie++)
+                qDebug() << (*cookie).toRawForm();
 
             qDebug() << " -----------------------------------------------------------------";
         }
 
-        QByteArray cookiesAsHeaderStr(const QUrl & url = QUrl(), const QHash<QByteArray, bool> & acceptable = QHash<QByteArray, bool>()) {
+        QByteArray asHeaderStr(const QUrl & url = QUrl(), const QHash<QByteArray, bool> & acceptable = QHash<QByteArray, bool>()) {
             QByteArray res;
             bool ignore_filter = acceptable.isEmpty();
 

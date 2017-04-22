@@ -26,6 +26,15 @@ namespace Web {
         static QHash<QObject *, Manager *> managers;
 
         friend class ManagerController;
+
+        enum requestType {
+            rt_custom = 0,
+            rt_head,
+            rt_get,
+            rt_delete,
+            rt_post,
+            rt_put
+        };
     protected:
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
         QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
@@ -33,15 +42,28 @@ namespace Web {
         QHash<QUrl, Func> asyncRequests;
         Response * synchronizeRequest(QNetworkReply * m_http);
 
-//        // QString QUrl QByteArray
-//        inline Request requestTo(const auto & url) {
-//            Headers headers = Headers::extract(url);
-//            return Request(this, url).withHeaders(headers);
-//        }
-//        inline Request requestTo(const QUrl & url) {
-//            Headers headers = Headers::extract(url);
-//            return Request(this, url).withHeaders(headers);
-//        }
+        void setup(const requestType & rtype, const Request & request, const RequestParams & params) {
+            Cookies * curr_cookies = params.cookies ? params.cookies : default_cookies;
+            setCookieJar(curr_cookies);
+
+            if (params.print_params) {
+                QByteArray rtype_name;
+
+                switch(rtype) {
+                    case rt_head: { rtype_name = QByteArrayLiteral("HEAD"); break;}
+                    case rt_get: { rtype_name = QByteArrayLiteral("GET"); break;}
+                    case rt_delete: { rtype_name = QByteArrayLiteral("DELETE"); break;}
+                    case rt_post: { rtype_name = QByteArrayLiteral("POST"); break;}
+                    case rt_put: { rtype_name = QByteArrayLiteral("PUT"); break;}
+                    default: rtype_name = QByteArrayLiteral("CUSTOM");
+                }
+
+                qInfo()
+                    << "*** " << rtype_name << (params.isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral("")) << params.url.toString() << QByteArrayLiteral("\r\n")
+                    << "*** H:" << request.headersStr() << QByteArrayLiteral("\r\n")
+                    << curr_cookies -> print(request.url);
+            }
+        }
     public:
 //        QApplication::instance() -> thread()
         static setMainThreadSync(QThread * main) { main_thread = main; }
@@ -50,7 +72,10 @@ namespace Web {
 
 
         Response * sendHead(const RequestParams & params) {
+            Request request(params);
+            setup(rt_head, request, params);
 
+            return params.isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
         }
 
         Response * sendGet(const RequestParams & params) {
@@ -61,11 +86,11 @@ namespace Web {
 
         }
 
-        Response * sendPost(const RequestParams & params) {
+        Response * sendPost(const RequestDataParams & params) {
 
         }
 
-        Response * sendPut(const RequestParams & params) {
+        Response * sendPut(const RequestDataParams & params) {
 
         }
 
@@ -77,9 +102,7 @@ namespace Web {
 
 
         Response * request(const Request & request, const RequestParams & params) {
-            if (params.print_params)
-                qInfo() << "*** " << params.typeStr() << (params.async ? "ASYNC" : "") << request.url().toString()
-                        << "*** H:" << request.headersStr() << "*** C:" << Manager::cookiesAsHeaderStr(request.url());
+
 
             QNetworkReply * m_http;
 

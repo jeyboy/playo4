@@ -41,11 +41,11 @@ namespace Web {
             Headers * headers = 0, Func * callback, Cookies * cookies = 0) : url(url),
                  rparams(rparams), headers(headers), cookies(cookies), callback(callback) { prepare(); }
 
-        bool isAsync() { return rparams & rp_async; }
-        bool isExtractParams() { return rparams & rp_extract_params_to_payload; }
-        bool isPrintParams() { return rparams & rp_print_params; }
-        bool isHasPayload() { return rparams & rp_has_payload; }
-        bool isHasCallback() { return callback != 0; }
+        inline bool isAsync() { return rparams & rp_async; }
+        inline bool isExtractParams() { return rparams & rp_extract_params_to_payload; }
+        inline bool isPrintParams() { return rparams & rp_print_params; }
+        inline bool isHasPayload() { return rparams & rp_has_payload; }
+        inline bool isHasCallback() { return callback != 0; }
 
         void prepare() {
             if (rparams & rp_attach_agent) {
@@ -53,6 +53,10 @@ namespace Web {
                     headers = new Headers();
 
                 headers -> insert(QByteArrayLiteral("User-Agent"), DEFAULT_AGENT);
+            }
+
+            if (isAsync() && !callback) {
+                qWarning() << "Called async request without callback:" << url;
             }
         }
     };
@@ -83,9 +87,8 @@ namespace Web {
                 QByteArray payload = Utils::extractParams(url);
 
                 if (!payload.isEmpty()) {
-                    if(!data.isEmpty()) {
+                    if(!data.isEmpty())
                         data += '&' + payload;
-                    }
                     else data = payload;
                 }
             }
