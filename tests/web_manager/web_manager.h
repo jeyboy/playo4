@@ -7,12 +7,8 @@
 //#include "qnetworkproxy.h"
 
 #include "web_request_params.h"
-#include "web_utils.h"
-#include "web_cookies.h"
 #include "web_request.h"
 #include "web_response.h"
-
-#include "func.h"
 
 #define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
 
@@ -32,12 +28,16 @@ namespace Web {
         friend class ManagerController;
     protected:
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
+        QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
 
-        // QString QUrl QByteArray
-        inline Request requestTo(const auto & url) {
-            Headers headers = Headers::extract(url);
-            return Request(this, url).withHeaders(headers);
-        }
+        QHash<QUrl, Func> asyncRequests;
+        Response * synchronizeRequest(QNetworkReply * m_http);
+
+//        // QString QUrl QByteArray
+//        inline Request requestTo(const auto & url) {
+//            Headers headers = Headers::extract(url);
+//            return Request(this, url).withHeaders(headers);
+//        }
 //        inline Request requestTo(const QUrl & url) {
 //            Headers headers = Headers::extract(url);
 //            return Request(this, url).withHeaders(headers);
@@ -48,6 +48,34 @@ namespace Web {
 
         static Manager * prepare();
 
+
+        Response * sendHead(const RequestParams & params) {
+
+        }
+
+        Response * sendGet(const RequestParams & params) {
+
+        }
+
+        Response * sendDelete(const RequestParams & params) {
+
+        }
+
+        Response * sendPost(const RequestParams & params) {
+
+        }
+
+        Response * sendPut(const RequestParams & params) {
+
+        }
+
+//        Response * sendCustom(const RequestParams & params) {
+
+//        }
+
+
+
+
         Response * request(const Request & request, const RequestParams & params) {
             if (params.print_params)
                 qInfo() << "*** " << params.typeStr() << (params.async ? "ASYNC" : "") << request.url().toString()
@@ -56,11 +84,8 @@ namespace Web {
             QNetworkReply * m_http;
 
             switch(params.rtype) {
-                case rt_head: {
-                    m_http = QNetworkAccessManager::get(request);
-                break;}
-
-                case rt_get: return QByteArrayLiteral("GET");
+                case rt_head: { m_http = QNetworkAccessManager::head(request); break;}
+                case rt_get: { m_http = QNetworkAccessManager::get(request); break;}
                 case rt_post: return QByteArrayLiteral("POST");
                 case rt_form: return QByteArrayLiteral("FORM");
                 case rt_put: return QByteArrayLiteral("PUT");
@@ -171,10 +196,6 @@ namespace Web {
 //            Func func = asyncRequests.take(source -> url());
 //            QMetaObject::invokeMethod(func.obj, func.slot, Q_ARG(QPixmap, source -> toPixmap()));
 //        }
-    protected:
-        QHash<QUrl, Func> asyncRequests;
-        Response * synchronizeRequest(QNetworkReply * m_http);
-        QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
     };
 
     class WEBMANAGERSHARED_EXPORT ManagerController : public QObject {

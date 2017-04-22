@@ -133,7 +133,7 @@ void Eye::arcPoints(QHash<int, int> & points, const QRectF & r, float alen, int 
 
     float base_x = center.x() + rx * qCos(da);
     float base_y = center.y() - ry * qSin(da);
-    float border_offset = pupil_border / 2 + 1;
+    float border_offset = pupil_border / 2 + 2;
 
     points.insert(0, base_y);
 
@@ -308,13 +308,17 @@ void Eye::paintEvent(QPaintEvent * event) {
     for(QList<QPolygonF>::Iterator poly = polygons.begin(); poly != polygons.end(); poly++)
         painter.drawPolyline(*poly);
 
-    painter.setPen(QPen(QBrush(Qt::blue), pupil_border));
-//    QRadialGradient radialGrad(pupil_rect.center(), pupil_rect.width() / 2);
-//    radialGrad.setColorAt(0, Qt::white);
-//    radialGrad.setColorAt(0.5, Qt::green);
-//    radialGrad.setColorAt(1, Qt::black);
+    painter.setPen(QPen(QBrush(Qt::darkGray), pupil_border));
+    QRadialGradient radialGrad(pupil_rect.center(), pupil_rect.width() / 2);
+    radialGrad.setColorAt(0, Qt::white);
+    radialGrad.setColorAt(0.3, QColor::fromRgb(0, 90, 0));
+    radialGrad.setColorAt(0.8, QColor::fromRgb(0, 50, 0));
+    radialGrad.setColorAt(1, Qt::darkGray);
 
-//    painter.setBrush(radialGrad);
+//     	0	50	0
+//    0	80	0
+
+    painter.setBrush(radialGrad);
     painter.drawEllipse(pupil_rect);
 }
 
