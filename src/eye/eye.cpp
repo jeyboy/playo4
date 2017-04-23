@@ -40,19 +40,19 @@ QPoint Eye::cursorPos() {
     return mapFromGlobal(point);
 }
 
-void Eye::addLashes(const QRectF & r, const float & angle, const QPolygonF & poly) {
+void Eye::addOpenedLashes(const QRectF & r, const float & angle, const QPolygonF & poly) {
     float new_angle = angle - 270;
     QPair<QPointF, QPointF> points = arcBorderPoints(
-        eye_rect,
+        opened.eye_rect,
         EYE_ANGLE_FACTOR * new_angle,
         -EYE_ANGLE_FACTOR * angle * 2
     );
 
-    QPair<QPointF, QPointF> cpoints = arcBorderPoints(eye_rect, 90 * EYE_ANGLE_FACTOR, 0);
+    QPair<QPointF, QPointF> cpoints = arcBorderPoints(opened.eye_rect, 90 * EYE_ANGLE_FACTOR, 0);
 
     new_angle = qRadiansToDegrees(qAtan2(cpoints.first.y() - points.first.y(), cpoints.first.x() - points.first.x())) - 10;
 
-    polygons
+    opened.polygons
         << rotate(r, -new_angle, points.second - cpoints.first, poly)
         << rotate(r, new_angle, points.first - cpoints.first, poly);
 }
@@ -79,7 +79,6 @@ QPolygonF Eye::rotate(const QRectF & r, const float & angle, const QPointF & off
 
     return res;
 }
-
 
 QPair<QPointF, QPointF> Eye::arcBorderPoints(const QRectF & r, int a, int alen) {
     QPointF center = r.center();
@@ -121,7 +120,7 @@ void Eye::arcPoints(QPolygonF & points, const QRectF & r, float a, float alen, i
     }
 }
 
-void Eye::arcPoints(QHash<int, int> & points, const QRectF & r, float alen, int steps_amount) {
+void Eye::arcOpenedPoints(QHash<int, int> & points, const QRectF & r, float alen, int steps_amount) {
     QPointF center = r.center();
 
     int rx = r.width() / 2;
@@ -148,8 +147,8 @@ void Eye::arcPoints(QHash<int, int> & points, const QRectF & r, float alen, int 
     }
 
     QPolygonF pupil_arc_points;
-    arcPoints(pupil_arc_points, pupil_rect, 90, -90, pupil_rect.width() / 2);
-    pupil_arc_points.translate(0, base_y - pupil_rect.top() + points[base_x]);
+    arcPoints(pupil_arc_points, opened.pupil_rect, 90, -90, opened.pupil_rect.width() / 2);
+    pupil_arc_points.translate(0, base_y - opened.pupil_rect.top() + points[base_x]);
 
     for(int x = base_x, sum = 0; ; x++) {
         if (!points.contains(x))
@@ -176,21 +175,36 @@ void Eye::arcPoints(QHash<int, int> & points, const QRectF & r, float alen, int 
     }
 }
 
-QPolygonF Eye::arcPoints(const QPointF & sp, const QPointF & ep, bool left) {
+QPolygonF Eye::arcPoints(const QPointF & sp, const QPointF & ep, bool left, bool revert) {
     QPolygonF points;
 
     int offset = 11;
 
-    QRectF r = left ?
-        QRectF(
-            QPointF(sp.x() - offset, sp.y()),
-            QPointF(ep.x(), ep.y() + offset)
-        )
-         :
-        QRectF(
-            QPointF(ep.x(), sp.y()),
-            QPointF(sp.x() + offset, ep.y() + offset)
-        );
+    QRectF r;
+
+    if (revert) {
+        r = left ?
+                QRectF(
+                    QPointF(ep.x() - offset, sp.y() - offset),
+                    QPointF(sp.x(), ep.y())
+                )
+                 :
+                QRectF(
+                    QPointF(ep.x(), ep.y() - offset),
+                    QPointF(sp.x() + offset, sp.y())
+                );
+    } else {
+        r = left ?
+            QRectF(
+                QPointF(sp.x() - offset, sp.y()),
+                QPointF(ep.x(), ep.y() + offset)
+            )
+             :
+            QRectF(
+                QPointF(ep.x(), sp.y()),
+                QPointF(sp.x() + offset, ep.y() + offset)
+            );
+    }
 
     QPointF center = r.center();
 
@@ -199,15 +213,15 @@ QPolygonF Eye::arcPoints(const QPointF & sp, const QPointF & ep, bool left) {
 
     int limit = 20;
     float step = 2 * M_PI / limit;
-    float theta = left ? 0 : M_PI;
+    float theta = left ? 0 : (M_PI + (revert ? M_1_PI : 0));
 
     for(int i = 0; i < limit; i++, theta += step) {
         float x = center.x() + rx * qCos(theta);
         float y = center.y() - ry * qSin(theta);
 
         if (
-            (left && x >= sp.x() && y <= ep.y()) ||
-                (!left && x <= sp.x() && y <= ep.y())
+            (revert && ((left && x >= ep.x() && y >= sp.y()) || (!left && x <= sp.x() && y >= ep.y()))) ||
+            (!revert && ((left && x >= sp.x() && y <= ep.y()) || (!left && x <= sp.x() && y <= ep.y())))
         ) continue;
 
         points << QPointF(x, y);
@@ -255,40 +269,40 @@ void Eye::updateEye() {
     if (rel_x == 0) {
         left_pos = px - pupil_half;
     } else if (rel_x > 0) {
-        if (pupil_zone_rect.right() - px < pupil_half)
-            left_pos = pupil_zone_rect.right() - pupil_size;
+        if (opened.pupil_zone_rect.right() - px < pupil_half)
+            left_pos = opened.pupil_zone_rect.right() - pupil_size;
         else
             left_pos = px - pupil_half;
     } else {
-        if (px - pupil_zone_rect.left() < pupil_half)
-            left_pos = pupil_zone_rect.left();
+        if (px - opened.pupil_zone_rect.left() < pupil_half)
+            left_pos = opened.pupil_zone_rect.left();
         else
             left_pos = px - pupil_half;
     }
 
-    pupil_rect.moveLeft(left_pos);
+    opened.pupil_rect.moveLeft(left_pos);
 
     if (rel_y == 0) {
         top_pos = py - pupil_half;
     } else if (rel_y > 0) {
-        if (pupil_zone_rect.bottom() - py < pupil_half)
-            top_pos = pupil_zone_rect.bottom() - pupil_size;
+        if (opened.pupil_zone_rect.bottom() - py < pupil_half)
+            top_pos = opened.pupil_zone_rect.bottom() - pupil_size;
         else
             top_pos = py - pupil_half;
     } else {
-        if (py - pupil_zone_rect.top() < pupil_half)
-            top_pos = pupil_zone_rect.top();
+        if (py - opened.pupil_zone_rect.top() < pupil_half)
+            top_pos = opened.pupil_zone_rect.top();
         else
             top_pos = py - pupil_half;
 
-        float pupil_center_x = pupil_rect.left() + pupil_half;
-        float eye_brow_y = eyebrow_pads[0] + eyebrow_pads[pupil_center_x];
+        float pupil_center_x = opened.pupil_rect.left() + pupil_half;
+        float eye_brow_y = opened.eyebrow_pads[0] + opened.eyebrow_pads[pupil_center_x];
 
         if (top_pos < eye_brow_y)
             top_pos = top_pos + (eye_brow_y - top_pos);
     }
 
-    pupil_rect.moveTop(top_pos);
+    opened.pupil_rect.moveTop(top_pos);
 
     QWidget::update();
 }
@@ -300,96 +314,166 @@ void Eye::paintEvent(QPaintEvent * event) {
 
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
+//    painter.setPen(QPen(QBrush(Qt::red), 3));
+//    painter.drawRect(closed.eye_rect);
+
+
+//    painter.setPen(QPen(QBrush(Qt::green), 3));
+//    painter.drawRect(closed.eye_sub_rect);
+
+
     painter.setPen(QPen(QBrush(Qt::black), 3));
-    painter.drawPolyline(eyebrow_area);
-//    painter.drawArc(eye_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
-//    painter.drawArc(eye_sub_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
 
-    for(QList<QPolygonF>::Iterator poly = polygons.begin(); poly != polygons.end(); poly++)
-        painter.drawPolyline(*poly);
+    if (state == eye_open) {
+        painter.drawPolyline(opened.eyebrow_area);
+    //    painter.drawArc(eye_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
+    //    painter.drawArc(eye_sub_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
 
-    painter.setPen(QPen(QBrush(Qt::darkGray), pupil_border));
-    QRadialGradient radialGrad(pupil_rect.center(), pupil_rect.width() / 2);
-    radialGrad.setColorAt(0, Qt::white);
-    radialGrad.setColorAt(0.3, QColor::fromRgb(0, 90, 0));
-    radialGrad.setColorAt(0.8, QColor::fromRgb(0, 50, 0));
-    radialGrad.setColorAt(1, Qt::darkGray);
+        for(QList<QPolygonF>::Iterator poly = opened.polygons.begin(); poly != opened.polygons.end(); poly++)
+            painter.drawPolyline(*poly);
 
-//     	0	50	0
-//    0	80	0
+        painter.setPen(QPen(QBrush(Qt::darkGray), pupil_border));
+        QRadialGradient radialGrad(opened.pupil_rect.center(), opened.pupil_rect.width() / 2);
+        radialGrad.setColorAt(0, Qt::white);
+        radialGrad.setColorAt(0.3, QColor::fromRgb(0, 90, 0));
+        radialGrad.setColorAt(0.8, QColor::fromRgb(0, 50, 0));
+        radialGrad.setColorAt(1, Qt::darkGray);
 
-    painter.setBrush(radialGrad);
-    painter.drawEllipse(pupil_rect);
+        painter.setBrush(radialGrad);
+        painter.drawEllipse(opened.pupil_rect);
+    } else {
+        painter.drawPolyline(closed.eyebrow_area);
+
+        for(QList<QPolygonF>::Iterator poly = closed.polygons.begin(); poly != closed.polygons.end(); poly++)
+            painter.drawPolyline(*poly);
+    }
 }
 
 void Eye::resizeEvent(QResizeEvent * e) {
     QWidget::resizeEvent(e);
 
-    polygons.clear();
-    eyebrow_area.clear();
-    eyebrow_pads.clear();
-
     eyebrow_height = 20;
-    pupil_border = 0;
+    pupil_border = 1;
 
-    eyelashes_rect = rect();
+    recalcOpenedCoords();
+    recalcClosedCoords();
+}
 
-    int rheight = eyelashes_rect.height();
+void Eye::mouseDoubleClickEvent(QMouseEvent * event) {
+    QWidget::mouseDoubleClickEvent(event);
+
+    if (state == eye_open)
+        state = eye_close;
+    else
+        state = eye_open;
+
+    QWidget::update();
+}
+
+void Eye::recalcOpenedCoords() {
+    opened.polygons.clear();
+    opened.eyebrow_area.clear();
+    opened.eyebrow_pads.clear();
+
+    opened.eyelashes_rect = rect();
+
+    int rheight = opened.eyelashes_rect.height();
     int top_offset = rheight * 0.3;
 
-    eyelashes_rect.setHeight(top_offset);
-    eye_rect = QRectF(0, top_offset, eyelashes_rect.width(), rheight - top_offset);
+    opened.eyelashes_rect.setHeight(top_offset);
+    opened.eye_rect = QRectF(0, top_offset, opened.eyelashes_rect.width(), rheight - top_offset);
 
-    eye_sub_rect = QRectF(eyebrow_height, top_offset + eyebrow_height, eyelashes_rect.width() - eyebrow_height * 2, rheight - top_offset - eyebrow_height);
+    opened.eye_sub_rect = QRectF(eyebrow_height, top_offset + eyebrow_height, opened.eyelashes_rect.width() - eyebrow_height * 2, rheight - top_offset - eyebrow_height);
 
-    top_eye_corners = arcBorderPoints(eye_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
-    bottom_eye_corners = arcBorderPoints(eye_sub_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
+    opened.top_eye_corners = arcBorderPoints(opened.eye_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
+    opened.bottom_eye_corners = arcBorderPoints(opened.eye_sub_rect, EYE_START_ANGLE_FACTOR, EYE_SPAN_ANGLE_FACTOR);
 
-    QPolygonF left_poly_points = arcPoints(top_eye_corners.second, bottom_eye_corners.second, true);
-    QPolygonF right_poly_points = arcPoints(top_eye_corners.first, bottom_eye_corners.first, false);
-    polygons << left_poly_points << right_poly_points;
+    QPolygonF left_poly_points = arcPoints(opened.top_eye_corners.second, opened.bottom_eye_corners.second, true);
+    QPolygonF right_poly_points = arcPoints(opened.top_eye_corners.first, opened.bottom_eye_corners.first, false);
 
     ////////////////////////////////////////////
-    eyebrow_area.append(right_poly_points);
-    arcPoints(eyebrow_area, eye_rect, EYE_START_ANGLE, EYE_SPAN_ANGLE);
-    eyebrow_area.append(left_poly_points);
-    arcPoints(eyebrow_area, eye_sub_rect, EYE_START_ANGLE + EYE_SPAN_ANGLE, -EYE_SPAN_ANGLE);
+    opened.eyebrow_area.append(right_poly_points);
+    arcPoints(opened.eyebrow_area, opened.eye_rect, EYE_START_ANGLE, EYE_SPAN_ANGLE);
+    opened.eyebrow_area.append(left_poly_points);
+    arcPoints(opened.eyebrow_area, opened.eye_sub_rect, EYE_START_ANGLE + EYE_SPAN_ANGLE, -EYE_SPAN_ANGLE);
     ////////////////////////////////////////////
 
-    QSizeF lash_size = QSizeF(eyelashes_rect.width() / 30, eyelashes_rect.height() / 2);
-    QRectF clash_rect(eyelashes_rect.center() - QPointF(lash_size.width() / 2, lash_size.height() / 2), lash_size);
+    QSizeF lash_size = QSizeF(opened.eyelashes_rect.width() / 30, opened.eyelashes_rect.height() / 2);
+    QRectF clash_rect(opened.eyelashes_rect.center() - QPointF(lash_size.width() / 2, lash_size.height() / 2), lash_size);
 
     QPolygonF poly = ellipsePoints(clash_rect);
-    polygons << poly;
+    opened.polygons << poly;
 
-    addLashes(eyelashes_rect, 28, poly);
-    addLashes(eyelashes_rect, 60, poly);
+    addOpenedLashes(opened.eyelashes_rect, 28, poly);
+    addOpenedLashes(opened.eyelashes_rect, 60, poly);
 
-    pupil_zone_rect = QRectF(
+    opened.pupil_zone_rect = QRectF(
         QPointF(
-            bottom_eye_corners.second.x(),
-            eye_sub_rect.top()
+            opened.bottom_eye_corners.second.x(),
+            opened.eye_sub_rect.top()
         ),
         QPointF(
-            bottom_eye_corners.first.x(),
-            eye_sub_rect.bottom()
+            opened.bottom_eye_corners.first.x(),
+            opened.eye_sub_rect.bottom()
         )
     );
 
-    s = pupil_zone_rect.center();
+    s = opened.pupil_zone_rect.center();
 
-    float pupil_width = pupil_zone_rect.width() / 1.5;
-    float pupil_height = pupil_zone_rect.height() / 1.5;
+    float pupil_width = opened.pupil_zone_rect.width() / 1.5;
+    float pupil_height = opened.pupil_zone_rect.height() / 1.5;
     pupil_size = qMin(pupil_width, pupil_height);
 
     float new_pupil_height = pupil_size * 1.3;
-    if (new_pupil_height < pupil_zone_rect.height())
-        pupil_zone_rect.setHeight(new_pupil_height);
+    if (new_pupil_height < opened.pupil_zone_rect.height())
+        opened.pupil_zone_rect.setHeight(new_pupil_height);
 
-    float pupil_top = pupil_zone_rect.y() + pupil_zone_rect.height() / 2 - pupil_size / 2;
-    float pupil_left = pupil_zone_rect.x() + pupil_zone_rect.width() / 2 - pupil_size / 2;
+    float pupil_top = opened.pupil_zone_rect.y() + opened.pupil_zone_rect.height() / 2 - pupil_size / 2;
+    float pupil_left = opened.pupil_zone_rect.x() + opened.pupil_zone_rect.width() / 2 - pupil_size / 2;
 
-    pupil_rect = QRectF(pupil_left, pupil_top, pupil_size, pupil_size);
+    opened.pupil_rect = QRectF(pupil_left, pupil_top, pupil_size, pupil_size);
 
-    arcPoints(eyebrow_pads, eye_sub_rect, 90 - EYE_START_ANGLE, pupil_zone_rect.width() / 2);
+    arcOpenedPoints(opened.eyebrow_pads, opened.eye_sub_rect, 90 - EYE_START_ANGLE, opened.pupil_zone_rect.width() / 2);
+}
+
+void Eye::recalcClosedCoords() {
+    closed.polygons.clear();
+    closed.eyebrow_area.clear();
+    closed.eyebrow_pads.clear();
+
+    closed.eye_sub_rect = QRectF(
+        QPointF(0, opened.top_eye_corners.first.y()),
+        QPointF(rect().width(), opened.pupil_zone_rect.bottom())
+    );
+
+    closed.eye_rect = QRectF(
+        QPointF(eyebrow_height, closed.eye_sub_rect.top() + eyebrow_height),
+        QPointF(rect().width() - eyebrow_height, opened.pupil_zone_rect.bottom() - eyebrow_height)
+    );
+
+    closed.eyelashes_rect = opened.eyelashes_rect.adjusted(0, 0, 0, 0);
+    closed.eyelashes_rect.moveTop(closed.eye_rect.top());
+
+    closed.top_eye_corners = arcBorderPoints(closed.eye_sub_rect, EYE_CLOSE_START_ANGLE_FACTOR + 29 * 16, -EYE_SPAN_ANGLE_FACTOR);
+    closed.bottom_eye_corners = arcBorderPoints(closed.eye_rect, EYE_CLOSE_START_ANGLE_FACTOR + 29 * 16, -EYE_SPAN_ANGLE_FACTOR);
+
+    QPolygonF left_poly_points = arcPoints(closed.bottom_eye_corners.second, closed.top_eye_corners.second, true, true);
+    QPolygonF right_poly_points = arcPoints(closed.top_eye_corners.first, closed.bottom_eye_corners.first, false, true);
+
+    ////////////////////////////////////////////
+    closed.eyebrow_area.append(right_poly_points);
+    arcPoints(closed.eyebrow_area, closed.eye_rect, EYE_CLOSE_START_ANGLE, -EYE_SPAN_ANGLE);
+    closed.eyebrow_area.append(left_poly_points);
+    arcPoints(closed.eyebrow_area, closed.eye_sub_rect, EYE_CLOSE_START_ANGLE - EYE_SPAN_ANGLE, EYE_SPAN_ANGLE);
+    closed.eyebrow_area.append(closed.eyebrow_area.first());
+    ////////////////////////////////////////////
+
+//    QSizeF lash_size = QSizeF(opened.eyelashes_rect.width() / 30, opened.eyelashes_rect.height() / 2);
+//    QRectF clash_rect(opened.eyelashes_rect.center() - QPointF(lash_size.width() / 2, lash_size.height() / 2), lash_size);
+
+//    QPolygonF poly = ellipsePoints(clash_rect);
+//    opened.polygons << poly;
+
+//    addOpenedLashes(opened.eyelashes_rect, 28, poly);
+//    addOpenedLashes(opened.eyelashes_rect, 60, poly);
 }
