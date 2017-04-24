@@ -24,6 +24,7 @@ namespace Web {
     struct WEBMANAGERSHARED_EXPORT RequestParams {
         enum RequestParams {
             rp_none = 0,
+            rp_follow,
             rp_async,
             rp_attach_agent,
             rp_extract_params_to_payload,

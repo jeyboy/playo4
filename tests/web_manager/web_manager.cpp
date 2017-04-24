@@ -64,6 +64,58 @@ Response * Manager::synchronizeRequest(QNetworkReply * m_http) {
     return Response::fromReply(m_http);
 }
 
+void Manager::setup(const requestType & rtype, const Request & request, const RequestParams & params) {
+    Cookies * curr_cookies = params.cookies ? params.cookies : default_cookies;
+    setCookieJar(curr_cookies);
+
+    if (params.print_params) {
+        QByteArray rtype_name;
+
+        switch(rtype) {
+            case rt_head: { rtype_name = QByteArrayLiteral("HEAD"); break;}
+            case rt_get: { rtype_name = QByteArrayLiteral("GET"); break;}
+            case rt_delete: { rtype_name = QByteArrayLiteral("DELETE"); break;}
+            case rt_post: { rtype_name = QByteArrayLiteral("POST"); break;}
+            case rt_put: { rtype_name = QByteArrayLiteral("PUT"); break;}
+            default: rtype_name = QByteArrayLiteral("CUSTOM");
+        }
+
+        qInfo()
+            << "*** " << rtype_name << (params.isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral("")) << params.url.toString() << QByteArrayLiteral("\r\n")
+            << "*** H:" << request.headersStr() << QByteArrayLiteral("\r\n")
+            << curr_cookies -> print(request.url);
+    }
+}
+
+Response * Manager::sendSimple(const requestType & rtype, const RequestParams & params) {
+    Request request(params);
+    setup(rtype, request, params);
+
+    QNetworkReply * m_http;
+
+    switch(rtype) {
+        case rt_get: { m_http = QNetworkAccessManager::get(request); break; }
+        case rt_head: { m_http = QNetworkAccessManager::head(request); break; }
+        default: m_http = QNetworkAccessManager::head(request);
+    }
+
+    return params.isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
+}
+Response * Manager::sendData(const requestType & rtype, const RequestDataParams & params) {
+    Request request(params);
+    setup(rtype, request, params);
+
+    QNetworkReply * m_http;
+
+    switch(rtype) {
+        case rt_post: { m_http = QNetworkAccessManager::post(request, params.data); break; }
+        case rt_put: { m_http = QNetworkAccessManager::put(request, params.data); break; }
+        default: return 0; //m_http = QNetworkAccessManager::head(request);
+    }
+
+    return params.isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
+}
+
 QNetworkReply * Manager::createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData) {
     QSslConfiguration config = req.sslConfiguration();
     config.setPeerVerifyMode(mode);

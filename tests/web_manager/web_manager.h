@@ -36,105 +36,21 @@ namespace Web {
             rt_put
         };
     protected:
+        QHash<QUrl, Func> asyncRequests;
+
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
         QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
 
-        QHash<QUrl, Func> asyncRequests;
         Response * synchronizeRequest(QNetworkReply * m_http);
 
-        void setup(const requestType & rtype, const Request & request, const RequestParams & params) {
-            Cookies * curr_cookies = params.cookies ? params.cookies : default_cookies;
-            setCookieJar(curr_cookies);
-
-            if (params.print_params) {
-                QByteArray rtype_name;
-
-                switch(rtype) {
-                    case rt_head: { rtype_name = QByteArrayLiteral("HEAD"); break;}
-                    case rt_get: { rtype_name = QByteArrayLiteral("GET"); break;}
-                    case rt_delete: { rtype_name = QByteArrayLiteral("DELETE"); break;}
-                    case rt_post: { rtype_name = QByteArrayLiteral("POST"); break;}
-                    case rt_put: { rtype_name = QByteArrayLiteral("PUT"); break;}
-                    default: rtype_name = QByteArrayLiteral("CUSTOM");
-                }
-
-                qInfo()
-                    << "*** " << rtype_name << (params.isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral("")) << params.url.toString() << QByteArrayLiteral("\r\n")
-                    << "*** H:" << request.headersStr() << QByteArrayLiteral("\r\n")
-                    << curr_cookies -> print(request.url);
-            }
-        }
+        void setup(const requestType & rtype, const Request & request, const RequestParams & params);
+        Response * sendSimple(const requestType & rtype, const RequestParams & params);
+        Response * sendData(const requestType & rtype, const RequestDataParams & params);
     public:
 //        QApplication::instance() -> thread()
         static setMainThreadSync(QThread * main) { main_thread = main; }
 
         static Manager * prepare();
-
-
-        Response * sendHead(const RequestParams & params) {
-            Request request(params);
-            setup(rt_head, request, params);
-
-            return params.isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
-        }
-
-        Response * sendGet(const RequestParams & params) {
-
-        }
-
-        Response * sendDelete(const RequestParams & params) {
-
-        }
-
-        Response * sendPost(const RequestDataParams & params) {
-
-        }
-
-        Response * sendPut(const RequestDataParams & params) {
-
-        }
-
-//        Response * sendCustom(const RequestParams & params) {
-
-//        }
-
-
-
-
-        Response * request(const Request & request, const RequestParams & params) {
-
-
-            QNetworkReply * m_http;
-
-            switch(params.rtype) {
-                case rt_head: { m_http = QNetworkAccessManager::head(request); break;}
-                case rt_get: { m_http = QNetworkAccessManager::get(request); break;}
-                case rt_post: return QByteArrayLiteral("POST");
-                case rt_form: return QByteArrayLiteral("FORM");
-                case rt_put: return QByteArrayLiteral("PUT");
-                case rt_delete: return QByteArrayLiteral("DELETE");
-
-                default: return 0; // TODO: add custom type request
-            }
-
-            return params.async ? Response::fromReply(m_http) : synchronizeRequest(m_http);
-        }
-
-//        Response * get(const Request & request, bool async = false) {
-////            qInfo() << "*** GET" << (async ? "ASYNC" : "") << request.url().toString() << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());
-//            QNetworkReply * m_http = QNetworkAccessManager::get(request);
-//            return async ? Response::fromReply(m_http) : synchronizeRequest(m_http);
-//        }
-//        Response * post(const Request & request, const QByteArray & data, bool async = false) {
-////            qInfo() << "*** POST" << (async ? "ASYNC" : "")<< request.url().toString() << "*** P:" << data  << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());;
-//            QNetworkReply * m_http = QNetworkAccessManager::post(request, data);
-//            return async ? Response::fromReply(m_http) : synchronizeRequest(m_http);
-//        }
-//        Response * put(const Request & request, const QByteArray & data, bool async = false) {
-////            qInfo() << "*** PUT" << (async ? "ASYNC" : "")<< request.url().toString() << "*** P:" << data  << "*** H:" << headersStr(request) << "*** C:" << Manager::cookiesAsHeaderStr(request.url());;
-//            QNetworkReply * m_http = QNetworkAccessManager::put(request, data);
-//            return async ? Response::fromReply(m_http) : synchronizeRequest(m_http);
-//        }
 
 //        inline QJsonObject jsonGet(const QUrl & url, const QString & wrap) { return getFollowed(url) -> toJson(wrap); }
 //        inline QJsonObject jsonGet(const QUrl & url, bool wrap = false) { return getFollowed(url) -> toJson(wrap ? DEF_JSON_FIELD : QString()); }
@@ -201,7 +117,16 @@ namespace Web {
 //        inline Response * formFollowed(const QUrl & url, const QByteArray & data, const Headers & headers) { return requestTo(url).withHeaders(headers).viaForm(data) -> followByRedirect(); }
 
     public slots:
-        inline void sendGet(const QString & url) { getFollowed(url) -> deleteLater(); }
+//        inline void sendGet(const QString & url) { getFollowed(url) -> deleteLater(); }
+
+        Response * sendHead(const RequestParams & params) { return sendSimple(rt_head, params); }
+        Response * sendGet(const RequestParams & params) { return sendSimple(rt_get, params); }
+        Response * sendDelete(const RequestParams & params) { return sendSimple(rt_delete, params); }
+
+        Response * sendPost(const RequestDataParams & params) { return sendSimple(rt_post, params); }
+        Response * sendPut(const RequestDataParams & params) { return sendSimple(rt_put, params); }
+//        Response * sendCustom(const RequestParams & params) { return sendSimple(rt_custom, params); }
+
     protected slots:
         inline void requestFinished() {
             Response * source = Response::fromReply((QNetworkReply *)sender());
