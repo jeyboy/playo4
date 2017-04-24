@@ -1,6 +1,8 @@
 #ifndef WEB_REQUEST_PARAMS_H
 #define WEB_REQUEST_PARAMS_H
 
+#include <qurl.h>
+
 #include "func.h"
 
 #include "web_manager_global.h"
@@ -22,7 +24,7 @@
 
 namespace Web {
     struct WEBMANAGERSHARED_EXPORT RequestParams {
-        enum RequestParams {
+        enum RequestParamsFlags {
             rp_none = 0,
             rp_follow,
             rp_async,
@@ -33,13 +35,13 @@ namespace Web {
         };
 
         QUrl url;
-        RequestParams rparams;
+        RequestParamsFlags rparams;
         Headers * headers;
         Cookies * cookies;
         Func * callback;
 
-        RequestParams(const QUrl & url, const RequestParams & rparams = rp_none,
-            Headers * headers = 0, Func * callback, Cookies * cookies = 0) : url(url),
+        RequestParams(const QUrl & url, const RequestParamsFlags & rparams = rp_none,
+            Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) : url(url),
                  rparams(rparams), headers(headers), cookies(cookies), callback(callback) { prepare(); }
 
         inline bool isAsync() { return rparams & rp_async; }
@@ -65,13 +67,13 @@ namespace Web {
     struct WEBMANAGERSHARED_EXPORT RequestDataParams : public RequestParams {
         QByteArray data;
 
-        static RequestDataParams & fromParams(RequestParams & params) { dynamic_cast<RequestDataParams &>(params); }
+//        static RequestDataParams & fromParams(RequestParams & params) { return dynamic_cast<RequestDataParams &>(params); }
 
-        RequestParams(const QUrl & url, const RequestParams & rparams = DEFAULT_REQUEST_PARAMS,
+        RequestDataParams(const QUrl & url, const RequestParamsFlags & rparams = DEFAULT_REQUEST_PARAMS,
             const QByteArray & data = QByteArray(), const QByteArray & content_type = FORM_URLENCODE,
-            Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) : data(data),
-                RequestParams(url, rparams | rp_has_payload, headers, callback, cookies) { prepare(content_type); }
-4
+            Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) :
+                RequestParams(url, (RequestParamsFlags)(rparams | rp_has_payload), headers, callback, cookies), data(data) { prepare(content_type); }
+
         void prepare(const QByteArray & content_type) {
             bool has_content_type = !content_type.isEmpty();
             bool is_extract_params = isExtractParams();

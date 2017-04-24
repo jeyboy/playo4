@@ -48,9 +48,17 @@ namespace Web {
         Response * sendData(const requestType & rtype, const RequestDataParams & params);
     public:
 //        QApplication::instance() -> thread()
-        static setMainThreadSync(QThread * main) { main_thread = main; }
+        static void setMainThreadSync(QThread * main) { main_thread = main; }
 
         static Manager * prepare();
+
+        static Response * procHead(const RequestParams & params) { return prepare() -> sendSimple(rt_head, params); }
+        static Response * procGet(const RequestParams & params) { return prepare() -> sendSimple(rt_get, params); }
+        static Response * procDelete(const RequestParams & params) { return prepare() -> sendSimple(rt_delete, params); }
+
+        static Response * procPost(const RequestDataParams & params) { return prepare() -> sendSimple(rt_post, params); }
+        static Response * procPut(const RequestDataParams & params) { return prepare() -> sendSimple(rt_put, params); }
+//       static Response * procCustom(const RequestParams & params) { return prepare() -> sendSimple(rt_custom, params); }
 
 //        inline QJsonObject jsonGet(const QUrl & url, const QString & wrap) { return getFollowed(url) -> toJson(wrap); }
 //        inline QJsonObject jsonGet(const QUrl & url, bool wrap = false) { return getFollowed(url) -> toJson(wrap ? DEF_JSON_FIELD : QString()); }
