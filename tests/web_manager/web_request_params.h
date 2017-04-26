@@ -48,6 +48,7 @@ namespace Web {
         inline bool isExtractParams() { return rparams & rp_extract_params_to_payload; }
         inline bool isPrintParams() { return rparams & rp_print_params; }
         inline bool isHasPayload() { return rparams & rp_has_payload; }
+        inline bool isFollowed() { return rparams & rp_follow; }
         inline bool isHasCallback() { return callback != 0; }
 
         void prepare() {
@@ -61,6 +62,17 @@ namespace Web {
             if (isAsync() && !callback) {
                 qWarning() << "Called async request without callback:" << url;
             }
+        }
+
+        void erase() {
+            delete callback;
+            delete headers;
+        }
+
+        void addHeader(const QByteArray & name, const QByteArray & val) {
+            if (!headers) headers = new Headers();
+
+            headers -> insert(name, val);
         }
     };
 

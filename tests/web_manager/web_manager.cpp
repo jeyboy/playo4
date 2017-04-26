@@ -64,11 +64,11 @@ Response * Manager::synchronizeRequest(QNetworkReply * m_http) {
     return Response::fromReply(m_http);
 }
 
-void Manager::setup(const requestType & rtype, const Request & request, const RequestParams & params) {
-    Cookies * curr_cookies = params.cookies ? params.cookies : default_cookies;
+void Manager::setup(const requestType & rtype, const Request & request, RequestParams * params) {
+    Cookies * curr_cookies = params -> cookies ? params -> cookies : default_cookies;
     setCookieJar(curr_cookies);
 
-    if (params.print_params) {
+    if (params -> isPrintParams()) {
         QByteArray rtype_name;
 
         switch(rtype) {
@@ -81,13 +81,13 @@ void Manager::setup(const requestType & rtype, const Request & request, const Re
         }
 
         qInfo()
-            << "*** " << rtype_name << (params.isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral("")) << params.url.toString() << QByteArrayLiteral("\r\n")
+            << "*** " << rtype_name << (params -> isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral("")) << params -> url.toString() << QByteArrayLiteral("\r\n")
             << "*** H:" << request.headersStr() << QByteArrayLiteral("\r\n")
             << curr_cookies -> print(request.url);
     }
 }
 
-Response * Manager::sendSimple(const requestType & rtype, const RequestParams & params) {
+Response * Manager::sendSimple(const requestType & rtype, RequestParams * params) {
     Request request(params);
     setup(rtype, request, params);
 
@@ -99,21 +99,21 @@ Response * Manager::sendSimple(const requestType & rtype, const RequestParams & 
         default: m_http = QNetworkAccessManager::head(request);
     }
 
-    return params.isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
+    return params -> isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
 }
-Response * Manager::sendData(const requestType & rtype, const RequestDataParams & params) {
+Response * Manager::sendData(const requestType & rtype, RequestDataParams * params) {
     Request request(params);
     setup(rtype, request, params);
 
     QNetworkReply * m_http;
 
     switch(rtype) {
-        case rt_post: { m_http = QNetworkAccessManager::post(request, params.data); break; }
-        case rt_put: { m_http = QNetworkAccessManager::put(request, params.data); break; }
+        case rt_post: { m_http = QNetworkAccessManager::post(request, params -> data); break; }
+        case rt_put: { m_http = QNetworkAccessManager::put(request, params -> data); break; }
         default: return 0; //m_http = QNetworkAccessManager::head(request);
     }
 
-    return params.isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
+    return params -> isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
 }
 
 QNetworkReply * Manager::createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData) {

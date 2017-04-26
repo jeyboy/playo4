@@ -10,7 +10,7 @@ namespace Web {
 
     class WEBMANAGERSHARED_EXPORT Request : public QNetworkRequest {
     public:
-        Request(const RequestParams & params);
+        Request(RequestParams * params);
 
         QByteArray headersStr();
     };

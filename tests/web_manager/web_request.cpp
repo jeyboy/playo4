@@ -3,9 +3,9 @@
 
 using namespace Web;
 
-Request::Request(const RequestParams & params) : QNetworkRequest(params.url) {
-    if (params.headers) {
-        Headers & headers = *params.headers;
+Request::Request(RequestParams * params) : QNetworkRequest(params -> url) {
+    if (params -> headers) {
+        Headers & headers = *params -> headers;
         for(Headers::ConstIterator header = headers.cbegin(); header != headers.cend(); header++)
             setRawHeader(header.key(), header.value());
     }

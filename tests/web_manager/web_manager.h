@@ -36,15 +36,15 @@ namespace Web {
             rt_put
         };
     protected:
-        QHash<QUrl, Func> asyncRequests;
+        QHash<QUrl, RequestParams *> asyncRequests;
 
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
         QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
 
         Response * synchronizeRequest(QNetworkReply * m_http);
 
-        void setup(const requestType & rtype, const Request & request, const RequestParams & params);
-        Response * sendSimple(const requestType & rtype, const RequestParams & params);
+        void setup(const requestType & rtype, const Request & request, RequestParams * params);
+        Response * sendSimple(const requestType & rtype, RequestParams * params);
         Response * sendData(const requestType & rtype, const RequestDataParams & params);
     public:
 //        QApplication::instance() -> thread()
@@ -52,13 +52,13 @@ namespace Web {
 
         static Manager * prepare();
 
-        static Response * procHead(const RequestParams & params) { return prepare() -> sendSimple(rt_head, params); }
-        static Response * procGet(const RequestParams & params) { return prepare() -> sendSimple(rt_get, params); }
-        static Response * procDelete(const RequestParams & params) { return prepare() -> sendSimple(rt_delete, params); }
+        static Response * procHead(RequestParams * params) { return prepare() -> sendSimple(rt_head, params); }
+        static Response * procGet(RequestParams * params) { return prepare() -> sendSimple(rt_get, params); }
+        static Response * procDelete(RequestParams * params) { return prepare() -> sendSimple(rt_delete, params); }
 
-        static Response * procPost(const RequestDataParams & params) { return prepare() -> sendSimple(rt_post, params); }
-        static Response * procPut(const RequestDataParams & params) { return prepare() -> sendSimple(rt_put, params); }
-//       static Response * procCustom(const RequestParams & params) { return prepare() -> sendSimple(rt_custom, params); }
+        static Response * procPost(RequestDataParams * params) { return prepare() -> sendSimple(rt_post, params); }
+        static Response * procPut(RequestDataParams * params) { return prepare() -> sendSimple(rt_put, params); }
+//       static Response * procCustom(RequestDataParams * params) { return prepare() -> sendSimple(rt_custom, params); }
 
 //        inline QJsonObject jsonGet(const QUrl & url, const QString & wrap) { return getFollowed(url) -> toJson(wrap); }
 //        inline QJsonObject jsonGet(const QUrl & url, bool wrap = false) { return getFollowed(url) -> toJson(wrap ? DEF_JSON_FIELD : QString()); }
@@ -127,31 +127,40 @@ namespace Web {
     public slots:
 //        inline void sendGet(const QString & url) { getFollowed(url) -> deleteLater(); }
 
-        Response * sendHead(const RequestParams & params) { return sendSimple(rt_head, params); }
-        Response * sendGet(const RequestParams & params) { return sendSimple(rt_get, params); }
-        Response * sendDelete(const RequestParams & params) { return sendSimple(rt_delete, params); }
+        Response * sendHead(RequestParams * params) { return sendSimple(rt_head, params); }
+        Response * sendGet(RequestParams * params) { return sendSimple(rt_get, params); }
+        Response * sendDelete(RequestParams * params) { return sendSimple(rt_delete, params); }
 
-        Response * sendPost(const RequestDataParams & params) { return sendSimple(rt_post, params); }
-        Response * sendPut(const RequestDataParams & params) { return sendSimple(rt_put, params); }
-//        Response * sendCustom(const RequestParams & params) { return sendSimple(rt_custom, params); }
+        Response * sendPost(RequestDataParams * params) { return sendSimple(rt_post, params); }
+        Response * sendPut(RequestDataParams * params) { return sendSimple(rt_put, params); }
+//        Response * sendCustom(RequestParams * params) { return sendSimple(rt_custom, params); }
 
     protected slots:
         inline void requestFinished() {
             Response * source = Response::fromReply((QNetworkReply *)sender());
-            Func func = asyncRequests.take(source -> url());
-            QUrl new_url = source -> redirectUrl();
+            RequestParams * params = asyncRequests.take(source -> url());
 
-            if (!new_url.isEmpty()) {
-                source -> appendHeaders(new_url);
-                getFollowedAsync(new_url, func);
-            } else QMetaObject::invokeMethod(func.obj, func.slot, Q_ARG(Response *, source), Q_ARG(void *, func.user_data));
+            if (params -> isFollowed()) {
+                QUrl new_url = source -> redirectUrl();
+
+                if (!new_url.isEmpty()) {
+//                    source -> appendHeaders(new_url);
+                    params -> addHeader(QByteArrayLiteral("Referer"), source -> request().rawHeader("Referer"));
+                    params -> url = new_url;
+                    sendGet(params);
+                    return;
+                }
+            }
+
+            QMetaObject::invokeMethod(
+                params -> callback -> obj,
+                params -> callback -> slot,
+                Q_ARG(Response *, source),
+                Q_ARG(void *, params -> callback -> user_data)
+            );
+
+            params -> erase();
         }
-
-//        inline void pixmapRequestFinished() {
-//            Response * source = (Response *)sender();
-//            Func func = asyncRequests.take(source -> url());
-//            QMetaObject::invokeMethod(func.obj, func.slot, Q_ARG(QPixmap, source -> toPixmap()));
-//        }
     };
 
     class WEBMANAGERSHARED_EXPORT ManagerController : public QObject {
