@@ -6,6 +6,9 @@
 #include "qnetworkcookie.h"
 #include "qnetworkcookiejar.h"
 
+#include <qjsonobject.h>
+#include <qjsonarray.h>
+
 namespace Web {
     class WEBMANAGERSHARED_EXPORT Cookies : public QNetworkCookieJar {
     public:
@@ -66,10 +69,10 @@ namespace Web {
             for(QList<QNetworkCookie>::ConstIterator cookie = items.cbegin(); cookie != items.cend(); cookie++) {
                 QByteArray name = (*cookie).name();
                 if (ignore_filter || acceptable.contains(name))
-                    res = res % name % '=' % (*cookie).value() % ';' % ' ';
+                    res = res + name + '=' + (*cookie).value() + ';' + ' ';
             }
 
-            return QByteArrayLiteral("Cookie: ") % res;
+            return QByteArrayLiteral("Cookie: ") + res;
         }
         QByteArray cookie(const QByteArray & name, const QUrl & url = QUrl()) {
             const QList<QNetworkCookie> items = url.isEmpty() ? allCookies() : cookiesForUrl(url);

@@ -45,7 +45,7 @@ namespace Web {
 
         void setup(const requestType & rtype, const Request & request, RequestParams * params);
         Response * sendSimple(const requestType & rtype, RequestParams * params);
-        Response * sendData(const requestType & rtype, const RequestDataParams & params);
+        Response * sendData(const requestType & rtype, RequestDataParams * params);
     public:
 //        QApplication::instance() -> thread()
         static void setMainThreadSync(QThread * main) { main_thread = main; }

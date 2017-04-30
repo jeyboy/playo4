@@ -12,7 +12,7 @@ namespace Web {
     public:
         Request(RequestParams * params);
 
-        QByteArray headersStr();
+        QByteArray headersStr() const;
     };
 }
 

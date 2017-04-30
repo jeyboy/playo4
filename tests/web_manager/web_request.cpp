@@ -11,7 +11,7 @@ Request::Request(RequestParams * params) : QNetworkRequest(params -> url) {
     }
 }
 
-QByteArray Request::headersStr() {
+QByteArray Request::headersStr() const {
     QList<QByteArray> heads = rawHeaderList();
     QByteArray res;
 

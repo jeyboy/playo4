@@ -82,8 +82,8 @@ void Manager::setup(const requestType & rtype, const Request & request, RequestP
 
         qInfo()
             << "*** " << rtype_name << (params -> isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral("")) << params -> url.toString() << QByteArrayLiteral("\r\n")
-            << "*** H:" << request.headersStr() << QByteArrayLiteral("\r\n")
-            << curr_cookies -> print(request.url);
+            << "*** H:" << request.headersStr();
+        curr_cookies -> print(params -> url);
     }
 }
 
