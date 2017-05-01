@@ -8,7 +8,7 @@ using namespace Web;
 
 // TODO: need correct type conversation
 Response * Response::fromReply(QNetworkReply * reply) {
-    return (Response *)reply;
+    return dynamic_cast<Response *>(reply);
 }
 
 QByteArray Response::encoding() {

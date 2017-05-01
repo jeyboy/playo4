@@ -6,6 +6,8 @@
 #include "qnetworkcookie.h"
 #include "qnetworkcookiejar.h"
 
+
+#include <qdebug.h>
 #include <qjsonobject.h>
 #include <qjsonarray.h>
 
@@ -29,7 +31,7 @@ namespace Web {
             QList<QNetworkCookie> cookiesList = url.isEmpty() ? allCookies() : cookiesForUrl(url);
             QJsonArray cookiesArray;
             for(auto const & cookie: cookiesList)
-                cookiesArray << QJsonValue::fromVariant(cookie.toRawForm());
+                cookiesArray << QJsonValue(QString(cookie.toRawForm()));
 
             store.insert(COOKIES_KEY, cookiesArray);
         }

@@ -16,8 +16,8 @@ QByteArray Request::headersStr() const {
     QByteArray res;
 
     for(QList<QByteArray>::ConstIterator h = heads.cbegin(); h != heads.cend(); h++) {
-        QByteArray val = request.rawHeader(*h);
-        res = res % (*h) % ' ' % ':' % val % ';' % ' ';
+        QByteArray val = rawHeader(*h);
+        res += (*h) + ' ' + ':' + val + ';' + ' ';
     }
 
     return res;
