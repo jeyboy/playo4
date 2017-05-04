@@ -13,7 +13,8 @@ Response * Response::fromReply(QNetworkReply * reply) {
 
 QByteArray Response::encoding() {
     QByteArray content_type = header(QNetworkRequest::ContentTypeHeader).toByteArray();
-    QList<QByteArray> parts = content_type.split(QByteArrayLiteral("charset="));
+    QList<QByteArray> parts;
+    Utils::split(content_type, QByteArrayLiteral("charset="), parts);
 
     if (parts.length() == 1)
         return QByteArrayLiteral("utf-8");
