@@ -87,6 +87,12 @@ void Manager::setup(const requestType & rtype, const Request & request, RequestP
     }
 }
 
+Response * Manager::setupCallback(QNetworkReply * m_http, RequestParams * params) {
+    asyncRequests.insert(params -> url(), params);
+    connect(m_http, SIGNAL(finished()), this, SLOT(requestFinished()));
+    return Response::fromReply(m_http);
+}
+
 Response * Manager::sendSimple(const requestType & rtype, RequestParams * params) {
     Request request(params);
     setup(rtype, request, params);
@@ -99,7 +105,7 @@ Response * Manager::sendSimple(const requestType & rtype, RequestParams * params
         default: m_http = QNetworkAccessManager::head(request);
     }
 
-    return params -> isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
+    return params -> isAsync() ? setupCallback(m_http, params) : synchronizeRequest(m_http);
 }
 Response * Manager::sendData(const requestType & rtype, RequestDataParams * params) {
     Request request(params);
@@ -113,7 +119,7 @@ Response * Manager::sendData(const requestType & rtype, RequestDataParams * para
         default: return 0; //m_http = QNetworkAccessManager::head(request);
     }
 
-    return params -> isAsync() ? Response::fromReply(m_http) : synchronizeRequest(m_http);
+    return params -> isAsync() ? setupCallback(m_http, params) : synchronizeRequest(m_http);
 }
 
 QNetworkReply * Manager::createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData) {

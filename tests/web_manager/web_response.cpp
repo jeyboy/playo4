@@ -6,7 +6,6 @@
 
 using namespace Web;
 
-// TODO: need correct type conversation
 Response * Response::fromReply(QNetworkReply * reply) {
     return dynamic_cast<Response *>(reply);
 }
@@ -43,9 +42,18 @@ void Response::printHeaders() {
     qDebug() << "------------ END OF LIST ----------------";
 }
 
+QUrl Response::redirectUrl() {
+    QVariant possibleRedirectUrl = attribute(QNetworkRequest::RedirectionTargetAttribute);
+    if (possibleRedirectUrl.isValid()) {
+        QUrl new_url = possibleRedirectUrl.toUrl();
 
+        if (new_url.isRelative())
+            new_url = url().resolved(new_url);
 
+        return new_url;
 
+    } else return QUrl();
+}
 
 Response * Response::followByRedirect(QHash<QUrl, bool> prev_urls) {
     QUrl new_url = redirectUrl();

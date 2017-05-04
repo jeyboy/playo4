@@ -34,20 +34,9 @@ namespace Web {
 //        inline QString paramVal(const QString & param) { return QUrlQuery(url()).queryItemValue(param); }
 
 
-        inline QUrl redirectUrl() {
-            QVariant possibleRedirectUrl = attribute(QNetworkRequest::RedirectionTargetAttribute);
-            if (possibleRedirectUrl.isValid()) {
-                QUrl new_url = possibleRedirectUrl.toUrl();
-
-                if (new_url.isRelative())
-                    new_url = url().resolved(new_url);
-
-                return new_url;
-
-            } else return QUrl();
-        }
-
+        QUrl redirectUrl();
         Response * followByRedirect(QHash<QUrl, bool> prev_urls = QHash<QUrl, bool>());
+
         QUrlQuery toQuery(bool destroy = true);
         QByteArray toBytes(bool destroy = true);
         QString toText(bool destroy = true);

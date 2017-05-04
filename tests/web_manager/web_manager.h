@@ -42,7 +42,7 @@ namespace Web {
         QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
 
         Response * synchronizeRequest(QNetworkReply * m_http);
-
+        Response * setupCallback(QNetworkReply * m_http, RequestParams * params);
         void setup(const requestType & rtype, const Request & request, RequestParams * params);
         Response * sendSimple(const requestType & rtype, RequestParams * params);
         Response * sendData(const requestType & rtype, RequestDataParams * params);
