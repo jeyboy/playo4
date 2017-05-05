@@ -6,10 +6,13 @@
 #include "qnetworkaccessmanager.h"
 //#include "qnetworkproxy.h"
 
+#include "variant_ptr.h"
+
 #include "web_request_params.h"
 #include "web_request.h"
 #include "web_response.h"
 
+#define MANAGER_PROPERTY_NAME "settings"
 #define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
 
 namespace Web {
@@ -36,13 +39,14 @@ namespace Web {
             rt_put
         };
     protected:
-        QHash<QUrl, RequestParams *> asyncRequests;
+//        QHash<QUrl, RequestParams *> asyncRequests;
 
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
         QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
 
         Response * synchronizeRequest(QNetworkReply * m_http);
         Response * setupCallback(QNetworkReply * m_http, RequestParams * params);
+        Response * proceed(QNetworkReply * m_http, RequestParams * params);
         void setup(const requestType & rtype, const Request & request, RequestParams * params);
         Response * sendSimple(const requestType & rtype, RequestParams * params);
         Response * sendData(const requestType & rtype, RequestDataParams * params);
@@ -138,7 +142,9 @@ namespace Web {
     protected slots:
         inline void requestFinished() {
             Response * source = Response::fromReply((QNetworkReply *)sender());
-            RequestParams * params = asyncRequests.take(source -> url());
+            RequestParams * params = VariantPtr<RequestParams>::asPtr(
+                source -> property(MANAGER_PROPERTY_NAME)
+            );/*asyncRequests.take(source -> url());*/
 
             if (params -> isFollowed()) {
                 QUrl new_url = source -> redirectUrl();

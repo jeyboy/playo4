@@ -69,6 +69,11 @@ namespace Web {
             delete headers;
         }
 
+        //TODO: add current url as referrer
+        void prepareForRedirect(const QUrl & new_url) {
+
+        }
+
         void addHeader(const QByteArray & name, const QByteArray & val) {
             if (!headers) headers = new Headers();
 

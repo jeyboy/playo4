@@ -38,4 +38,5 @@ HEADERS += \
     web_response.h \
     web_manager_global.h \
     web_utils.h \
-    web_request_params.h
+    web_request_params.h \
+    variant_ptr.h
