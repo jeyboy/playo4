@@ -150,10 +150,13 @@ namespace Web {
                 QUrl new_url = source -> redirectUrl();
 
                 if (!new_url.isEmpty()) {
-//                    source -> appendHeaders(new_url);
-                    params -> addHeader(QByteArrayLiteral("Referer"), source -> request().rawHeader("Referer"));
-                    params -> url = new_url;
-                    sendGet(params);
+                    RequestParams * current_params = RequestParams::buildRedirectParams(
+                        new_url,
+                        params,
+                        new Headers({ {QByteArrayLiteral("Referer"), source -> url().toString().toUtf8() } }) // source -> request().rawHeader("Referer")
+                    );
+
+                    sendGet(current_params);
                     return;
                 }
             }

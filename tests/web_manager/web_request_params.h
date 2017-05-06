@@ -44,6 +44,22 @@ namespace Web {
             Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) : url(url),
                  rparams(rparams), headers(headers), cookies(cookies), callback(callback) { prepare(); }
 
+
+        static RequestParams * buildRedirectParams(const QUrl & new_url, RequestParams * prev_params, Headers * headers = 0) {
+            Func * prev_callback = prev_params -> callback; prev_params -> callback = 0;
+            Cookies * cookies = prev_params -> cookies;
+
+            prev_params -> erase();
+
+            return new RequestParams(
+                new_url,
+                (RequestParamsFlags)(rp_follow | (prev_params -> rparams & rp_async)),
+                headers,
+                prev_callback,
+                cookies
+            );
+        }
+
         inline bool isAsync() { return rparams & rp_async; }
         inline bool isExtractParams() { return rparams & rp_extract_params_to_payload; }
         inline bool isPrintParams() { return rparams & rp_print_params; }
@@ -69,16 +85,11 @@ namespace Web {
             delete headers;
         }
 
-        //TODO: add current url as referrer
-        void prepareForRedirect(const QUrl & new_url) {
+//        void addHeader(const QByteArray & name, const QByteArray & val) {
+//            if (!headers) headers = new Headers();
 
-        }
-
-        void addHeader(const QByteArray & name, const QByteArray & val) {
-            if (!headers) headers = new Headers();
-
-            headers -> insert(name, val);
-        }
+//            headers -> insert(name, val);
+//        }
     };
 
     struct WEBMANAGERSHARED_EXPORT RequestDataParams : public RequestParams {

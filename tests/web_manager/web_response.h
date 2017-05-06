@@ -27,10 +27,10 @@ namespace Web {
         void printHeaders();
 
 
-        inline void appendHeaders(QUrl & url) {
-            QString urlStr = QStringLiteral("%1\r\nReferer: %2").arg(url.toString(), QString(request().rawHeader("Referer")));
-            url = QUrl(urlStr);
-        }
+//        inline void appendHeaders(QUrl & url) {
+//            QString urlStr = QStringLiteral("%1\r\nReferer: %2").arg(url.toString(), QString(request().rawHeader("Referer")));
+//            url = QUrl(urlStr);
+//        }
 //        inline QString paramVal(const QString & param) { return QUrlQuery(url()).queryItemValue(param); }
 
 

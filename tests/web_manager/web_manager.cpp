@@ -95,7 +95,13 @@ Response * Manager::setupCallback(QNetworkReply * m_http, RequestParams * params
 
 Response * Manager::proceed(QNetworkReply * m_http, RequestParams * params) {
     m_http -> setProperty(MANAGER_PROPERTY_NAME, VariantPtr<RequestParams>::asQVariant(params));
-    return params -> isAsync() ? setupCallback(m_http, params) : synchronizeRequest(m_http);
+
+    if (params -> isAsync())
+        return setupCallback(m_http, params);
+    else {
+        Response * resp = synchronizeRequest(m_http);
+        return params -> isFollowed() ? resp -> followByRedirect() : resp;
+    }
 }
 
 Response * Manager::sendSimple(const requestType & rtype, RequestParams * params) {

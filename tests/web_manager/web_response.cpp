@@ -57,14 +57,27 @@ QUrl Response::redirectUrl() {
 
 Response * Response::followByRedirect(QHash<QUrl, bool> prev_urls) {
     QUrl new_url = redirectUrl();
+
     if (!new_url.isEmpty()) {
         if (prev_urls.contains(new_url)) return this;
         else prev_urls.insert(new_url, true);
 
-        appendHeaders(new_url);
+//        appendHeaders(new_url);
+
+        RequestParams * params = VariantPtr<RequestParams>::asPtr(
+            property(MANAGER_PROPERTY_NAME)
+        );
+
+        RequestParams * current_params = RequestParams::buildRedirectParams(
+            new_url,
+            params,
+            new Headers({ {QByteArrayLiteral("Referer"), url().toString().toUtf8() } }) // source -> request().rawHeader("Referer")
+        );
+
         deleteLater();
-        return ((Manager *)manager()) -> requestTo(new_url).viaGet() -> followByRedirect(prev_urls);
+        return ((Manager *)manager()) -> sendGet(current_params);
     }
+
 
     return this;
 }
