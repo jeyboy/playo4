@@ -20,7 +20,8 @@
     #define DEFAULT_AGENT QByteArrayLiteral("Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/50.0")
 #endif
 
-#define DEFAULT_REQUEST_PARAMS RequestParams::rp_extract_params_to_payload
+#define DEFAULT_REQUEST_PARAMS RequestParams::rp_destroy
+#define DEFAULT_FORM_REQUEST_PARAMS (RequestParams::RequestParamsFlags)(RequestParams::rp_extract_params_to_payload | DEFAULT_REQUEST_PARAMS)
 
 namespace Web {
     struct WEBMANAGERSHARED_EXPORT RequestParams {
@@ -31,7 +32,8 @@ namespace Web {
             rp_attach_agent,
             rp_extract_params_to_payload,
             rp_print_params,
-            rp_has_payload
+            rp_has_payload,
+            rp_destroy // destroy params after request
         };
 
         QUrl url;
@@ -40,7 +42,7 @@ namespace Web {
         Cookies * cookies;
         Func * callback;
 
-        RequestParams(const QUrl & url, const RequestParamsFlags & rparams = rp_none,
+        RequestParams(const QUrl & url, const RequestParamsFlags & rparams = DEFAULT_REQUEST_PARAMS,
             Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) : url(url),
                  rparams(rparams), headers(headers), cookies(cookies), callback(callback) { prepare(); }
 
@@ -66,6 +68,7 @@ namespace Web {
         inline bool isHasPayload() { return rparams & rp_has_payload; }
         inline bool isFollowed() { return rparams & rp_follow; }
         inline bool isHasCallback() { return callback != 0; }
+        inline bool isDestroy() { return rparams & rp_destroy; }
 
         void prepare() {
             if (rparams & rp_attach_agent) {
@@ -81,8 +84,10 @@ namespace Web {
         }
 
         void erase() {
-            delete callback;
-            delete headers;
+            if (isDestroy()) {
+                delete callback;
+                delete headers;
+            }
         }
 
 //        void addHeader(const QByteArray & name, const QByteArray & val) {
@@ -97,7 +102,7 @@ namespace Web {
 
 //        static RequestDataParams & fromParams(RequestParams & params) { return dynamic_cast<RequestDataParams &>(params); }
 
-        RequestDataParams(const QUrl & url, const RequestParamsFlags & rparams = DEFAULT_REQUEST_PARAMS,
+        RequestDataParams(const QUrl & url, const RequestParamsFlags & rparams = DEFAULT_FORM_REQUEST_PARAMS,
             const QByteArray & data = QByteArray(), const QByteArray & content_type = FORM_URLENCODE,
             Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) :
                 RequestParams(url, (RequestParamsFlags)(rparams | rp_has_payload), headers, callback, cookies), data(data) { prepare(content_type); }

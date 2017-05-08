@@ -1,32 +1,34 @@
 #include <QString>
 #include <QtTest>
+#include <QSignalSpy>
 #include <qdebug.h>
 
 #include "web_manager.h"
 
 //http://httpbin.org/ip Returns Origin IP.
 //http://httpbin.org/user-agent Returns user-agent.
-//http://httpbin.org/headers Returns header dict.
-//http://httpbin.org/get Returns GET data.
-//http://httpbin.org/post Returns POST data.
-//http://httpbin.org/put Returns PUT data.
-//http://httpbin.org/delete Returns DELETE data
 //http://httpbin.org/gzip Returns gzip-encoded data.
-//http://httpbin.org/status/:code Returns given HTTP Status code.
-//http://httpbin.org/response-headers?key=val Returns given response headers.
-//http://httpbin.org/redirect/:n 302 Redirects n times.
-//http://httpbin.org/relative-redirect/:n 302 Relative redirects n times.
-//http://httpbin.org/cookies Returns cookie data.
-//http://httpbin.org/cookies/set/:name/:value Sets a simple cookie.
 //http://httpbin.org/basic-auth/:user/:passwd Challenges HTTPBasic Auth.
 //http://httpbin.org/hidden-basic-auth/:user/:passwd 404'd BasicAuth.
 //http://httpbin.org/digest-auth/:qop/:user/:passwd Challenges HTTP Digest Auth.
 //http://httpbin.org/stream/:n Streams n–100 lines.
-//http://httpbin.org/delay/:n Delays responding for n–10 seconds.
 
 
+#define GET_TEST_URL QUrl(QStringLiteral("http://httpbin.org/get"))
 #define POST_TEST_URL QUrl(QStringLiteral("http://httpbin.org/post"))
+#define PUT_TEST_URL QUrl(QStringLiteral("http://httpbin.org/put"))
+#define DELETE_TEST_URL QUrl(QStringLiteral("http://httpbin.org/delete"))
 
+//http://httpbin.org/response-headers?key=val Returns given response headers.
+#define HEADERS_TEST_URL QUrl(QStringLiteral("http://httpbin.org/headers"))
+#define STATUS_TEST_URL(code) QUrl(QStringLiteral("http://httpbin.org/status/") + QString::number(code))
+#define REDIRECT_TEST_URL(times) QUrl(QStringLiteral("http://httpbin.org/redirect/") + QString::number(times))
+#define REL_REDIRECT_TEST_URL(times) QUrl(QStringLiteral("http://httpbin.org/relative-redirect/") + QString::number(times))
+
+#define COOKIES_TEST_URL QUrl(QStringLiteral("http://httpbin.org/cookies"))
+#define COOKIE_TEST_URL(name, val) QUrl(QStringLiteral("http://httpbin.org/cookies/set/") + name + '/' + value)
+
+#define DELAY_TEST_URL(secs) QUrl(QStringLiteral("http://httpbin.org/delay/") + QString::number(secs))
 
 #define HTML_TEST_URL QUrl(QStringLiteral("http://google.com"))
 #define JSON_TEST_URL QUrl(QStringLiteral("http://ip.jsontest.com/"))
@@ -35,20 +37,44 @@
 
 #define IMAGE_TEST_URL QUrl(QStringLiteral("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"))
 
+using namespace Web;
 
 class WebManagerTest : public QObject {
     Q_OBJECT
-
 public:
     WebManagerTest();
 
 private Q_SLOTS:
-    void testFeatures();
+    void testSyncGet();
+    void testSyncPost();
+    void testSyncPut();
+    void testSyncDelete();
 };
 
 WebManagerTest::WebManagerTest() {}
 
-void WebManagerTest::testFeatures() {
+void WebManagerTest::testSyncGet() {
+    RequestParams * params = new RequestParams(GET_TEST_URL);
+    Response * resp = Manager::procGet(params);
+    qDebug() << resp -> toText();
+    QVERIFY2(true, "Failure");
+}
+void WebManagerTest::testSyncPost() {
+    RequestDataParams * params = new RequestDataParams(POST_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS);
+    Response * resp = Manager::procPost(params);
+    qDebug() << resp -> toText();
+    QVERIFY2(true, "Failure");
+}
+void WebManagerTest::testSyncPut() {
+    RequestDataParams * params = new RequestDataParams(PUT_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS);
+    Response * resp = Manager::procPost(params);
+    qDebug() << resp -> toText();
+    QVERIFY2(true, "Failure");
+}
+void WebManagerTest::testSyncDelete() {
+    RequestParams * params = new RequestParams(DELETE_TEST_URL);
+    Response * resp = Manager::procDelete(params);
+    qDebug() << resp -> toText();
     QVERIFY2(true, "Failure");
 }
 

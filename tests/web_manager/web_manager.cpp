@@ -112,7 +112,7 @@ Response * Manager::sendSimple(const requestType & rtype, RequestParams * params
 
     switch(rtype) {
         case rt_get: { m_http = QNetworkAccessManager::get(request); break; }
-        case rt_head: { m_http = QNetworkAccessManager::head(request); break; }
+        case rt_delete: { m_http = QNetworkAccessManager::deleteResource(request); break; }
         default: m_http = QNetworkAccessManager::head(request);
     }
 
