@@ -30,38 +30,69 @@ Manager::Manager(QObject * parent, QSsl::SslProtocol protocol, QSslSocket::PeerV
 }
 
 Response * Manager::synchronizeRequest(QNetworkReply * m_http) {
-//            QTimer timer;
-//            timer.setSingleShot(true);
-
-    QEventLoop loop;
-//            connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
-    connect(m_http, SIGNAL(finished()), &loop, SLOT(quit()));
-//            timer.start(10000);   // 10 secs. timeout
-    loop.exec();
-
-    //    if(timer.isActive()) {
-    //        timer.stop();
-    //        if(m_http -> error() > 0) {
-    //          ... // handle error
-    //        }
-    //        else {
-    //          int v = m_http -> attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-
-    //          if (v >= 200 && v < 300) {  // Success
-    //            ...
-    //          }
-    //        }
-    //    } else {
-    //       // timeout
-    //       disconnect(m_http, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    //       m_http -> abort();
-    //    }
+    //            QTimer timer;
+    //            timer.setSingleShot(true);
+    
+        QEventLoop loop;
+    //            connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+        connect(m_http, SIGNAL(finished()), &loop, SLOT(quit()));
+    //            timer.start(10000);   // 10 secs. timeout
+        loop.exec();
+    
+        //    if(timer.isActive()) {
+        //        timer.stop();
+        //        if(m_http -> error() > 0) {
+        //          ... // handle error
+        //        }
+        //        else {
+        //          int v = m_http -> attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    
+        //          if (v >= 200 && v < 300) {  // Success
+        //            ...
+        //          }
+        //        }
+        //    } else {
+        //       // timeout
+        //       disconnect(m_http, SIGNAL(finished()), &loop, SLOT(quit()));
+    
+        //       m_http -> abort();
+        //    }
 
     if (m_http -> error() == Response::HostNotFoundError)
         WebConnection::obj().check();
 
     return Response::fromReply(m_http);
+}
+
+void Manager::requestFinished() {
+    Response * source = Response::fromReply((QNetworkReply *)sender());
+    RequestParams * params = VariantPtr<RequestParams>::asPtr(
+        source -> property(MANAGER_PROPERTY_NAME)
+    );/*asyncRequests.take(source -> url());*/
+
+    if (params -> isFollowed()) {
+        QUrl new_url = source -> redirectUrl();
+
+        if (!new_url.isEmpty()) {
+            RequestParams * current_params = RequestParams::buildRedirectParams(
+                new_url,
+                params,
+                new Headers({ {QByteArrayLiteral("Referer"), source -> url().toString().toUtf8() } }) // source -> request().rawHeader("Referer")
+            );
+
+            sendGet(current_params);
+            return;
+        }
+    }
+
+    QMetaObject::invokeMethod(
+        params -> callback -> obj,
+        params -> callback -> slot,
+        Q_ARG(Response *, source),
+        Q_ARG(void *, params -> callback -> user_data)
+    );
+
+    params -> erase();
 }
 
 void Manager::setup(const requestType & rtype, const Request & request, RequestParams * params) {
@@ -87,7 +118,7 @@ void Manager::setup(const requestType & rtype, const Request & request, RequestP
     }
 }
 
-Response * Manager::setupCallback(QNetworkReply * m_http, RequestParams * params) {
+Response * Manager::setupCallback(QNetworkReply * m_http, RequestParams * /*params*/) {
 //    asyncRequests.insert(params -> url(), params);
     connect(m_http, SIGNAL(finished()), this, SLOT(requestFinished()));
     return Response::fromReply(m_http);

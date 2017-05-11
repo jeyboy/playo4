@@ -27,13 +27,13 @@ namespace Web {
     struct WEBMANAGERSHARED_EXPORT RequestParams {
         enum RequestParamsFlags {
             rp_none = 0,
-            rp_follow,
-            rp_async,
-            rp_attach_agent,
-            rp_extract_params_to_payload,
-            rp_print_params,
-            rp_has_payload,
-            rp_destroy // destroy params after request
+            rp_follow = 1,
+            rp_async = 1 << 1,
+            rp_attach_agent = 1 << 2,
+            rp_extract_params_to_payload = 1 << 3,
+            rp_print_params = 1 << 4,
+            rp_has_payload = 1 << 5,
+            rp_destroy = 1 << 6 // destroy params after request
         };
 
         QUrl url;
@@ -100,7 +100,7 @@ namespace Web {
     struct WEBMANAGERSHARED_EXPORT RequestDataParams : public RequestParams {
         QByteArray data;
 
-//        static RequestDataParams & fromParams(RequestParams & params) { return dynamic_cast<RequestDataParams &>(params); }
+//        static RequestDataParams & fromParams(RequestParams & params) { return reinterpret_cast<RequestDataParams &>(params); }
 
         RequestDataParams(const QUrl & url, const RequestParamsFlags & rparams = DEFAULT_FORM_REQUEST_PARAMS,
             const QByteArray & data = QByteArray(), const QByteArray & content_type = FORM_URLENCODE,

@@ -44,6 +44,11 @@ class WebManagerTest : public QObject {
 public:
     WebManagerTest();
 
+protected:
+    void instantiateThread() {
+        Manager::setMainThreadSync(qApp -> thread());
+    }
+
 private Q_SLOTS:
     void testSyncGet();
     void testSyncPost();
@@ -78,6 +83,69 @@ void WebManagerTest::testSyncDelete() {
     QVERIFY2(true, "Failure");
 }
 
-QTEST_APPLESS_MAIN(WebManagerTest)
+QTEST_GUILESS_MAIN(WebManagerTest) // QTEST_APPLESS_MAIN // QTEST_MAIN
 
 #include "main.moc"
+
+
+
+/////////////////////////////////////////////
+////head  file
+/////////////////////////////////////////////
+//#include <QHttp>
+//#include <QHttpResponseHeader>
+//#include <QString>
+//class hp:public QHttp
+//{
+//    Q_OBJECT
+//public:
+//    hp();
+//    QString data;
+//signals:
+//    void ok();
+//public slots:
+//    void done(bool);
+//};
+
+/////////////////////////////////////////////
+////cpp file
+/////////////////////////////////////////////
+//#include <QDebug>
+//#include "hp.h"
+//hp::hp()
+//{
+//   connect(this, SIGNAL(done(bool)), this, SLOT(done(bool)));
+
+//}
+//void hp::done( bool)
+//{
+//    data=readAll().mid(0,10);
+//    qDebug()<<data<<endl;
+//    emit ok();
+//}
+
+////////////////////////////////////////
+//// test main
+////////////////////////////////////////
+//#include <QtTest>
+//#include <QtCore>
+// #include <QSignalSpy>
+//#include "hp.h"
+
+//class testDate: public QObject
+//{
+//   Q_OBJECT
+//private slots:
+//   void testValidity();
+//};
+
+//void testDate::testValidity()
+//{
+//    hp h;
+//    h.setHost("webserver");
+//    h.get("url");
+//    QSignalSpy spy(&h, SIGNAL(ok()));
+//    while (spy.count() == 0)
+//        QTest::qWait(200);
+//    QVERIFY( h.data == "expected data" );
+//}

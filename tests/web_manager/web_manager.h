@@ -44,14 +44,14 @@ namespace Web {
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
         QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
 
-        Response * synchronizeRequest(QNetworkReply * m_http);
         Response * setupCallback(QNetworkReply * m_http, RequestParams * params);
         Response * proceed(QNetworkReply * m_http, RequestParams * params);
+        Response * synchronizeRequest(QNetworkReply * m_http);
         void setup(const requestType & rtype, const Request & request, RequestParams * params);
         Response * sendSimple(const requestType & rtype, RequestParams * params);
         Response * sendData(const requestType & rtype, RequestDataParams * params);
     public:
-//        QApplication::instance() -> thread()
+//        qApp -> thread()
         static void setMainThreadSync(QThread * main) { main_thread = main; }
 
         static Manager * prepare();
@@ -140,36 +140,7 @@ namespace Web {
 //        Response * sendCustom(RequestParams * params) { return sendSimple(rt_custom, params); }
 
     protected slots:
-        inline void requestFinished() {
-            Response * source = Response::fromReply((QNetworkReply *)sender());
-            RequestParams * params = VariantPtr<RequestParams>::asPtr(
-                source -> property(MANAGER_PROPERTY_NAME)
-            );/*asyncRequests.take(source -> url());*/
-
-            if (params -> isFollowed()) {
-                QUrl new_url = source -> redirectUrl();
-
-                if (!new_url.isEmpty()) {
-                    RequestParams * current_params = RequestParams::buildRedirectParams(
-                        new_url,
-                        params,
-                        new Headers({ {QByteArrayLiteral("Referer"), source -> url().toString().toUtf8() } }) // source -> request().rawHeader("Referer")
-                    );
-
-                    sendGet(current_params);
-                    return;
-                }
-            }
-
-            QMetaObject::invokeMethod(
-                params -> callback -> obj,
-                params -> callback -> slot,
-                Q_ARG(Response *, source),
-                Q_ARG(void *, params -> callback -> user_data)
-            );
-
-            params -> erase();
-        }
+        void requestFinished();
     };
 
     class WEBMANAGERSHARED_EXPORT ManagerController : public QObject {

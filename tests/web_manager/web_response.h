@@ -5,7 +5,7 @@
 
 #include <qnetworkreply.h>
 
-#include "html_page.h"
+//#include "html_page.h"
 
 #include <qjsonobject.h>
 #include <qjsonarray.h>
@@ -35,7 +35,7 @@ namespace Web {
         QByteArray toBytes(bool destroy = true);
         QString toText(bool destroy = true);
         QJsonObject toJson(const QString & wrap = QString(), bool destroy = true);
-        Html::Page toHtml(bool destroy = true);
+//        Html::Page toHtml(bool destroy = true);
         QPixmap toPixmap(bool destroy = true);
         QUrl toUrl(bool destroy = true);
         QUrl toRedirectUrl(bool destroy = true);

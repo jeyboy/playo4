@@ -7,7 +7,7 @@
 using namespace Web;
 
 Response * Response::fromReply(QNetworkReply * reply) {
-    return dynamic_cast<Response *>(reply);
+    return reinterpret_cast<Response *>(reply);
 }
 
 QByteArray Response::encoding() {
@@ -142,14 +142,14 @@ QUrl Response::toUrl(bool destroy) {
     return uri;
 }
 
-Html::Page Response::toHtml(bool destroy) {
-    if (error()) qCritical() << "IOERROR" << error() << url();
+//Html::Page Response::toHtml(bool destroy) {
+//    if (error()) qCritical() << "IOERROR" << error() << url();
 
-    QByteArray enc = encoding();
-    Html::Page doc(this, Html::Decoding::charsetType(enc));
-    if (destroy) deleteLater();
-    return doc;
-}
+//    QByteArray enc = encoding();
+//    Html::Page doc(this, Html::Decoding::charsetType(enc));
+//    if (destroy) deleteLater();
+//    return doc;
+//}
 
 QUrl Response::toRedirectUrl(bool destroy) {
     if (error()) qCritical() << "IOERROR" << error() << url();
