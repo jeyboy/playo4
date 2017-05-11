@@ -6,20 +6,74 @@
 
 using namespace Web;
 
+QHash<QByteArray, Response::ResponseType> Response::response_predefined_types = {
+    {QByteArrayLiteral("text/html"), Response::rt_html },
+    {QByteArrayLiteral(""), Response::rt_js },
+    {QByteArrayLiteral("application/json"), Response::rt_json }
+};
+
 Response * Response::fromReply(QNetworkReply * reply) {
     return reinterpret_cast<Response *>(reply);
 }
 
-QByteArray Response::encoding() {
+void Response::initInfoFromContentHeader() {
     QByteArray content_type = header(QNetworkRequest::ContentTypeHeader).toByteArray();
-    QList<QByteArray> parts;
-    Utils::split(content_type, QByteArrayLiteral("charset="), parts);
+    QList<QByteArray> type_parts = content_type.split(';');
 
-    if (parts.length() == 1)
-        return QByteArrayLiteral("utf-8");
-    else
-        return parts.last();
+    qDebug() << type_parts;
+
+    setProperty(
+        RESPONSE_TYPE_PROPERTY,
+        response_predefined_types.contains(type_parts[0]) ? response_predefined_types[type_parts[0]] : rt_unknown
+    );
+
+    if (type_parts.length() == 1) {
+        setProperty(RESPONSE_ENCODING_PROPERTY, DEFAULT_ENCODING);
+    } else {
+        QList<QByteArray> parts;
+        Utils::split(type_parts.last(), QByteArrayLiteral("charset="), parts);
+
+        setProperty(RESPONSE_ENCODING_PROPERTY, parts.length() == 1 ? DEFAULT_ENCODING : parts.last());
+    }
 }
+
+Response::ResponseType Response::reponseType() {
+    int res = property(RESPONSE_TYPE_PROPERTY).toInt();
+    if (res == rt_none) {
+        initInfoFromContentHeader();
+        res = property(RESPONSE_TYPE_PROPERTY).toInt();
+    }
+    return (ResponseType)res;
+}
+QByteArray Response::encoding() {
+    QByteArray res = property(RESPONSE_ENCODING_PROPERTY).toByteArray();
+    if (res.isEmpty()) {
+        initInfoFromContentHeader();
+        res = property(RESPONSE_ENCODING_PROPERTY).toByteArray();
+    }
+    return res;
+}
+
+//QByteArray Response::encoding() {
+//    QByteArray content_type = header(QNetworkRequest::ContentTypeHeader).toByteArray();
+//    QList<QByteArray> type_parts = content_type.split(';');
+
+//    qDebug() << type_parts;
+
+////    rtype = response_predefined_types.contains(type_parts[0]) ? response_predefined_types[type_parts[0]] : rt_unknown;
+
+//    if (type_parts.length() == 1) {
+//        return DEFAULT_ENCODING;
+//    } else {
+//        QList<QByteArray> parts;
+//        Utils::split(type_parts.last(), QByteArrayLiteral("charset="), parts);
+
+//        if (parts.length() == 1)
+//            return DEFAULT_ENCODING;
+//        else
+//            return parts.last();
+//    }
+//}
 
 Response * Response::print() {
     qDebug() << "-------------------------";

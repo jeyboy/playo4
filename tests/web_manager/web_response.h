@@ -12,15 +12,28 @@
 #include <qjsondocument.h>
 #include <qpixmap.h>
 
+#define DEFAULT_ENCODING QByteArrayLiteral("utf-8")
+#define RESPONSE_TYPE_PROPERTY QByteArrayLiteral("resp_type")
+#define RESPONSE_ENCODING_PROPERTY QByteArrayLiteral("resp_enc")
+
 namespace Web {
     class WEBMANAGERSHARED_EXPORT Response : public QNetworkReply {
+        void initInfoFromContentHeader();
     public:
+        enum ResponseType {
+            rt_none = 0,
+            rt_unknown,
+            rt_html,
+            rt_json,
+            rt_js
+        };
+
         static Response * fromReply(QNetworkReply * reply);
 
         inline int statusCode() const { return attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt(); }
         inline bool hasErrors() { return error() != NoError; }
         inline void setUrl(const QUrl & url) { QNetworkReply::setUrl(url); }
-
+        ResponseType reponseType();
         QByteArray encoding();
 
         Response * print();
@@ -48,6 +61,8 @@ namespace Web {
 
             return QString();
         }
+    protected:
+        static QHash<QByteArray, ResponseType> response_predefined_types;
     };
 }
 
