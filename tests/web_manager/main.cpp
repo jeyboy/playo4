@@ -51,9 +51,9 @@ protected:
 
 private Q_SLOTS:
     void testSyncGet();
+    void testSyncDelete();
     void testSyncPost();
     void testSyncPut();
-    void testSyncDelete();
 };
 
 WebManagerTest::WebManagerTest() {}
@@ -61,24 +61,25 @@ WebManagerTest::WebManagerTest() {}
 void WebManagerTest::testSyncGet() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
     Response * resp = Manager::procGet(params);
-    qDebug() << resp -> toText();
-    QVERIFY2(true, "Failure");
-}
-void WebManagerTest::testSyncPost() {
-    RequestDataParams * params = new RequestDataParams(POST_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS);
-    Response * resp = Manager::procPost(params);
-    qDebug() << resp -> toText();
-    QVERIFY2(true, "Failure");
-}
-void WebManagerTest::testSyncPut() {
-    RequestDataParams * params = new RequestDataParams(PUT_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS);
-    Response * resp = Manager::procPost(params);
-    qDebug() << resp -> toText();
+    qDebug() << resp -> toJson();
     QVERIFY2(true, "Failure");
 }
 void WebManagerTest::testSyncDelete() {
     RequestParams * params = new RequestParams(DELETE_TEST_URL);
     Response * resp = Manager::procDelete(params);
+    qDebug() << resp -> toJson();
+    QVERIFY2(true, "Failure");
+}
+
+void WebManagerTest::testSyncPost() {
+    RequestDataParams * params = new RequestDataParams(POST_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS, QByteArrayLiteral("b=2"));
+    Response * resp = Manager::procPost(params);
+    qDebug() << resp -> toText();
+    QVERIFY2(true, "Failure");
+}
+void WebManagerTest::testSyncPut() {
+    RequestDataParams * params = new RequestDataParams(PUT_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS, QByteArrayLiteral("a=1"));
+    Response * resp = Manager::procPost(params);
     qDebug() << resp -> toText();
     QVERIFY2(true, "Failure");
 }

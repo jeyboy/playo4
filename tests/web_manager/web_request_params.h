@@ -4,6 +4,7 @@
 #include <qurl.h>
 
 #include "func.h"
+#include "variant_convertor.h"
 
 #include "web_manager_global.h"
 #include "web_headers.h"
@@ -61,6 +62,24 @@ namespace Web {
                 cookies
             );
         }
+
+        void attachParam(const QByteArray & name, const QVariant & val) {
+            QUrlQuery query = QUrlQuery(url.query());
+            query.addQueryItem(name, VariantConvertor::toStr(val));
+            url.setQuery(query);
+        }
+
+        void attachParams(const std::initializer_list<std::pair<QByteArray, QVariant> > & params) {
+            QUrlQuery query = QUrlQuery(url.query());
+
+            for (typename std::initializer_list<std::pair<QByteArray, QVariant> >::const_iterator it = params.begin(); it != params.end(); ++it) {
+                query.addQueryItem(it -> first, VariantConvertor::toStr(it -> second));
+            }
+
+            url.setQuery(query);
+        }
+
+
 
         inline bool isAsync() { return rparams & rp_async; }
         inline bool isExtractParams() { return rparams & rp_extract_params_to_payload; }

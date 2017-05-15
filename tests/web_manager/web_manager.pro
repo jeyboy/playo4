@@ -25,9 +25,11 @@ SOURCES += main.cpp \
     web_manager.cpp \
     web_cookies.cpp \
     web_request.cpp \
-    web_response.cpp
+    web_response.cpp \
+    variant_convertor.cpp
 
 HEADERS += \
+    defines.h \
     singleton.h \
     web_connection.h \
     web_headers.h \
@@ -39,4 +41,5 @@ HEADERS += \
     web_manager_global.h \
     web_utils.h \
     web_request_params.h \
-    variant_ptr.h
+    variant_ptr.h \
+    variant_convertor.h
