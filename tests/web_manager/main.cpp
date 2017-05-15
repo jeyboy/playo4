@@ -37,6 +37,14 @@
 
 #define IMAGE_TEST_URL QUrl(QStringLiteral("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"))
 
+#define ARGS_KEY QByteArrayLiteral("args")
+
+#define TEST1_KEY QByteArrayLiteral("test1")
+#define TEST2_KEY QByteArrayLiteral("test2")
+
+#define TEST1_VAL QByteArrayLiteral("test1val")
+#define TEST2_VAL QByteArrayLiteral("test2val")
+
 using namespace Web;
 
 class WebManagerTest : public QObject {
@@ -50,6 +58,9 @@ protected:
     }
 
 private Q_SLOTS:
+    void testAttachParam();
+    void testAttachParams();
+
     void testSyncGet();
     void testSyncDelete();
     void testSyncPost();
@@ -57,6 +68,29 @@ private Q_SLOTS:
 };
 
 WebManagerTest::WebManagerTest() {}
+
+void WebManagerTest::testAttachParam() {
+    RequestParams * params = new RequestParams(GET_TEST_URL);
+    params -> attachParam(TEST1_KEY, TEST1_VAL);
+    Response * resp = Manager::procGet(params);
+    QJsonObject json = resp -> toJson();
+
+    QString val = json.value(ARGS_KEY).toObject().value(TEST1_KEY).toString();
+
+    QVERIFY2(
+        val.mid(1, val.length() - 2) == TEST1_VAL,
+        "Failure"
+    );
+}
+void WebManagerTest::testAttachParams() {
+    RequestParams * params = new RequestParams(GET_TEST_URL);
+    params -> attachParams({
+        {}
+    });
+    Response * resp = Manager::procGet(params);
+    qDebug() << resp -> toJson();
+    QVERIFY2(true, "Failure");
+}
 
 void WebManagerTest::testSyncGet() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
