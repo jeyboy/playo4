@@ -8,7 +8,7 @@ using namespace Web;
 
 QHash<QByteArray, Response::ResponseType> Response::response_predefined_types = {
     {QByteArrayLiteral("text/html"), Response::rt_html },
-    {QByteArrayLiteral(""), Response::rt_js },
+    {QByteArrayLiteral("application/javascript"), Response::rt_js },
     {QByteArrayLiteral("application/json"), Response::rt_json }
 };
 
@@ -134,20 +134,20 @@ Response * Response::followByRedirect(QHash<QUrl, bool> prev_urls) {
     return this;
 }
 
-QUrlQuery Response::toQuery(bool destroy) {
+QUrlQuery Response::toQuery(const bool & destroy) {
     QByteArray ar = readAll();
     if (destroy) deleteLater();
     return QUrlQuery(QUrl::fromPercentEncoding(ar));
 }
 
-QByteArray Response::toBytes(bool destroy) {
+QByteArray Response::toBytes(const bool & destroy) {
     QByteArray ar = readAll();
     printHeaders();
     if (destroy) deleteLater();
     return ar;
 }
 
-QString Response::toText(bool destroy) {
+QString Response::toText(const bool & destroy) {
     QByteArray ar = readAll();
     QByteArray enc = encoding();
     qDebug() << "ENC" << enc;
@@ -157,7 +157,7 @@ QString Response::toText(bool destroy) {
 
     return codec -> toUnicode(ar);
 }
-QJsonObject Response::toJson(const QString & wrap, bool destroy) { //TODO: enc not used yet
+Json Response::toJson(const QString & wrap, const bool & destroy) { //TODO: enc not used yet
     QByteArray ar = readAll();
 
     if (error()) {
@@ -165,21 +165,23 @@ QJsonObject Response::toJson(const QString & wrap, bool destroy) { //TODO: enc n
         qCritical() << ar;
     }
 
-    QByteArray header = rawHeader("Content-Type");
+    ResponseType rtype = reponseType();
 
-    if (header.startsWith("application/json") || header.startsWith("application/javascript")) {
-//                ar.replace('\'', '"'); // ' wraps responds to errors on parsing // need to replace ' with "
+    if (rtype == rt_json || rtype == rt_js) {
+//       ar.replace('\'', '"'); // ' wraps responds to errors on parsing // need to replace ' with "
         if (!wrap.isEmpty()) { ar.prepend(QStringLiteral("{\"%1\":").arg(wrap).toUtf8()); ar.append("}"); }
         if (destroy) deleteLater();
-        QJsonParseError err;
-        QJsonObject ret =  QJsonDocument::fromJson(ar, &err).object();
-        if (err.error == QJsonParseError::NoError) return ret;
+
+        QString err;
+        Json res = Json::fromJsonStr(ar, err);
+        if (err.isEmpty()) return res;
+        qCritical() << "JSON PARSING ERR" << err;
     }
 
     qCritical() << "NOT JSON" << rawHeader("Content-Type");
     return QJsonObject {{JSON_ERR_FIELD, QString(ar)}};
 }
-QPixmap Response::toPixmap(bool destroy) {
+QPixmap Response::toPixmap(const bool & destroy) {
     if (error()) qCritical() << "IOERROR" << error() << url();
 
     QPixmap image;
@@ -188,7 +190,7 @@ QPixmap Response::toPixmap(bool destroy) {
     return image;
 }
 
-QUrl Response::toUrl(bool destroy) {
+QUrl Response::toUrl(const bool & destroy) {
     if (error()) qCritical() << "IOERROR" << error() << url();
 
     QUrl uri = url();
@@ -196,16 +198,16 @@ QUrl Response::toUrl(bool destroy) {
     return uri;
 }
 
-//Html::Page Response::toHtml(bool destroy) {
-//    if (error()) qCritical() << "IOERROR" << error() << url();
+Html::Page Response::toHtml(const bool & destroy) {
+    if (error()) qCritical() << "IOERROR" << error() << url();
 
-//    QByteArray enc = encoding();
-//    Html::Page doc(this, Html::Decoding::charsetType(enc));
-//    if (destroy) deleteLater();
-//    return doc;
-//}
+    QByteArray enc = encoding();
+    Html::Page doc(this, Html::Decoding::charsetType(enc));
+    if (destroy) deleteLater();
+    return doc;
+}
 
-QUrl Response::toRedirectUrl(bool destroy) {
+QUrl Response::toRedirectUrl(const bool & destroy) {
     if (error()) qCritical() << "IOERROR" << error() << url();
 
     QUrl uri = redirectUrl();

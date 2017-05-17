@@ -5,11 +5,8 @@
 
 #include <qnetworkreply.h>
 
-//#include "html_page.h"
-
-#include <qjsonobject.h>
-#include <qjsonarray.h>
-#include <qjsondocument.h>
+#include "html_page.h"
+#include "json.h"
 #include <qpixmap.h>
 
 #define DEFAULT_ENCODING QByteArrayLiteral("utf-8")
@@ -44,15 +41,15 @@ namespace Web {
         QUrl redirectUrl();
         Response * followByRedirect(QHash<QUrl, bool> prev_urls = QHash<QUrl, bool>());
 
-        QUrlQuery toQuery(bool destroy = true);
-        QByteArray toBytes(bool destroy = true);
-        QString toText(bool destroy = true);
-        QJsonObject toJson(const QString & wrap = QString(), bool destroy = true);
-//        Html::Page toHtml(bool destroy = true);
-        QPixmap toPixmap(bool destroy = true);
-        QUrl toUrl(bool destroy = true);
-        QUrl toRedirectUrl(bool destroy = true);
-        QString toHeader(const QString & header_field, bool destroy = true) {
+        QUrlQuery toQuery(const bool & destroy = true);
+        QByteArray toBytes(const bool & destroy = true);
+        QString toText(const bool &  destroy = true);
+        Json toJson(const QString & wrap = QString(), const bool &  destroy = true);
+        Html::Page toHtml(const bool &  = true);
+        QPixmap toPixmap(const bool &  destroy = true);
+        QUrl toUrl(const bool &  destroy = true);
+        QUrl toRedirectUrl(const bool &  destroy = true);
+        QString toHeader(const QString & header_field, const bool &  destroy = true) {
             QByteArray field_name = header_field.toUtf8();
             if (destroy) deleteLater();
 

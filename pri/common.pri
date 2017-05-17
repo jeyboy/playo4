@@ -36,6 +36,16 @@ unix {
 #    INSTALLS += target
 }
 
+defineTest(registerLibrary){
+    INCLUDEPATH += $${INC_PATH}/$${1}
+    export(INCLUDEPATH)
+    DEPENDPATH += $${INC_PATH}/$${1}
+    export(DEPENDPATH)
+    LIBS += -l$${1}$${LIB_VERSION}
+    export(LIBS)
+}
+
+
 #$$absolute_path("$${INNER_INC_PATH}/defines.h")
 defineTest(registerInnerInclusion){
     ADDITIONAL_HEADERS += $${1}.h

@@ -43,7 +43,9 @@
 #define TEST2_KEY QByteArrayLiteral("test2")
 
 #define TEST1_VAL QByteArrayLiteral("test1val")
-#define TEST2_VAL QByteArrayLiteral("test2val")
+#define TEST2_VAL 1
+
+#define QUOTAS_EXTRACT(val) val.mid(1, val.length() - 2)
 
 using namespace Web;
 
@@ -73,23 +75,31 @@ void WebManagerTest::testAttachParam() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
     params -> attachParam(TEST1_KEY, TEST1_VAL);
     Response * resp = Manager::procGet(params);
-    QJsonObject json = resp -> toJson();
+    Json json = resp -> toJson();
 
-    QString val = json.value(ARGS_KEY).toObject().value(TEST1_KEY).toString();
+    QString val = json.string2(ARGS_KEY, TEST1_KEY);
 
     QVERIFY2(
-        val.mid(1, val.length() - 2) == TEST1_VAL,
+        QUOTAS_EXTRACT(val) == TEST1_VAL,
         "Failure"
     );
 }
 void WebManagerTest::testAttachParams() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
     params -> attachParams({
-        {}
+        {TEST1_KEY, TEST1_VAL},
+        {TEST2_KEY, TEST2_VAL}
     });
     Response * resp = Manager::procGet(params);
-    qDebug() << resp -> toJson();
-    QVERIFY2(true, "Failure");
+    Json json = resp -> toJson()[ARGS_KEY];
+
+    QString val = json.string(TEST1_KEY);
+    int val2 = json.string(TEST2_KEY).toInt();
+
+    QVERIFY2(
+        QUOTAS_EXTRACT(val) == TEST1_VAL && val2 == TEST2_VAL,
+        "Failure"
+    );
 }
 
 void WebManagerTest::testSyncGet() {

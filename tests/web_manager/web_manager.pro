@@ -1,7 +1,7 @@
 include(../../pri/tests.pri)
 
 QT       += testlib network gui widgets
-#QT       -= gui
+QT       -= gui
 
 TARGET = main
 CONFIG   += console
@@ -12,9 +12,16 @@ DEFINES += WEBMANAGER_LIBRARY
 
 TEMPLATE = app
 
+registerLibrary('Html')
+registerLibrary('Json')
+
 #INCLUDEPATH += $${INC_PATH}/Html
 #DEPENDPATH += $${INC_PATH}/Html
 #LIBS += -lHtml$${LIB_VERSION}
+
+#INCLUDEPATH += $${INC_PATH}/Json
+#DEPENDPATH += $${INC_PATH}/Json
+#LIBS += -lJson$${LIB_VERSION}
 
 #INCLUDEPATH += $${INC_PATH}/CurlLib
 #DEPENDPATH += $${INC_PATH}/CurlLib
@@ -26,7 +33,10 @@ SOURCES += main.cpp \
     web_cookies.cpp \
     web_request.cpp \
     web_response.cpp \
-    variant_convertor.cpp
+    variant_convertor.cpp \
+    json.cpp \
+    json_arr.cpp \
+    json_obj.cpp
 
 HEADERS += \
     defines.h \
@@ -42,4 +52,8 @@ HEADERS += \
     web_utils.h \
     web_request_params.h \
     variant_ptr.h \
-    variant_convertor.h
+    variant_convertor.h \
+    json.h \
+    json_arr.h \
+    json_global.h \
+    json_obj.h
