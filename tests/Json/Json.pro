@@ -11,11 +11,17 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 TEMPLATE = app
 
-INCLUDEPATH += $${INC_PATH}/Json
-DEPENDPATH += $${INC_PATH}/Json
-LIBS += -lJson$${LIB_VERSION}
+#registerLibrary('Json')
 
 HEADERS += \
-    test_data.h
+    test_data.h \
+    json.h \
+    json_arr.h \
+    json_obj.h \
+    json_global.h \
+    defines.h
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    json.cpp \
+    json_arr.cpp \
+    json_obj.cpp

@@ -17,14 +17,13 @@ class QJsonParseError;
 #define J_KEY2IS(index1, key2) toArray().at(index1).toObject().value(key2)
 #define J_KEY2SI(key1, index2) toObject().value(key1).toArray().at(index2)
 
-#define J_STR(jval) jval.isString() ? jval.toString() : QString::number(JOBJ_BINT(jval));
-
 #define JOBJ_KEY2SS(key1, key2) value(key1).toObject().value(key2)
 #define JOBJ_KEY2II(index1, index2) at(index1).toArray().at(index2)
 #define JOBJ_KEY2IS(index1, key2) at(index1).toObject().value(key2)
 #define JOBJ_KEY2SI(key1, index2) value(key1).toArray().at(index2)
 
-#define JOBJ_BINT(val) (qint64)val.toDouble()
+#define J_STR(jval) jval.isString() ? jval.toString() : QString::number(JOBJ_BINT(jval));
+#define JOBJ_BINT(val, def_val) (qint64)val.toDouble(def_val)
 
 class JSONSHARED_EXPORT Json : public QJsonValue {
 public:
@@ -81,6 +80,7 @@ public:
     virtual Json val(const QString & key1, const int & index2);
 
     virtual JsonObj obj() const;  
+    virtual JsonObj obj(const QJsonObject & default_value) const;
     virtual JsonObj obj(const int & index);
     virtual JsonObj obj(const QString & key);
     virtual JsonObj obj(const int & index1, const int & index2);
@@ -88,10 +88,8 @@ public:
     virtual JsonObj obj(const QString & key1, const QString & key2);
     virtual JsonObj obj(const QString & key1, const int & index2);
 
-    virtual JsonObj toObject() const;
-    virtual JsonObj toObject(const QJsonObject & default_value) const;
-
     virtual JsonArr arr() const;
+    virtual JsonArr arr(const QJsonArray & default_value) const;
     virtual JsonArr arr(const int & index);
     virtual JsonArr arr(const QString & key);
     virtual JsonArr arr(const int & index1, const int & index2);
@@ -99,46 +97,43 @@ public:
     virtual JsonArr arr(const QString & key1, const QString & key2);
     virtual JsonArr arr(const QString & key1, const int & index2);
 
-    virtual JsonArr toArray() const;
-    virtual JsonArr toArray(const QJsonArray & default_value) const;
 
-    virtual bool boolean();
-    virtual bool boolean(const int & index);
-    virtual bool boolean(const QString & key);
-    virtual bool boolean(const int & index1, const int & index2);
-    virtual bool boolean(const int & index1, const QString & key2);
-    virtual bool boolean(const QString & key1, const QString & key2);
-    virtual bool boolean(const QString & key1, const int & index2);
+    virtual bool boolean(const bool def_val = false);
+    virtual bool boolean(const int & index, const bool def_val = false);
+    virtual bool boolean(const QString & key, const bool def_val = false);
+    virtual bool boolean(const int & index1, const int & index2, const bool def_val = false);
+    virtual bool boolean(const int & index1, const QString & key2, const bool def_val = false);
+    virtual bool boolean(const QString & key1, const QString & key2, const bool def_val = false);
+    virtual bool boolean(const QString & key1, const int & index2, const bool def_val = false);
 
 
-    virtual int integer();
-    virtual int integer(const int & index);
-    virtual int integer(const QString & key);
-    virtual int integer(const int & index1, const int & index2);
-    virtual int integer(const int & index1, const QString & key2);
-    virtual int integer(const QString & key1, const QString & key2);
-    virtual int integer(const QString & key1, const int & index2);
+    virtual int integer(const int def_val = 0);
+    virtual int integer(const int & index, const int def_val = 0);
+    virtual int integer(const QString & key, const int def_val = 0);
+    virtual int integer(const int & index1, const int & index2, const int def_val = 0);
+    virtual int integer(const int & index1, const QString & key2, const int def_val = 0);
+    virtual int integer(const QString & key1, const QString & key2, const int def_val = 0);
+    virtual int integer(const QString & key1, const int & index2, const int def_val = 0);
 
-    virtual qint64 bigInt();
-    virtual qint64 bigInt(const int & index);
-    virtual qint64 bigInt(const QString & key);
-    virtual qint64 bigInt(const int & index1, const int & index2);
-    virtual qint64 bigInt(const int & index1, const QString & key2);
-    virtual qint64 bigInt(const QString & key1, const QString & key2);
-    virtual qint64 bigInt(const QString & key1, const int & index2);
+    virtual qint64 bigInt(const qint64 & def_val = 0);
+    virtual qint64 bigInt(const int & index, const qint64 & def_val = 0);
+    virtual qint64 bigInt(const QString & key, const qint64 & def_val = 0);
+    virtual qint64 bigInt(const int & index1, const int & index2, const qint64 & def_val = 0);
+    virtual qint64 bigInt(const int & index1, const QString & key2, const qint64 & def_val = 0);
+    virtual qint64 bigInt(const QString & key1, const QString & key2, const qint64 & def_val = 0);
+    virtual qint64 bigInt(const QString & key1, const int & index2, const qint64 & def_val = 0);
 
-    virtual double rational();
-    virtual double rational(const int & index);
-    virtual double rational(const QString & key);
-    virtual double rational(const int & index1, const int & index2);
-    virtual double rational(const int & index1, const QString & key2);
-    virtual double rational(const QString & key1, const QString & key2);
-    virtual double rational(const QString & key1, const int & index2);
+    virtual double rational(const double & def_val = 0);
+    virtual double rational(const int & index, const double & def_val = 0);
+    virtual double rational(const QString & key, const double & def_val = 0);
+    virtual double rational(const int & index1, const int & index2, const double & def_val = 0);
+    virtual double rational(const int & index1, const QString & key2, const double & def_val = 0);
+    virtual double rational(const QString & key1, const QString & key2, const double & def_val = 0);
+    virtual double rational(const QString & key1, const int & index2, const double & def_val = 0);
 
     virtual QString string();
     virtual QString string(const int & index);
     virtual QString string(const QString & key);
-    virtual QString string(const QString & key, const QString & default_val);
     virtual QString string(const int & index1, const int & index2);
     virtual QString string(const int & index1, const QString & key2);
     virtual QString string(const QString & key1, const QString & key2);
