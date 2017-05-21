@@ -33,10 +33,7 @@ SOURCES += main.cpp \
     web_cookies.cpp \
     web_request.cpp \
     web_response.cpp \
-    variant_convertor.cpp \
-    json.cpp \
-    json_arr.cpp \
-    json_obj.cpp
+    variant_convertor.cpp
 
 HEADERS += \
     defines.h \
@@ -52,8 +49,4 @@ HEADERS += \
     web_utils.h \
     web_request_params.h \
     variant_ptr.h \
-    variant_convertor.h \
-    json.h \
-    json_arr.h \
-    json_global.h \
-    json_obj.h
+    variant_convertor.h

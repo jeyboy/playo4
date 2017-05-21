@@ -32,35 +32,19 @@ public:
 
     Json operator[](const int & index);
     Json val(const int & index);
-    Json val2(const int & index1, const int & index2);
-    Json val2(const int & index1, const QString & key2);
 
     JsonArr arr() const;
-    JsonArr toArray() const;
+    JsonArr arr(const int & index);
+    JsonArr arr(const int & index, const JsonArr & def_val);
 
-    bool boolean(const int & index);
-    bool boolean2(const int & index1, const int & index2);
-    bool boolean2(const int & index1, const QString & key2);
-
-    int integer(const int & index);
-    int integer2(const int & index1, const int & index2);
-    int integer2(const int & index1, const QString & key2);
-
-    qint64 bigInt(const int & index);
-    qint64 bigInt2(const int & index1, const int & index2);
-    qint64 bigInt2(const int & index1, const QString & key2);
-
-    double rational2(const int & index1);
-    double rational2(const int & index1, const int & index2);
-    double rational2(const int & index1, const QString & key2);
-
+    bool boolean(const int & index, const bool def_val = false);
+    int integer(const int & index, const int def_val = 0);
+    qint64 bigInt(const int & index, const qint64 def_val = 0);
+    double rational(const int & index, const double def_val = 0);
     QString string(const int & index);
-    QString string2(const int & index1, const int & index2);
-    QString string2(const int & index1, const QString & key2);
-
+    QString stringDef(const int & index, const QString & def_val);
     QString forceString(const int & index);
-    QString forceString2(const int & index1, const int & index2);
-    QString forceString2(const int & index1, const QString & key2);
+    QString forceStringDef(const int & index, const QString & def_val);
 };
 
 #endif // JSON_ARR_H

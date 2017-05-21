@@ -37,10 +37,10 @@
 
 #define IMAGE_TEST_URL QUrl(QStringLiteral("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"))
 
-#define ARGS_KEY QByteArrayLiteral("args")
+#define ARGS_KEY QStringLiteral("args")
 
-#define TEST1_KEY QByteArrayLiteral("test1")
-#define TEST2_KEY QByteArrayLiteral("test2")
+#define TEST1_KEY QStringLiteral("test1")
+#define TEST2_KEY QStringLiteral("test2")
 
 #define TEST1_VAL QByteArrayLiteral("test1val")
 #define TEST2_VAL 1
@@ -73,11 +73,11 @@ WebManagerTest::WebManagerTest() {}
 
 void WebManagerTest::testAttachParam() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
-    params -> attachParam(TEST1_KEY, TEST1_VAL);
+    params -> attachParam(TEST1_KEY.toUtf8(), TEST1_VAL);
     Response * resp = Manager::procGet(params);
     Json json = resp -> toJson();
 
-    QString val = json.string2(ARGS_KEY, TEST1_KEY);
+    QString val = json[ARGS_KEY].string(TEST1_KEY);
 
     QVERIFY2(
         QUOTAS_EXTRACT(val) == TEST1_VAL,
@@ -87,8 +87,8 @@ void WebManagerTest::testAttachParam() {
 void WebManagerTest::testAttachParams() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
     params -> attachParams({
-        {TEST1_KEY, TEST1_VAL},
-        {TEST2_KEY, TEST2_VAL}
+        {TEST1_KEY.toUtf8(), TEST1_VAL},
+        {TEST2_KEY.toUtf8(), TEST2_VAL}
     });
     Response * resp = Manager::procGet(params);
     Json json = resp -> toJson()[ARGS_KEY];

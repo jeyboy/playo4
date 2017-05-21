@@ -30,36 +30,21 @@ QString JsonObj::concatKeys(const QString & key1, const QString & key2, const QS
 
 Json JsonObj::operator[](const QString & key) { return QJsonObject::value(key); }
 Json JsonObj::val(const QString & key) { return QJsonObject::value(key); }
-Json JsonObj::val2(const QString & key1, const QString & key2) { return JOBJ_KEY2SS(key1, key2); }
-Json JsonObj::val2(const QString & key1, const int & index2) { return JOBJ_KEY2SI(key1, index2); }
 
 JsonObj JsonObj::obj() const { return *this; }
-JsonObj JsonObj::obj(const QString & key) { return val(key); }
-JsonObj JsonObj::obj(const QString & key1, const QString & key2) { return val(key1, key2); }
-JsonObj JsonObj::obj(const QString & key1, const int & index2)  { return val(key1, index2); }
-JsonObj JsonObj::toObject() const { return *this; }
+JsonObj JsonObj::obj(const QString & key) { return val(key).toObject(); }
+JsonObj JsonObj::obj(const QString & key, const JsonObj & def_val) { return val(key).toObject(def_val); }
 
-bool JsonObj::boolean(const QString & key) { return val(key).toBool(); }
-bool JsonObj::boolean(const QString & key1, const QString & key2) { return val2(key1, key2).toBool(); }
-bool JsonObj::boolean(const QString & key1, const int & index2) { return val2(key1, index2).toBool(); }
+bool JsonObj::boolean(const QString & key, const bool & def_val) { return val(key).toBool(def_val); }
 
-int JsonObj::integer(const QString & key) { return val(key).toInt(); }
-int JsonObj::integer(const QString & key1, const QString & key2) { return val2(key1, key2).toInt(); }
-int JsonObj::integer(const QString & key1, const int & index2) { return val2(key1, index2).toInt(); }
+int JsonObj::integer(const QString & key, const int & def_val) { return val(key).toInt(def_val); }
 
-qint64 JsonObj::bigInt(const QString & key) { return JOBJ_BINT(val(key)); }
-qint64 JsonObj::bigInt(const QString & key1, const QString & key2) { return JOBJ_BINT(val2(key1, key2)); }
-qint64 JsonObj::bigInt(const QString & key1, const int & index2) { return JOBJ_BINT(val2(key1, index2)); }
+qint64 JsonObj::bigInt(const QString & key, const qint64 & def_val) { return JOBJ_BINT(val(key), def_val); }
 
-double JsonObj::rational(const QString & key) { return val(key).toDouble(); }
-double JsonObj::rational(const QString & key1, const QString & key2) { return val2(key1, key2).toDouble(); }
-double JsonObj::rational(const QString & key1, const int & index2) { return val2(key1, index2).toDouble(); }
+double JsonObj::rational(const QString & key, const double & def_val) { return val(key).toDouble(def_val); }
 
 QString JsonObj::string(const QString & key) { return val(key).toString(); }
-QString JsonObj::string(const QString & key, const QString & default_val) { return val(key).toString(default_val); }
-QString JsonObj::string(const QString & key1, const QString & key2) { return val2(key1, key2).toString(); }
-QString JsonObj::string(const QString & key1, const int & index2) { return val2(key1, index2).toString(); }
+QString JsonObj::stringDef(const QString & key, const QString & def_val) { return val(key).toString(def_val); }
 
 QString JsonObj::forceString(const QString & key) { return J_STR(val(key)); }
-QString JsonObj::forceString(const QString & key1, const QString & key2) { return J_STR(val2(key1, key2)); }
-QString JsonObj::forceString(const QString & key1, const int & index2) { return J_STR(val2(key1, index2)); }
+QString JsonObj::forceStringDef(const QString & key, const QString & def_val) { return J_STR_DEF(val(key), def_val); }

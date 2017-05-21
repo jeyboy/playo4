@@ -34,36 +34,24 @@ public:
 
     Json operator[](const QString & key);
     Json val(const QString & key);
-    Json val2(const QString & key1, const QString & key2);
-    Json val2(const QString & key1, const int & index2);
 
     JsonObj obj() const;
-    JsonObj toObject() const;
+    JsonObj obj(const QString & key);
+    JsonObj obj(const QString & key, const JsonObj & def_val);
 
-    bool boolean(const QString & key);
-    bool boolean2(const QString & key1, const QString & key2);
-    bool boolean2(const QString & key1, const int & index2);
+    bool boolean(const QString & key, const bool & def_val = false);
 
-    int integer(const QString & key);
-    int integer2(const QString & key1, const QString & key2);
-    int integer2(const QString & key1, const int & index2);
+    int integer(const QString & key, const int & def_val = 0);
 
-    qint64 bigInt(const QString & key);
-    qint64 bigInt2(const QString & key1, const QString & key2);
-    qint64 bigInt2(const QString & key1, const int & index2);
+    qint64 bigInt(const QString & key, const qint64 & def_val = 0);
 
-    double rational(const QString & key);
-    double rational2(const QString & key1, const QString & key2);
-    double rational2(const QString & key1, const int & index2);
+    double rational(const QString & key, const double & def_val = 0);
 
     QString string(const QString & key);
-    QString string(const QString & key, const QString & default_val);
-    QString string2(const QString & key1, const QString & key2);
-    QString string2(const QString & key1, const int & index2);
+    QString stringDef(const QString & key, const QString & def_val);
 
     QString forceString(const QString & key);
-    QString forceString2(const QString & key1, const QString & key2);
-    QString forceString2(const QString & key1, const int & index2);
+    QString forceStringDef(const QString & key, const QString & def_val);
 };
 
 #endif // JSON_OBJ_H

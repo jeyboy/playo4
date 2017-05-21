@@ -14,7 +14,14 @@ FORMS += mainwindow.ui
 
 INCLUDEPATH += $${INNER_INC_PATH}
 
-LIBS += -lTagLib$${LIB_VERSION} -lJson$${LIB_VERSION} -lHtml$${LIB_VERSION} -lWebManager$${LIB_VERSION} -lApi$${LIB_VERSION} -lPlayer$${LIB_VERSION}
+registerLibrary('TagLib')
+registerLibrary('Json')
+registerLibrary('Html')
+registerLibrary('WebManager')
+registerLibrary('Api')
+registerLibrary('Player')
+
+#LIBS += -lTagLib$${LIB_VERSION} -lJson$${LIB_VERSION} -lHtml$${LIB_VERSION} -lWebManager$${LIB_VERSION} -lApi$${LIB_VERSION} -lPlayer$${LIB_VERSION}
 #LIBS += -L$$PWD/libs/bass/ -lbass -lbass_fx -lbassmix
 #INCLUDEPATH += $$PWD/libs/bass/include
 #DEPENDPATH += $$PWD/libs/bass
