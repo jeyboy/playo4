@@ -8,6 +8,7 @@ CONFIG   += console
 CONFIG   -= app_bundle
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+DEFINES += JSON_LIBRARY
 
 TEMPLATE = app
 

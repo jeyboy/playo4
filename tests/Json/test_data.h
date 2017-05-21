@@ -56,7 +56,8 @@
         "]"\
     )
 
-#define TJSON_SUB_ARR_KEY_ARGS 0, 1
+#define TJSON_SUB_ARR_KEY_ARG1 0
+#define TJSON_SUB_ARR_KEY_ARG2 1
 #define TJSON_SUB_ARR_KEY (QStringList() << QString(INT_KEY % QString::number(0)) << QString(INT_KEY % QString::number(1)))
 #define TJSON_SUB_ARR(val) \
     QString(\

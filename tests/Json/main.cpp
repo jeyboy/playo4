@@ -150,13 +150,13 @@ void JsonTest::parsingObjChainsStr() {
     QString val = LSTR("#f00");
 
     Json json_obj = Json::fromJsonStr(TJSON_SUB_OBJ(root_key, key, val));
-    QVERIFY2(json_obj.string2(root_key, key) == val, "Failure");
+    QVERIFY2(json_obj[root_key].string(key) == val, "Failure");
 }
 void JsonTest::parsingArrChainsStr() {
     QString val = LSTR("#f00");
 
     Json json_obj = Json::fromJsonStr(TJSON_SUB_ARR(val));
-    QVERIFY2(json_obj.string2(TJSON_SUB_ARR_KEY_ARGS) == val, "Failure");
+    QVERIFY2(json_obj[TJSON_SUB_ARR_KEY_ARG1].string(TJSON_SUB_ARR_KEY_ARG2) == val, "Failure");
 }
 
 
@@ -272,7 +272,7 @@ void JsonTest::val2Index() {
     QString val = LSTR("#f00");
 
     Json json_obj = Json::fromJsonStr(TJSON_SUB_ARR(val));
-    QVERIFY2(json_obj.val2(TJSON_SUB_ARR_KEY_ARGS).string() == val, "Failure");
+    QVERIFY2(json_obj[TJSON_SUB_ARR_KEY_ARG1].val(TJSON_SUB_ARR_KEY_ARG2).string() == val, "Failure");
 }
 void JsonTest::val2Key() {
     QString root_key = LSTR("colors");
@@ -280,7 +280,7 @@ void JsonTest::val2Key() {
     QString val = LSTR("#f00");
 
     Json json_obj = Json::fromJsonStr(TJSON_SUB_OBJ(root_key, key, val));
-    QVERIFY2(json_obj.val2(root_key, key).string() == val, "Failure");
+    QVERIFY2(json_obj[root_key].val(key).string() == val, "Failure");
 }
 
 void JsonTest::jsonToString() {
