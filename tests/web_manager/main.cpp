@@ -137,9 +137,16 @@ void WebManagerTest::testSyncPost() {
 }
 void WebManagerTest::testSyncPut() {
     RequestDataParams * params = new RequestDataParams(PUT_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS, QByteArrayLiteral("a=1"));
-    Response * resp = Manager::procPost(params);
-    qDebug() << resp -> toText();
-    QVERIFY2(true, "Failure");
+    Response * resp = Manager::procPut(params);
+
+    Json json = resp -> toJson();
+    QString arg = json[QStringLiteral("form")].string(QStringLiteral("a"));
+    QString url = json.string(QStringLiteral("url"));
+
+    QVERIFY2(
+        PUT_TEST_URL.toString() == url && arg == QStringLiteral("1"),
+        "Failure"
+    );
 }
 
 QTEST_GUILESS_MAIN(WebManagerTest) // QTEST_APPLESS_MAIN // QTEST_MAIN
