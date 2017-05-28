@@ -60,8 +60,8 @@ namespace Web {
         static Response * procGet(RequestParams * params) { return prepare() -> sendSimple(rt_get, params); }
         static Response * procDelete(RequestParams * params) { return prepare() -> sendSimple(rt_delete, params); }
 
-        static Response * procPost(RequestDataParams * params) { return prepare() -> sendSimple(rt_post, params); }
-        static Response * procPut(RequestDataParams * params) { return prepare() -> sendSimple(rt_put, params); }
+        static Response * procPost(RequestDataParams * params) { return prepare() -> sendData(rt_post, params); }
+        static Response * procPut(RequestDataParams * params) { return prepare() -> sendData(rt_put, params); }
 //       static Response * procCustom(RequestDataParams * params) { return prepare() -> sendSimple(rt_custom, params); }
 
 //        inline QJsonObject jsonGet(const QUrl & url, const QString & wrap) { return getFollowed(url) -> toJson(wrap); }

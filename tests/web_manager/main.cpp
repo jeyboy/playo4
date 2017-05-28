@@ -105,21 +105,35 @@ void WebManagerTest::testAttachParams() {
 void WebManagerTest::testSyncGet() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
     Response * resp = Manager::procGet(params);
-    qDebug() << resp -> toJson();
-    QVERIFY2(true, "Failure");
+
+    QString url = resp -> toJson().string(QStringLiteral("url"));
+
+    QVERIFY2(
+        GET_TEST_URL.toString() == url,
+        "Failure"
+    );
 }
 void WebManagerTest::testSyncDelete() {
     RequestParams * params = new RequestParams(DELETE_TEST_URL);
     Response * resp = Manager::procDelete(params);
-    qDebug() << resp -> toJson();
-    QVERIFY2(true, "Failure");
+
+    QString url = resp -> toJson().string(QStringLiteral("url"));
+
+    QVERIFY2(DELETE_TEST_URL.toString() == url, "Failure");
 }
 
 void WebManagerTest::testSyncPost() {
     RequestDataParams * params = new RequestDataParams(POST_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS, QByteArrayLiteral("b=2"));
     Response * resp = Manager::procPost(params);
-    qDebug() << resp -> toText();
-    QVERIFY2(true, "Failure");
+
+    Json json = resp -> toJson();
+    QString arg = json[QStringLiteral("form")].string(QStringLiteral("b"));
+    QString url = json.string(QStringLiteral("url"));
+
+    QVERIFY2(
+        POST_TEST_URL.toString() == url && arg == QStringLiteral("2"),
+        "Failure"
+    );
 }
 void WebManagerTest::testSyncPut() {
     RequestDataParams * params = new RequestDataParams(PUT_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS, QByteArrayLiteral("a=1"));
