@@ -46,6 +46,13 @@
 #define TEST2_VAL 1
 
 #define QUOTAS_EXTRACT(val) val.mid(1, val.length() - 2)
+#define ASYNC_PROC(resp) \
+    {\
+        QSignalSpy spy(resp, SIGNAL(finished())); \
+        while(spy.count() == 0) \
+            QTest::qWait(200);\
+    }
+
 
 using namespace Web;
 
@@ -67,6 +74,11 @@ private Q_SLOTS:
     void testSyncDelete();
     void testSyncPost();
     void testSyncPut();
+
+    void testAsyncGet();
+
+    void testSyncRedirect();
+    void testAsyncRedirect();
 };
 
 WebManagerTest::WebManagerTest() {}
@@ -147,6 +159,32 @@ void WebManagerTest::testSyncPut() {
         PUT_TEST_URL.toString() == url && arg == QStringLiteral("1"),
         "Failure"
     );
+}
+
+void WebManagerTest::testAsyncGet() {
+    RequestParams * params = new RequestParams(
+        GET_TEST_URL,
+        RequestParams::rp_async,
+        0,
+        new Func(this, SLOT(response()))
+    );
+
+    Response * resp = Manager::procGet(params);
+    ASYNC_PROC(resp);
+
+    QString url = resp -> toJson().string(QStringLiteral("url"));
+
+    QVERIFY2(
+        GET_TEST_URL.toString() == url,
+        "Failure"
+    );
+}
+
+void WebManagerTest::testSyncRedirect() {
+
+}
+void WebManagerTest::testAsyncRedirect() {
+
 }
 
 QTEST_GUILESS_MAIN(WebManagerTest) // QTEST_APPLESS_MAIN // QTEST_MAIN
