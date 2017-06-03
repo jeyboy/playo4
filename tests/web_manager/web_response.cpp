@@ -160,11 +160,6 @@ QString Response::toText(const bool & destroy) {
 Json Response::toJson(const QString & wrap, const bool & destroy) { //TODO: enc not used yet
     QByteArray ar = readAll();
 
-    if (error()) {
-        qCritical() << "IOERROR" << error() << url();
-        qCritical() << ar;
-    }
-
     ResponseType rtype = reponseType();
 
     if (rtype == rt_json || rtype == rt_js) {
@@ -182,8 +177,6 @@ Json Response::toJson(const QString & wrap, const bool & destroy) { //TODO: enc 
     return QJsonObject {{JSON_ERR_FIELD, QString(ar)}};
 }
 QPixmap Response::toPixmap(const bool & destroy) {
-    if (error()) qCritical() << "IOERROR" << error() << url();
-
     QPixmap image;
     image.loadFromData(readAll());
     if (destroy) deleteLater();
@@ -191,16 +184,12 @@ QPixmap Response::toPixmap(const bool & destroy) {
 }
 
 QUrl Response::toUrl(const bool & destroy) {
-    if (error()) qCritical() << "IOERROR" << error() << url();
-
     QUrl uri = url();
     if (destroy) deleteLater();
     return uri;
 }
 
 Html::Page Response::toHtml(const bool & destroy) {
-    if (error()) qCritical() << "IOERROR" << error() << url();
-
     QByteArray enc = encoding();
     Html::Page doc(this, Html::Decoding::charsetType(enc));
     if (destroy) deleteLater();
@@ -208,8 +197,6 @@ Html::Page Response::toHtml(const bool & destroy) {
 }
 
 QUrl Response::toRedirectUrl(const bool & destroy) {
-    if (error()) qCritical() << "IOERROR" << error() << url();
-
     QUrl uri = redirectUrl();
     if (destroy) deleteLater();
     return uri;

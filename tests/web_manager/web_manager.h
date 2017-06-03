@@ -13,7 +13,8 @@
 #include "web_response.h"
 
 #define MANAGER_PROPERTY_NAME "settings"
-#define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
+//#define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)
+#define ERROR_OUTPUT(source) qCritical() << "IOERROR" << source -> error() << source -> url();
 
 namespace Web {
     class ManagerController;
@@ -39,8 +40,6 @@ namespace Web {
             rt_put
         };
     protected:
-//        QHash<QUrl, RequestParams *> asyncRequests;
-
         Manager(QObject * parent = 0, QSsl::SslProtocol protocol = QSsl::TlsV1SslV3, QSslSocket::PeerVerifyMode mode = QSslSocket::VerifyNone);
         QNetworkReply * createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0);
 

@@ -58,17 +58,23 @@ Response * Manager::synchronizeRequest(QNetworkReply * m_http) {
         //       m_http -> abort();
         //    }
 
-    if (m_http -> error() == Response::HostNotFoundError)
-        WebConnection::obj().check();
+    Response * source = Response::fromReply(m_http);
 
-    return Response::fromReply(m_http);
+    if (source -> hasErrors()) {
+        ERROR_OUTPUT(source);
+
+        if (source -> error() == Response::HostNotFoundError)
+            WebConnection::obj().check();
+    }
+
+    return source;
 }
 
 void Manager::requestFinished() {
     Response * source = Response::fromReply((QNetworkReply *)sender());
     RequestParams * params = VariantPtr<RequestParams>::asPtr(
         source -> property(MANAGER_PROPERTY_NAME)
-    );/*asyncRequests.take(source -> url());*/
+    );
 
     if (params -> isFollowed()) {
         QUrl new_url = source -> redirectUrl();
@@ -84,6 +90,9 @@ void Manager::requestFinished() {
             return;
         }
     }
+
+    if (source -> hasErrors())
+        ERROR_OUTPUT(source);
 
     QMetaObject::invokeMethod(
         params -> callback -> obj,
@@ -119,7 +128,6 @@ void Manager::setup(const requestType & rtype, const Request & request, RequestP
 }
 
 Response * Manager::setupCallback(QNetworkReply * m_http, RequestParams * /*params*/) {
-//    asyncRequests.insert(params -> url(), params);
     connect(m_http, SIGNAL(finished()), this, SLOT(requestFinished()));
     return Response::fromReply(m_http);
 }
