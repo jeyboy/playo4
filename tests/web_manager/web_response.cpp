@@ -113,6 +113,8 @@ Response * Response::followByRedirect(QHash<QUrl, bool> prev_urls) {
     QUrl new_url = redirectUrl();
 
     if (!new_url.isEmpty()) {
+        qDebug() << "redirect" << new_url;
+
         if (prev_urls.contains(new_url)) return this;
         else prev_urls.insert(new_url, true);
 
@@ -200,5 +202,14 @@ QUrl Response::toRedirectUrl(const bool & destroy) {
     QUrl uri = redirectUrl();
     if (destroy) deleteLater();
     return uri;
+}
+
+QByteArray Response::toHeader(const QByteArray & header_field, const bool &  destroy) {
+    if (destroy) deleteLater();
+
+    if (hasRawHeader(header_field))
+        return rawHeader(header_field);
+
+    return QByteArray();
 }
 

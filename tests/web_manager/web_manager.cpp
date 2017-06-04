@@ -79,6 +79,8 @@ void Manager::requestFinished() {
     if (params -> isFollowed()) {
         QUrl new_url = source -> redirectUrl();
 
+        qDebug() << "redirect" << new_url;
+
         if (!new_url.isEmpty()) {
             RequestParams * current_params = RequestParams::buildRedirectParams(
                 new_url,
@@ -93,6 +95,8 @@ void Manager::requestFinished() {
 
     if (source -> hasErrors())
         ERROR_OUTPUT(source);
+
+    emit source -> completed();
 
     QMetaObject::invokeMethod(
         params -> callback -> obj,
@@ -139,7 +143,12 @@ Response * Manager::proceed(QNetworkReply * m_http, RequestParams * params) {
         return setupCallback(m_http, params);
     else {
         Response * resp = synchronizeRequest(m_http);
-        return params -> isFollowed() ? resp -> followByRedirect() : resp;
+        if (params -> isFollowed())
+            resp = resp -> followByRedirect();
+
+        emit resp -> completed();
+
+        return resp;
     }
 }
 

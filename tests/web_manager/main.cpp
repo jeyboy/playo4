@@ -48,7 +48,7 @@
 #define QUOTAS_EXTRACT(val) val.mid(1, val.length() - 2)
 #define ASYNC_PROC(resp) \
     {\
-        QSignalSpy spy(resp, SIGNAL(finished())); \
+        QSignalSpy spy(resp, &Response::completed); \
         while(spy.count() == 0) \
             QTest::qWait(200);\
     }
@@ -95,6 +95,8 @@ private Q_SLOTS:
 //    void testSyncXmlResponse();
 //    void testSyncJsonResponse();
 //    void testSyncImageResponse();
+
+//    void testProxyMirror(); # tor
 };
 
 WebManagerTest::WebManagerTest() {}
@@ -186,8 +188,8 @@ void WebManagerTest::testAsyncGet() {
     );
 
     Response * resp = Manager::procGet(params);
-    ASYNC_PROC(resp);
 
+    ASYNC_PROC(resp);
     QString url = resp -> toJson().string(QStringLiteral("url"));
 
     QVERIFY2(
@@ -202,31 +204,30 @@ void WebManagerTest::testSyncRedirect() {
     );
 
     Response * resp = Manager::procGet(params);
-    qDebug() << resp -> toText();
-//    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(QStringLiteral("url"));
 
     QVERIFY2(
-        true,
+        url == GET_TEST_URL.toString(),
         "Failure"
     );
 }
 void WebManagerTest::testAsyncRedirect() {
-//    RequestParams * params = new RequestParams(
-//        GET_TEST_URL,
-//        RequestParams::rp_async,
-//        0,
-//        new Func(this, SLOT(response()))
-//    );
+    RequestParams * params = new RequestParams(
+        REDIRECT_TEST_URL(5),
+        RPF(RequestParams::rp_async | RequestParams::rp_follow),
+        0,
+        new Func(this, SLOT(response()))
+    );
 
-//    Response * resp = Manager::procGet(params);
-//    ASYNC_PROC(resp);
+    Response * resp = Manager::procGet(params);
+    ASYNC_PROC(resp);
 
-//    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(QStringLiteral("url"));
 
-//    QVERIFY2(
-//        GET_TEST_URL.toString() == url,
-//        "Failure"
-//    );
+    QVERIFY2(
+        GET_TEST_URL.toString() == url,
+        "Failure"
+    );
 }
 
 QTEST_GUILESS_MAIN(WebManagerTest) // QTEST_APPLESS_MAIN // QTEST_MAIN

@@ -21,12 +21,13 @@
     #define DEFAULT_AGENT QByteArrayLiteral("Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/50.0")
 #endif
 
-#define DEFAULT_REQUEST_PARAMS RequestParams::rp_destroy
-#define DEFAULT_FORM_REQUEST_PARAMS (RequestParams::RequestParamsFlags)(RequestParams::rp_extract_params_to_payload | DEFAULT_REQUEST_PARAMS)
+#define RPF(vals) (RequestParams::RequestParamsFlags)(vals)
+#define DEFAULT_REQUEST_PARAMS RPF(RequestParams::rp_destroy | RequestParams::rp_follow)
+#define DEFAULT_FORM_REQUEST_PARAMS RPF(RequestParams::rp_extract_params_to_payload | DEFAULT_REQUEST_PARAMS)
 
 namespace Web {
     struct WEBMANAGERSHARED_EXPORT RequestParams {
-        enum RequestParamsFlags {
+        enum RequestParamsFlags : int {
             rp_none = 0,
             rp_follow = 1,
             rp_async = 1 << 1,

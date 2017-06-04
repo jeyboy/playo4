@@ -15,6 +15,8 @@
 
 namespace Web {
     class WEBMANAGERSHARED_EXPORT Response : public QNetworkReply {
+        Q_OBJECT
+
         void initInfoFromContentHeader();
     public:
         enum ResponseType {
@@ -49,17 +51,12 @@ namespace Web {
         QPixmap toPixmap(const bool &  destroy = true);
         QUrl toUrl(const bool &  destroy = true);
         QUrl toRedirectUrl(const bool &  destroy = true);
-        QString toHeader(const QString & header_field, const bool &  destroy = true) {
-            QByteArray field_name = header_field.toUtf8();
-            if (destroy) deleteLater();
-
-            if (hasRawHeader(field_name))
-                return QString(rawHeader(field_name));
-
-            return QString();
-        }
+        QByteArray toHeader(const QByteArray & header_field, const bool &  destroy = true);
     protected:
         static QHash<QByteArray, ResponseType> response_predefined_types;
+
+    signals:
+        void completed();
     };
 }
 
