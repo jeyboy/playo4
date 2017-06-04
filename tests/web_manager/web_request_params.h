@@ -44,8 +44,8 @@ namespace Web {
         Cookies * cookies;
         Func * callback;
 
-        RequestParams(const QUrl & url, const RequestParamsFlags & rparams = DEFAULT_REQUEST_PARAMS,
-            Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) : url(url),
+        RequestParams(const QUrl & url, Headers * headers = 0, Cookies * cookies = 0,
+            Func * callback = 0, const RequestParamsFlags & rparams = DEFAULT_REQUEST_PARAMS) : url(url),
                  rparams(rparams), headers(headers), cookies(cookies), callback(callback) { prepare(); }
 
 
@@ -57,10 +57,10 @@ namespace Web {
 
             return new RequestParams(
                 new_url,
-                (RequestParamsFlags)(rp_follow | (prev_params -> rparams & rp_async)),
                 headers,
+                cookies,
                 prev_callback,
-                cookies
+                RPF(rp_follow | (prev_params -> rparams & rp_async))
             );
         }
 
@@ -122,10 +122,10 @@ namespace Web {
 
 //        static RequestDataParams & fromParams(RequestParams & params) { return reinterpret_cast<RequestDataParams &>(params); }
 
-        RequestDataParams(const QUrl & url, const RequestParamsFlags & rparams = DEFAULT_FORM_REQUEST_PARAMS,
-            const QByteArray & data = QByteArray(), const QByteArray & content_type = FORM_URLENCODE,
-            Headers * headers = 0, Func * callback = 0, Cookies * cookies = 0) :
-                RequestParams(url, (RequestParamsFlags)(rparams | rp_has_payload), headers, callback, cookies), data(data) { prepare(content_type); }
+        RequestDataParams(const QUrl & url, const QByteArray & data = QByteArray(), Headers * headers = 0,
+                Cookies * cookies = 0, Func * callback = 0, const QByteArray & content_type = FORM_URLENCODE,
+                const RequestParamsFlags & rparams = DEFAULT_FORM_REQUEST_PARAMS) :
+                RequestParams(url, headers, cookies, callback, RPF(rparams | rp_has_payload)), data(data) { prepare(content_type); }
 
         void prepare(const QByteArray & content_type) {
             bool has_content_type = !content_type.isEmpty();

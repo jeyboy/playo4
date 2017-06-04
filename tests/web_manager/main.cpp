@@ -152,7 +152,7 @@ void WebManagerTest::testSyncDelete() {
 }
 
 void WebManagerTest::testSyncPost() {
-    RequestDataParams * params = new RequestDataParams(POST_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS, QByteArrayLiteral("b=2"));
+    RequestDataParams * params = new RequestDataParams(POST_TEST_URL, QByteArrayLiteral("b=2"));
     Response * resp = Manager::procPost(params);
 
     Json json = resp -> toJson();
@@ -165,7 +165,7 @@ void WebManagerTest::testSyncPost() {
     );
 }
 void WebManagerTest::testSyncPut() {
-    RequestDataParams * params = new RequestDataParams(PUT_TEST_URL, DEFAULT_FORM_REQUEST_PARAMS, QByteArrayLiteral("a=1"));
+    RequestDataParams * params = new RequestDataParams(PUT_TEST_URL, QByteArrayLiteral("a=1"));
     Response * resp = Manager::procPut(params);
 
     Json json = resp -> toJson();
@@ -181,9 +181,8 @@ void WebManagerTest::testSyncPut() {
 void WebManagerTest::testAsyncGet() {
     RequestParams * params = new RequestParams(
         GET_TEST_URL,
-        RequestParams::rp_async,
-        0,
-        0
+        0, 0, 0,
+        RequestParams::rp_async
     );
 
     Manager * manager = Manager::prepare();
@@ -214,9 +213,8 @@ void WebManagerTest::testSyncRedirect() {
 void WebManagerTest::testAsyncRedirect() {
     RequestParams * params = new RequestParams(
         REDIRECT_TEST_URL(5),
-        RPF(RequestParams::rp_async | RequestParams::rp_follow),
-        0,
-        0
+        0, 0, 0,
+        RPF(RequestParams::rp_async | RequestParams::rp_follow)
     );
 
     Manager * manager = Manager::prepare();
@@ -253,9 +251,8 @@ void WebManagerTest::testRelSyncRedirect() {
 void WebManagerTest::testRelAsyncRedirect() {
     RequestParams * params = new RequestParams(
         REL_REDIRECT_TEST_URL(5),
-        RPF(RequestParams::rp_async | RequestParams::rp_follow),
-        0,
-        0
+        0, 0, 0,
+        RPF(RequestParams::rp_async | RequestParams::rp_follow)
     );
 
     Manager * manager = Manager::prepare();
@@ -279,7 +276,6 @@ void WebManagerTest::testRelAsyncRedirect() {
 void WebManagerTest::testSyncHeaders() {
     RequestParams * params = new RequestParams(
         HEADERS_TEST_URL,
-        DEFAULT_REQUEST_PARAMS,
         new Headers({
             {
                 QByteArrayLiteral("my header"), QByteArrayLiteral("my value")
