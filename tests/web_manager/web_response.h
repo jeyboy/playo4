@@ -54,9 +54,6 @@ namespace Web {
         QByteArray toHeader(const QByteArray & header_field, const bool &  destroy = true);
     protected:
         static QHash<QByteArray, ResponseType> response_predefined_types;
-
-    signals:
-        void completed();
     };
 }
 

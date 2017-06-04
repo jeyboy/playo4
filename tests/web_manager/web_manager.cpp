@@ -88,7 +88,9 @@ void Manager::requestFinished() {
                 new Headers({ {QByteArrayLiteral("Referer"), source -> url().toString().toUtf8() } }) // source -> request().rawHeader("Referer")
             );
 
+
             sendGet(current_params);
+            source -> deleteLater();
             return;
         }
     }
@@ -96,14 +98,15 @@ void Manager::requestFinished() {
     if (source -> hasErrors())
         ERROR_OUTPUT(source);
 
-    emit source -> completed();
+    emit requestCompleted(source);
 
-    QMetaObject::invokeMethod(
-        params -> callback -> obj,
-        params -> callback -> slot,
-        Q_ARG(Response *, source),
-        Q_ARG(void *, params -> callback -> user_data)
-    );
+    if (params -> callback)
+        QMetaObject::invokeMethod(
+            params -> callback -> obj,
+            params -> callback -> slot,
+            Q_ARG(Response *, source),
+            Q_ARG(void *, params -> callback -> user_data)
+        );
 
     params -> erase();
 }
@@ -131,9 +134,10 @@ void Manager::setup(const requestType & rtype, const Request & request, RequestP
     }
 }
 
-Response * Manager::setupCallback(QNetworkReply * m_http, RequestParams * /*params*/) {
+Response * Manager::setupCallback(QNetworkReply * m_http, RequestParams * params) {
     connect(m_http, SIGNAL(finished()), this, SLOT(requestFinished()));
-    return Response::fromReply(m_http);
+    //INFO: if we folowing by the redirection then current response can be not valid - so we should nuliffy it and take response sended by signal
+    return params -> isFollowed() ? 0 : Response::fromReply(m_http);
 }
 
 Response * Manager::proceed(QNetworkReply * m_http, RequestParams * params) {
@@ -146,7 +150,7 @@ Response * Manager::proceed(QNetworkReply * m_http, RequestParams * params) {
         if (params -> isFollowed())
             resp = resp -> followByRedirect();
 
-        emit resp -> completed();
+        emit requestCompleted(resp);
 
         return resp;
     }

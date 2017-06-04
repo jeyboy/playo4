@@ -140,6 +140,9 @@ namespace Web {
 
     protected slots:
         void requestFinished();
+
+    signals:
+        void requestCompleted(Response *);
     };
 
     class WEBMANAGERSHARED_EXPORT ManagerController : public QObject {

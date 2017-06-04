@@ -46,9 +46,9 @@
 #define TEST2_VAL 1
 
 #define QUOTAS_EXTRACT(val) val.mid(1, val.length() - 2)
-#define ASYNC_PROC(resp) \
+#define ASYNC_PROC(manager) \
     {\
-        QSignalSpy spy(resp, &Response::completed); \
+        QSignalSpy spy(manager, &Manager::requestCompleted); \
         while(spy.count() == 0) \
             QTest::qWait(200);\
     }
@@ -184,12 +184,13 @@ void WebManagerTest::testAsyncGet() {
         GET_TEST_URL,
         RequestParams::rp_async,
         0,
-        new Func(this, SLOT(response()))
+        0
     );
 
-    Response * resp = Manager::procGet(params);
+    Manager * manager = Manager::prepare();
+    Response * resp = manager -> procGet(params);
 
-    ASYNC_PROC(resp);
+    ASYNC_PROC(manager);
     QString url = resp -> toJson().string(QStringLiteral("url"));
 
     QVERIFY2(
@@ -216,12 +217,19 @@ void WebManagerTest::testAsyncRedirect() {
         REDIRECT_TEST_URL(5),
         RPF(RequestParams::rp_async | RequestParams::rp_follow),
         0,
-        new Func(this, SLOT(response()))
+        0
     );
 
-    Response * resp = Manager::procGet(params);
-    ASYNC_PROC(resp);
+    Manager * manager = Manager::prepare();
+    manager -> procGet(params);
 
+    QSignalSpy spy(manager, &Manager::requestCompleted); \
+    while(spy.count() == 0)
+        QTest::qWait(200);
+
+    QVariantList l = spy.takeFirst();
+
+    Response * resp = Response::fromReply(qvariant_cast<QNetworkReply *>(l[0]));
     QString url = resp -> toJson().string(QStringLiteral("url"));
 
     QVERIFY2(
