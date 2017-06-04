@@ -83,10 +83,11 @@ private Q_SLOTS:
     void testRelAsyncRedirect();
 
     void testSyncHeaders();
-//    void testSyncStatus();
+//    void testSyncStatus200();
+//    void testSyncStatus404();
 
-//    void testSyncCookies();
-//    void testSyncSetCookie();
+    void testSyncCookies();
+    void testSyncSetCookie();
 
 //    void testSyncDelay();
 
@@ -288,6 +289,46 @@ void WebManagerTest::testSyncHeaders() {
         resp -> request().rawHeader(QByteArrayLiteral("my header")) == QByteArrayLiteral("my value"),
         "Failure"
     );
+}
+
+
+//void WebManagerTest::testSyncStatus200() {
+//    RequestParams * params = new RequestParams(STATUS_TEST_URL(200));
+//    Response * resp = Manager::procHead(params);
+
+//    qDebug() << resp -> toJson();
+
+//    QVERIFY2(
+//        true,
+//        "Failure"
+//    );
+//}
+
+//void WebManagerTest::testSyncStatus404() {
+//    RequestParams * params = new RequestParams(STATUS_TEST_URL(404));
+//    Response * resp = Manager::procHead(params);
+
+//    qDebug() << resp -> toJson();
+
+//    QVERIFY2(
+//        true,
+//        "Failure"
+//    );
+//}
+
+void WebManagerTest::testSyncCookies() {
+    RequestParams * params = new RequestParams(COOKIES_TEST_URL);
+    Response * resp = Manager::procHead(params);
+
+    qDebug() << resp -> toJson();
+
+    QVERIFY2(
+        true,
+        "Failure"
+    );
+}
+void WebManagerTest::testSyncSetCookie() {
+//    COOKIE_TEST_URL(name, val)
 }
 
 QTEST_GUILESS_MAIN(WebManagerTest) // QTEST_APPLESS_MAIN // QTEST_MAIN
