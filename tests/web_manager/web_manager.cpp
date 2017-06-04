@@ -79,8 +79,6 @@ void Manager::requestFinished() {
     if (params -> isFollowed()) {
         QUrl new_url = source -> redirectUrl();
 
-        qDebug() << "redirect" << new_url;
-
         if (!new_url.isEmpty()) {
             RequestParams * current_params = RequestParams::buildRedirectParams(
                 new_url,

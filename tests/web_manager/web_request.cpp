@@ -4,9 +4,10 @@
 using namespace Web;
 
 Request::Request(RequestParams * params) : QNetworkRequest(params -> url) {
+    qDebug() << "HUDO";
     if (params -> headers) {
-        Headers & headers = *params -> headers;
-        for(Headers::ConstIterator header = headers.cbegin(); header != headers.cend(); header++)
+        Headers * headers = params -> headers;
+        for(Headers::ConstIterator header = headers -> cbegin(); header != headers -> cend(); header++)
             setRawHeader(header.key(), header.value());
     }
 }

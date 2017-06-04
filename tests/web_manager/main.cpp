@@ -19,7 +19,7 @@
 #define PUT_TEST_URL QUrl(QStringLiteral("http://httpbin.org/put"))
 #define DELETE_TEST_URL QUrl(QStringLiteral("http://httpbin.org/delete"))
 
-//http://httpbin.org/response-headers?key=val Returns given response headers.
+//http://httpbin.org/headers
 #define HEADERS_TEST_URL QUrl(QStringLiteral("http://httpbin.org/headers"))
 #define STATUS_TEST_URL(code) QUrl(QStringLiteral("http://httpbin.org/status/") + QString::number(code))
 #define REDIRECT_TEST_URL(times) QUrl(QStringLiteral("http://httpbin.org/redirect/") + QString::number(times))
@@ -53,7 +53,6 @@
             QTest::qWait(200);\
     }
 
-
 using namespace Web;
 
 class WebManagerTest : public QObject {
@@ -80,10 +79,10 @@ private Q_SLOTS:
     void testSyncRedirect();
     void testAsyncRedirect();
 
-//    void testRelSyncRedirect();
-//    void testRelAsyncRedirect();
+    void testRelSyncRedirect();
+    void testRelAsyncRedirect();
 
-//    void testSyncHeaders();
+    void testSyncHeaders();
 //    void testSyncStatus();
 
 //    void testSyncCookies();
@@ -234,6 +233,63 @@ void WebManagerTest::testAsyncRedirect() {
 
     QVERIFY2(
         GET_TEST_URL.toString() == url,
+        "Failure"
+    );
+}
+
+void WebManagerTest::testRelSyncRedirect() {
+    RequestParams * params = new RequestParams(
+        REL_REDIRECT_TEST_URL(5)
+    );
+
+    Response * resp = Manager::procGet(params);
+    QString url = resp -> toJson().string(QStringLiteral("url"));
+
+    QVERIFY2(
+        url == GET_TEST_URL.toString(),
+        "Failure"
+    );
+}
+void WebManagerTest::testRelAsyncRedirect() {
+    RequestParams * params = new RequestParams(
+        REL_REDIRECT_TEST_URL(5),
+        RPF(RequestParams::rp_async | RequestParams::rp_follow),
+        0,
+        0
+    );
+
+    Manager * manager = Manager::prepare();
+    manager -> procGet(params);
+
+    QSignalSpy spy(manager, &Manager::requestCompleted); \
+    while(spy.count() == 0)
+        QTest::qWait(200);
+
+    QVariantList l = spy.takeFirst();
+
+    Response * resp = Response::fromReply(qvariant_cast<QNetworkReply *>(l[0]));
+    QString url = resp -> toJson().string(QStringLiteral("url"));
+
+    QVERIFY2(
+        GET_TEST_URL.toString() == url,
+        "Failure"
+    );
+}
+
+void WebManagerTest::testSyncHeaders() {
+    RequestParams * params = new RequestParams(
+        HEADERS_TEST_URL,
+        DEFAULT_REQUEST_PARAMS,
+        new Headers({
+            {
+                QByteArrayLiteral("my header"), QByteArrayLiteral("my value")
+            }
+        })
+    );
+    Response * resp = Manager::procHead(params);
+
+    QVERIFY2(
+        resp -> request().rawHeader(QByteArrayLiteral("my header")) == QByteArrayLiteral("my value"),
         "Failure"
     );
 }
