@@ -317,10 +317,14 @@ void WebManagerTest::testSyncHeaders() {
 //}
 
 void WebManagerTest::testSyncCookies() {
-    RequestParams * params = new RequestParams(COOKIES_TEST_URL);
+    RequestParams * params = new RequestParams(
+        COOKIES_TEST_URL,
+        0, new Cookies()
+    );
     Response * resp = Manager::procHead(params);
 
-    qDebug() << resp -> toJson();
+//    qDebug() << resp -> toJson();
+    qDebug() << resp -> toText();
 
     QVERIFY2(
         true,

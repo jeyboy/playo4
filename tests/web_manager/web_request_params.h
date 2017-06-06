@@ -35,7 +35,14 @@ namespace Web {
             rp_extract_params_to_payload = 1 << 3,
             rp_print_params = 1 << 4,
             rp_has_payload = 1 << 5,
-            rp_destroy = 1 << 6 // destroy params after request
+
+            // destroy params after request
+
+            rp_destroy_headers = 1 << 6,
+            rp_destroy_callback = 1 << 7,
+            rp_destroy_cookies = 1 << 8,
+
+            rp_destroy = rp_destroy_headers | rp_destroy_callback | rp_destroy_cookies
         };
 
         QUrl url;
@@ -88,7 +95,6 @@ namespace Web {
         inline bool isHasPayload() { return rparams & rp_has_payload; }
         inline bool isFollowed() { return rparams & rp_follow; }
         inline bool isHasCallback() { return callback != 0; }
-        inline bool isDestroy() { return rparams & rp_destroy; }
 
         void prepare() {
             if (rparams & rp_attach_agent) {
@@ -104,10 +110,14 @@ namespace Web {
         }
 
         void erase() {
-            if (isDestroy()) {
-                delete callback;
+            if (rparams & rp_destroy_headers)
                 delete headers;
-            }
+
+            if (rparams & rp_destroy_callback)
+                delete callback;
+
+            if (rparams & rp_destroy_cookies)
+                delete cookies;
         }
 
 //        void addHeader(const QByteArray & name, const QByteArray & val) {

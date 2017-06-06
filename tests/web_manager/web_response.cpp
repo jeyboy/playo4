@@ -134,6 +134,10 @@ Response * Response::followByRedirect(QHash<QUrl, bool> prev_urls) {
     return this;
 }
 
+Cookies * Response::cookies() {
+    return Cookies::fromJar(manager() -> cookieJar());
+}
+
 QUrlQuery Response::toQuery(const bool & destroy) {
     QByteArray ar = readAll();
     if (destroy) deleteLater();

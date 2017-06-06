@@ -5,6 +5,8 @@
 
 #include <qnetworkreply.h>
 
+#include "web_cookies.h"
+
 #include "html_page.h"
 #include "json.h"
 #include <qpixmap.h>
@@ -42,6 +44,8 @@ namespace Web {
 
         QUrl redirectUrl();
         Response * followByRedirect(QHash<QUrl, bool> prev_urls = QHash<QUrl, bool>());
+
+        Cookies * cookies();
 
         QUrlQuery toQuery(const bool & destroy = true);
         QByteArray toBytes(const bool & destroy = true);
