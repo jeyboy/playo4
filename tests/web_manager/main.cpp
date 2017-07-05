@@ -319,8 +319,6 @@ void WebManagerTest::testSyncHeaders() {
 //}
 
 void WebManagerTest::testSyncSetCookie() {
-//    COOKIE_TEST_URL(name, val)
-
     RequestParams * params = new RequestParams(
         COOKIE_TEST_URL(QByteArrayLiteral("na"), QByteArrayLiteral("me"))
     );
