@@ -22,7 +22,7 @@
 #endif
 
 #define RPF(vals) (RequestParams::RequestParamsFlags)(vals)
-#define DEFAULT_REQUEST_PARAMS RPF(RequestParams::rp_destroy | RequestParams::rp_follow)
+#define DEFAULT_REQUEST_PARAMS RPF(RequestParams::rp_destroy_headers | RequestParams::rp_destroy_callback | RequestParams::rp_follow)
 #define DEFAULT_FORM_REQUEST_PARAMS RPF(RequestParams::rp_extract_params_to_payload | DEFAULT_REQUEST_PARAMS)
 
 namespace Web {

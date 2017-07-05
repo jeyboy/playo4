@@ -13,7 +13,9 @@
 //http://httpbin.org/digest-auth/:qop/:user/:passwd Challenges HTTP Digest Auth.
 //http://httpbin.org/stream/:n Streams n–100 lines.
 
+#define IP_URL QUrl(QStringLiteral("https://api.ipify.org?format=json"))
 
+#define BASE_DOMAIN QByteArrayLiteral("httpbin.org")
 #define GET_TEST_URL QUrl(QStringLiteral("http://httpbin.org/get"))
 #define POST_TEST_URL QUrl(QStringLiteral("http://httpbin.org/post"))
 #define PUT_TEST_URL QUrl(QStringLiteral("http://httpbin.org/put"))
@@ -26,7 +28,7 @@
 #define REL_REDIRECT_TEST_URL(times) QUrl(QStringLiteral("http://httpbin.org/relative-redirect/") + QString::number(times))
 
 #define COOKIES_TEST_URL QUrl(QStringLiteral("http://httpbin.org/cookies"))
-#define COOKIE_TEST_URL(name, val) QUrl(QStringLiteral("http://httpbin.org/cookies/set/") + name + '/' + value)
+#define COOKIE_TEST_URL(name, val) QUrl(QStringLiteral("http://httpbin.org/cookies/set/") + name + '/' + val)
 
 #define DELAY_TEST_URL(secs) QUrl(QStringLiteral("http://httpbin.org/delay/") + QString::number(secs))
 
@@ -86,8 +88,8 @@ private Q_SLOTS:
 //    void testSyncStatus200();
 //    void testSyncStatus404();
 
-    void testSyncCookies();
     void testSyncSetCookie();
+    void testSyncUseCookieSet();
 
 //    void testSyncDelay();
 
@@ -96,7 +98,7 @@ private Q_SLOTS:
 //    void testSyncJsonResponse();
 //    void testSyncImageResponse();
 
-//    void testProxyMirror(); # tor
+//    void testProxyMirror(); // tor
 };
 
 WebManagerTest::WebManagerTest() {}
@@ -316,23 +318,37 @@ void WebManagerTest::testSyncHeaders() {
 //    );
 //}
 
-void WebManagerTest::testSyncCookies() {
-    RequestParams * params = new RequestParams(
-        COOKIES_TEST_URL,
-        0, new Cookies()
-    );
-    Response * resp = Manager::procHead(params);
+void WebManagerTest::testSyncSetCookie() {
+//    COOKIE_TEST_URL(name, val)
 
-//    qDebug() << resp -> toJson();
-    qDebug() << resp -> toText();
+    RequestParams * params = new RequestParams(
+        COOKIE_TEST_URL(QByteArrayLiteral("na"), QByteArrayLiteral("me"))
+    );
+    Response * resp = Manager::procGet(params);
+
+    Json obj = resp -> toJson()[QStringLiteral("cookies")];
 
     QVERIFY2(
-        true,
+        obj.string(QStringLiteral("na")) == QStringLiteral("me"),
         "Failure"
     );
 }
-void WebManagerTest::testSyncSetCookie() {
-//    COOKIE_TEST_URL(name, val)
+
+void WebManagerTest::testSyncUseCookieSet() {
+    Cookies * cookies = new Cookies(this);
+    cookies -> appendCookie(QByteArrayLiteral("sessionid=38afes7a8; Domain=") + BASE_DOMAIN);
+
+    RequestParams * params = new RequestParams(
+        COOKIE_TEST_URL(QByteArrayLiteral("na"), QByteArrayLiteral("me")),
+        0, cookies
+    );
+    Manager::procGet(params) -> deleteLater();
+
+    QVERIFY2(
+        cookies -> cookie(QByteArrayLiteral("sessionid")) == QByteArrayLiteral("38afes7a8") &&
+        cookies -> cookie(QByteArrayLiteral("na")) == QByteArrayLiteral("me"),
+        "Failure"
+    );
 }
 
 QTEST_GUILESS_MAIN(WebManagerTest) // QTEST_APPLESS_MAIN // QTEST_MAIN
