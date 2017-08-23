@@ -56,6 +56,16 @@ namespace Web {
                  rparams(rparams), headers(headers), cookies(cookies), callback(callback) { prepare(); }
 
 
+        static RequestParams * buildDefaultParams(const QUrl & new_url, const bool & async) {
+            return new RequestParams(
+                new_url,
+                0,
+                0,
+                0,
+                RPF(DEFAULT_REQUEST_PARAMS | rp_destroy | (async ? rp_async : rp_none))
+            );
+        }
+
         static RequestParams * buildRedirectParams(const QUrl & new_url, RequestParams * prev_params, Headers * headers = 0) {
             Func * prev_callback = prev_params -> callback; prev_params -> callback = 0;
             Cookies * cookies = prev_params -> cookies;

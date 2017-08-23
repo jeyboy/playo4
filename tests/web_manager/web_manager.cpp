@@ -9,7 +9,7 @@ using namespace Web;
 //////////////////////////     WEB_MANAGER     /////////////////////////////
 QThread * Manager::main_thread = 0;
 QHash<QObject *, Manager *> Manager::managers = QHash<QObject *, Manager *>();
-Cookies * Manager::default_cookies = new Cookies();
+Cookies Manager::default_cookies;
 
 Manager * Manager::prepare() {
     QThread * thread = QThread::currentThread();
@@ -110,7 +110,7 @@ void Manager::requestFinished() {
 }
 
 void Manager::setup(const requestType & rtype, const Request & request, RequestParams * params) {
-    Cookies * curr_cookies = params -> cookies ? params -> cookies : default_cookies;
+    Cookies * curr_cookies = params -> cookies ? params -> cookies : &default_cookies;
     setCookieJar(curr_cookies);
 
     if (params -> isPrintParams()) {
@@ -126,7 +126,8 @@ void Manager::setup(const requestType & rtype, const Request & request, RequestP
         }
 
         qInfo()
-            << "*** " << rtype_name << (params -> isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral("")) << params -> url.toString() << QByteArrayLiteral("\r\n")
+            << "*** " << rtype_name << (params -> isAsync() ? QByteArrayLiteral("ASYNC") : QByteArrayLiteral(""))
+            << params -> url.toString() << QByteArrayLiteral("\r\n")
             << "*** H:" << request.headersStr();
         curr_cookies -> print(params -> url);
     }

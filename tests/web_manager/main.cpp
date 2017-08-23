@@ -93,14 +93,14 @@ private Q_SLOTS:
 
 //    void testSyncDelay();
 
-    void testSyncHtmlResponse();
-    void testSyncXmlResponse();
-    void testSyncJsonResponse();
-    void testSyncImageResponse();
+//    void testSyncHtmlResponse();
+//    void testSyncXmlResponse();
+//    void testSyncJsonResponse();
+//    void testSyncImageResponse();
 
     void testCountriesList();
 
-//    void testProxyMirror();
+    void testProxyMirror();
 };
 
 WebManagerTest::WebManagerTest() {}
@@ -352,16 +352,52 @@ void WebManagerTest::testSyncUseCookieSet() {
 }
 
 void WebManagerTest::testSyncHtmlResponse() {
-//    HTML_TEST_URL
+    Response * resp = Manager::procGet(HTML_TEST_URL, false);
+
+    Html::Page page = resp -> toHtml();
+
+    page.output();
+
+    QVERIFY2(
+        page.findFirst("title") -> text() == QByteArrayLiteral("Google"),
+        "Failure"
+    );
 }
 void WebManagerTest::testSyncXmlResponse() {
-//    XML_CSS_TEST_URL
+    Response * resp = Manager::procGet(XML_CSS_TEST_URL, false);
+
+    Html::Page page = resp -> toHtml();
+
+    qDebug() << page.findFirst("html") -> attr(QByteArrayLiteral("xmlns:xsl"));
+
+    QVERIFY2(
+        page.findFirst("html") -> attr(QByteArrayLiteral("xmlns:xsl")) == QByteArrayLiteral("http://www.w3.org/1999/XSL/Transform"),
+        "Failure"
+    );
 }
 void WebManagerTest::testSyncJsonResponse() {
-//    JSON_TEST_URL
+    Response * resp = Manager::procGet(JSON_TEST_URL, false);
+
+    Json json = resp -> toJson();
+
+    qDebug() << json;
+
+    QVERIFY2(
+        false,
+        "Failure"
+    );
 }
 void WebManagerTest::testSyncImageResponse() {
-//    IMAGE_TEST_URL
+    Response * resp = Manager::procGet(IMAGE_TEST_URL, false);
+
+    QPixmap img = resp -> toPixmap();
+
+    qDebug() << img;
+
+    QVERIFY2(
+        false,
+        "Failure"
+    );
 }
 
 void WebManagerTest::testCountriesList() {
@@ -370,6 +406,13 @@ void WebManagerTest::testCountriesList() {
     QVERIFY2(
         c -> name == QByteArrayLiteral("United States of America")
         /*Country::obj().convert()*/,
+        "Failure"
+    );
+}
+
+void WebManagerTest::testProxyMirror() {
+    QVERIFY2(
+        true,
         "Failure"
     );
 }

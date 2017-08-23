@@ -25,7 +25,7 @@ namespace Web {
         QSslSocket::PeerVerifyMode mode;
 
         static QThread * main_thread;
-        static Cookies * default_cookies;
+        static Cookies default_cookies;
         static QHash<QObject *, Manager *> managers;
 
         friend class ManagerController;
@@ -53,6 +53,10 @@ namespace Web {
         static void setMainThreadSync(QThread * main) { main_thread = main; }
 
         static Manager * prepare();
+
+//        static Response * procHead(const QUrl & url, const bool & async = true) { return procHead(RequestParams::buildDefaultParams(url, async)); }
+//        static Response * procGet(const QUrl & url, const bool & async = true) { return procGet(RequestParams::buildDefaultParams(url, async)); }
+//        static Response * procDelete(const QUrl & url, const bool & async = true) { return procDelete(RequestParams::buildDefaultParams(url, async)); }
 
         static Response * procHead(RequestParams * params) { return prepare() -> sendSimple(rt_head, params); }
         static Response * procGet(RequestParams * params) { return prepare() -> sendSimple(rt_get, params); }
