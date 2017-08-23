@@ -4,13 +4,12 @@
 //#include <QtNetwork>
 
 #include "qnetworkaccessmanager.h"
-//#include "qnetworkproxy.h"
-
 #include "variant_ptr.h"
 
 #include "web_request_params.h"
 #include "web_request.h"
 #include "web_response.h"
+#include "web_proxy.h"
 
 #define MANAGER_PROPERTY_NAME "settings"
 //#define SERIALIZE_JSON(json) (json.isArray() ? QJsonDocument(json.toArray()) : QJsonDocument(json.toObject())).toJson(QJsonDocument::Compact)

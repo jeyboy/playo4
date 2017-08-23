@@ -93,12 +93,14 @@ private Q_SLOTS:
 
 //    void testSyncDelay();
 
-//    void testSyncHtmlResponse();
-//    void testSyncXmlResponse();
-//    void testSyncJsonResponse();
-//    void testSyncImageResponse();
+    void testSyncHtmlResponse();
+    void testSyncXmlResponse();
+    void testSyncJsonResponse();
+    void testSyncImageResponse();
 
-//    void testProxyMirror(); // tor
+    void testCountriesList();
+
+//    void testProxyMirror();
 };
 
 WebManagerTest::WebManagerTest() {}
@@ -345,6 +347,29 @@ void WebManagerTest::testSyncUseCookieSet() {
     QVERIFY2(
         cookies -> cookie(QByteArrayLiteral("sessionid")) == QByteArrayLiteral("38afes7a8") &&
         cookies -> cookie(QByteArrayLiteral("na")) == QByteArrayLiteral("me"),
+        "Failure"
+    );
+}
+
+void WebManagerTest::testSyncHtmlResponse() {
+//    HTML_TEST_URL
+}
+void WebManagerTest::testSyncXmlResponse() {
+//    XML_CSS_TEST_URL
+}
+void WebManagerTest::testSyncJsonResponse() {
+//    JSON_TEST_URL
+}
+void WebManagerTest::testSyncImageResponse() {
+//    IMAGE_TEST_URL
+}
+
+void WebManagerTest::testCountriesList() {
+    CountryCell * c = Country::obj().find(QByteArrayLiteral("USA"));
+
+    QVERIFY2(
+        c -> name == QByteArrayLiteral("United States of America")
+        /*Country::obj().convert()*/,
         "Failure"
     );
 }

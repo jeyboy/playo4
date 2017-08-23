@@ -33,7 +33,9 @@ SOURCES += main.cpp \
     web_cookies.cpp \
     web_request.cpp \
     web_response.cpp \
-    variant_convertor.cpp
+    variant_convertor.cpp \
+    web_proxy.cpp \
+    country.cpp
 
 HEADERS += \
     defines.h \
@@ -49,4 +51,6 @@ HEADERS += \
     web_utils.h \
     web_request_params.h \
     variant_ptr.h \
-    variant_convertor.h
+    variant_convertor.h \
+    web_proxy.h \
+    country.h
