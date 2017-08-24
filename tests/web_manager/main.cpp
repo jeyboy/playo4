@@ -93,10 +93,10 @@ private Q_SLOTS:
 
 //    void testSyncDelay();
 
-//    void testSyncHtmlResponse();
-//    void testSyncXmlResponse();
-//    void testSyncJsonResponse();
-//    void testSyncImageResponse();
+    void testSyncHtmlResponse();
+    void testSyncXmlResponse();
+    void testSyncJsonResponse();
+    void testSyncImageResponse();
 
     void testCountriesList();
 
@@ -356,8 +356,6 @@ void WebManagerTest::testSyncHtmlResponse() {
 
     Html::Page page = resp -> toHtml();
 
-    page.output();
-
     QVERIFY2(
         page.findFirst("title") -> text() == QByteArrayLiteral("Google"),
         "Failure"
@@ -368,10 +366,8 @@ void WebManagerTest::testSyncXmlResponse() {
 
     Html::Page page = resp -> toHtml();
 
-    qDebug() << page.findFirst("html") -> attr(QByteArrayLiteral("xmlns:xsl"));
-
     QVERIFY2(
-        page.findFirst("html") -> attr(QByteArrayLiteral("xmlns:xsl")) == QByteArrayLiteral("http://www.w3.org/1999/XSL/Transform"),
+        page.hasChildren("breakfast_menu"),
         "Failure"
     );
 }
@@ -380,10 +376,8 @@ void WebManagerTest::testSyncJsonResponse() {
 
     Json json = resp -> toJson();
 
-    qDebug() << json;
-
     QVERIFY2(
-        false,
+        json.hasKey(QStringLiteral("ip")),
         "Failure"
     );
 }

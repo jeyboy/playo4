@@ -49,14 +49,19 @@ namespace Web {
         Response * sendSimple(const requestType & rtype, RequestParams * params);
         Response * sendData(const requestType & rtype, RequestDataParams * params);
     public:
+        void setCookieJar(Cookies * cookieJar) {
+            QNetworkAccessManager::setCookieJar(cookieJar);
+            cookieJar -> setParent(0);
+        }
+
 //        qApp -> thread()
         static void setMainThreadSync(QThread * main) { main_thread = main; }
 
         static Manager * prepare();
 
-//        static Response * procHead(const QUrl & url, const bool & async = true) { return procHead(RequestParams::buildDefaultParams(url, async)); }
-//        static Response * procGet(const QUrl & url, const bool & async = true) { return procGet(RequestParams::buildDefaultParams(url, async)); }
-//        static Response * procDelete(const QUrl & url, const bool & async = true) { return procDelete(RequestParams::buildDefaultParams(url, async)); }
+        static Response * procHead(const QUrl & url, const bool & async = true) { return procHead(RequestParams::buildDefaultParams(url, async)); }
+        static Response * procGet(const QUrl & url, const bool & async = true) { return procGet(RequestParams::buildDefaultParams(url, async)); }
+        static Response * procDelete(const QUrl & url, const bool & async = true) { return procDelete(RequestParams::buildDefaultParams(url, async)); }
 
         static Response * procHead(RequestParams * params) { return prepare() -> sendSimple(rt_head, params); }
         static Response * procGet(RequestParams * params) { return prepare() -> sendSimple(rt_get, params); }
@@ -154,6 +159,12 @@ namespace Web {
         inline void disconnectThread() {
             qDebug() << "!!!!!!!!!!!!!!!!!!!! UNREGISTRATE MANAGER";
             Manager * tmanager = Manager::managers.take(sender());
+
+//            // INFO: if last manager is closed then we removing all static data
+//            if (Manager::managers.isEmpty()) {
+//                Manager::default_cookies -> deleteLater();
+//            }
+
             if (tmanager) tmanager -> deleteLater();
             deleteLater();
         }
