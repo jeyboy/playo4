@@ -52,6 +52,7 @@ namespace Web {
         QString toText(const bool &  destroy = true);
         Json toJson(const QString & wrap = QString(), const bool &  destroy = true);
         Html::Page toHtml(const bool &  = true);
+        QImage toImage(const bool &  destroy = true);
         QPixmap toPixmap(const bool &  destroy = true);
         QUrl toUrl(const bool &  destroy = true);
         QUrl toRedirectUrl(const bool &  destroy = true);

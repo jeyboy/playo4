@@ -180,10 +180,32 @@ Json Response::toJson(const QString & wrap, const bool & destroy) { //TODO: enc 
     qCritical() << "NOT JSON" << rawHeader("Content-Type");
     return QJsonObject {{JSON_ERR_FIELD, QString(ar)}};
 }
-QPixmap Response::toPixmap(const bool & destroy) {
-    QPixmap image;
-    image.loadFromData(readAll());
+
+QImage Response::toImage(const bool & destroy) {
+    QByteArray data = readAll();
     if (destroy) deleteLater();
+
+    QImage img = QImage::fromData(data);
+
+    if (img.isNull()) {
+        QByteArray ext_bytes = Utils::extractExtension(url());
+
+        if (ext_bytes.isEmpty())
+            ext_bytes = QByteArrayLiteral("PNG");
+
+        return QImage::fromData(data, ext_bytes.constData());
+    }
+
+    return img;
+}
+
+//    INFO: this working only in GUI thread
+QPixmap Response::toPixmap(const bool & destroy) {
+    QByteArray data = readAll();
+    if (destroy) deleteLater();
+
+    QPixmap image;
+    image.loadFromData(data);
     return image;
 }
 

@@ -16,6 +16,16 @@ namespace Web {
             return params;
         }
 
+        static QByteArray extractExtension(const QUrl & url) {
+            QString uri = url.toString();
+
+            QString ext = uri.section('.', -1, -1);
+
+            if (ext != uri && ext.indexOf(' ') == -1)
+                return ext.toUtf8();
+            else return QByteArray();
+        }
+
         static void split(const QByteArray & val, const QByteArray & predicate, QList<QByteArray> & res) {
             const char * iter = val.constData();
             const char * predicate_iter = predicate.constData();

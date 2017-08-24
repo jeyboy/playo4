@@ -384,12 +384,10 @@ void WebManagerTest::testSyncJsonResponse() {
 void WebManagerTest::testSyncImageResponse() {
     Response * resp = Manager::procGet(IMAGE_TEST_URL, false);
 
-    QPixmap img = resp -> toPixmap();
-
-    qDebug() << img;
+    QImage img = resp -> toImage();
 
     QVERIFY2(
-        false,
+        !img.isNull(),
         "Failure"
     );
 }
