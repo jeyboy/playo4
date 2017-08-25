@@ -51,8 +51,7 @@ namespace Web {
         static Proxy * findinSource1(const ManagerProxyType & ptype = pt_any, const QByteArray & country = QByteArray());
         static Proxy * findinSource2(const ManagerProxyType & ptype = pt_any, const QByteArray & country = QByteArray());
         static Proxy * findinSource3(const ManagerProxyType & ptype = pt_any, const QByteArray & country = QByteArray());
-        static Proxy * findinSource4(const ManagerProxyType & ptype = pt_any, const QByteArray & country = QByteArray());
-        static Proxy * findinSource5(const ManagerProxyType & ptype = pt_any, const QByteArray & country = QByteArray());
+//        static Proxy * findinSource5(const ManagerProxyType & ptype = pt_any, const QByteArray & country = QByteArray());
     };
 }
 
