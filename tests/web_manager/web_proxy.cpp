@@ -163,6 +163,14 @@ Proxy * Proxy::findinSource2(const ManagerProxyType & ptype, const QByteArray & 
 
 //https://www.socks-proxy.net/
 Proxy * Proxy::findinSource3(const ManagerProxyType & ptype, const QByteArray & country) {
+    if (ptype & pt_http)
+        return 0;
+
+    CountryCell * ccell = country.isEmpty() ? 0 : Country::obj().find(country);
+
+    if (!country.isEmpty() && !ccell)
+        return 0;
+
     QUrl url = QUrl(QLatin1Literal("https://www.socks-proxy.net/"));
 
     Response * resp = Manager::procGet(url);
@@ -181,13 +189,16 @@ Proxy * Proxy::findinSource3(const ManagerProxyType & ptype, const QByteArray & 
 
         if (reg.match(ip).hasMatch()) {
             ManagerProxyType pt = strToType(children[4] -> text().toLower());
+            pt = (ManagerProxyType)(pt | (children[6] -> text() == QByteArrayLiteral("Yes") ? pt_ssl : pt_none));
+            QByteArray pcountry = children[3] -> text();
+            CountryCell * pccell = Country::obj().find(pcountry);
 
-            if (pt != pt_unsupported) {
+            if (pt != pt_unsupported && (ptype == pt_any || ptype == pt) && (!ccell || (pccell && pccell -> name2letters == ccell -> name2letters))) {
                 return new Proxy(
-                    (ManagerProxyType)(pt | (children[6] -> text() == QByteArrayLiteral("Yes") ? pt_ssl : pt_none)),
+                    pt,
                     ip,
                     (quint16)children[1] -> text().toInt(),
-                    children[3] -> text()
+                    pcountry
                 );
             } else qDebug() << "UNSUPPORTED PROTOCOL: " << children[4] -> text().toLower();
         }
