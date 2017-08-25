@@ -5,6 +5,7 @@
 #include <qstringbuilder.h>
 
 #define LSTR(str) QStringLiteral(str)
+#define ASTR(str) QLatin1Literal(str)
 #define QSTR_TO_CHAR(str) str.toUtf8().constData()
 
 #endif // DEFINES
