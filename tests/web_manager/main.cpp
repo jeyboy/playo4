@@ -13,36 +13,36 @@
 //http://httpbin.org/digest-auth/:qop/:user/:passwd Challenges HTTP Digest Auth.
 //http://httpbin.org/stream/:n Streams n–100 lines.
 
-#define IP_URL QUrl(QStringLiteral("https://api.ipify.org?format=json"))
+#define IP_URL QUrl(LSTR("https://api.ipify.org?format=json"))
 
 #define BASE_DOMAIN QByteArrayLiteral("httpbin.org")
-#define GET_TEST_URL QUrl(QStringLiteral("http://httpbin.org/get"))
-#define POST_TEST_URL QUrl(QStringLiteral("http://httpbin.org/post"))
-#define PUT_TEST_URL QUrl(QStringLiteral("http://httpbin.org/put"))
-#define DELETE_TEST_URL QUrl(QStringLiteral("http://httpbin.org/delete"))
+#define GET_TEST_URL QUrl(LSTR("http://httpbin.org/get"))
+#define POST_TEST_URL QUrl(LSTR("http://httpbin.org/post"))
+#define PUT_TEST_URL QUrl(LSTR("http://httpbin.org/put"))
+#define DELETE_TEST_URL QUrl(LSTR("http://httpbin.org/delete"))
 
 //http://httpbin.org/headers
-#define HEADERS_TEST_URL QUrl(QStringLiteral("http://httpbin.org/headers"))
-#define STATUS_TEST_URL(code) QUrl(QStringLiteral("http://httpbin.org/status/") + QString::number(code))
-#define REDIRECT_TEST_URL(times) QUrl(QStringLiteral("http://httpbin.org/redirect/") + QString::number(times))
-#define REL_REDIRECT_TEST_URL(times) QUrl(QStringLiteral("http://httpbin.org/relative-redirect/") + QString::number(times))
+#define HEADERS_TEST_URL QUrl(LSTR("http://httpbin.org/headers"))
+#define STATUS_TEST_URL(code) QUrl(LSTR("http://httpbin.org/status/") + QString::number(code))
+#define REDIRECT_TEST_URL(times) QUrl(LSTR("http://httpbin.org/redirect/") + QString::number(times))
+#define REL_REDIRECT_TEST_URL(times) QUrl(LSTR("http://httpbin.org/relative-redirect/") + QString::number(times))
 
-#define COOKIES_TEST_URL QUrl(QStringLiteral("http://httpbin.org/cookies"))
-#define COOKIE_TEST_URL(name, val) QUrl(QStringLiteral("http://httpbin.org/cookies/set/") + name + '/' + val)
+#define COOKIES_TEST_URL QUrl(LSTR("http://httpbin.org/cookies"))
+#define COOKIE_TEST_URL(name, val) QUrl(LSTR("http://httpbin.org/cookies/set/") + name + '/' + val)
 
-#define DELAY_TEST_URL(secs) QUrl(QStringLiteral("http://httpbin.org/delay/") + QString::number(secs))
+#define DELAY_TEST_URL(secs) QUrl(LSTR("http://httpbin.org/delay/") + QString::number(secs))
 
-#define HTML_TEST_URL QUrl(QStringLiteral("http://google.com"))
-#define JSON_TEST_URL QUrl(QStringLiteral("http://ip.jsontest.com/"))
-#define XML_TEST_URL QUrl(QStringLiteral("https://www.w3schools.com/xml/simple.xml"))
-#define XML_CSS_TEST_URL QUrl(QStringLiteral("https://www.w3schools.com/xml/simplexsl.xml"))
+#define HTML_TEST_URL QUrl(LSTR("http://google.com"))
+#define JSON_TEST_URL QUrl(LSTR("http://ip.jsontest.com/"))
+#define XML_TEST_URL QUrl(LSTR("https://www.w3schools.com/xml/simple.xml"))
+#define XML_CSS_TEST_URL QUrl(LSTR("https://www.w3schools.com/xml/simplexsl.xml"))
 
-#define IMAGE_TEST_URL QUrl(QStringLiteral("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"))
+#define IMAGE_TEST_URL QUrl(LSTR("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"))
 
-#define ARGS_KEY QStringLiteral("args")
+#define ARGS_KEY LSTR("args")
 
-#define TEST1_KEY QStringLiteral("test1")
-#define TEST2_KEY QStringLiteral("test2")
+#define TEST1_KEY LSTR("test1")
+#define TEST2_KEY LSTR("test2")
 
 #define TEST1_VAL QByteArrayLiteral("test1val")
 #define TEST2_VAL 1
@@ -107,7 +107,7 @@ WebManagerTest::WebManagerTest() {}
 
 void WebManagerTest::testAttachParam() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
-    params -> attachParam(TEST1_KEY.toUtf8(), TEST1_VAL);
+    params -> attachParam(TEST1_KEY, TEST1_VAL);
     Response * resp = Manager::procGet(params);
     Json json = resp -> toJson();
 
@@ -121,8 +121,8 @@ void WebManagerTest::testAttachParam() {
 void WebManagerTest::testAttachParams() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
     params -> attachParams({
-        {TEST1_KEY.toUtf8(), TEST1_VAL},
-        {TEST2_KEY.toUtf8(), TEST2_VAL}
+        {TEST1_KEY, TEST1_VAL},
+        {TEST2_KEY, TEST2_VAL}
     });
     Response * resp = Manager::procGet(params);
     Json json = resp -> toJson()[ARGS_KEY];
@@ -140,7 +140,7 @@ void WebManagerTest::testSyncGet() {
     RequestParams * params = new RequestParams(GET_TEST_URL);
     Response * resp = Manager::procGet(params);
 
-    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(LSTR("url"));
 
     QVERIFY2(
         GET_TEST_URL.toString() == url,
@@ -151,7 +151,7 @@ void WebManagerTest::testSyncDelete() {
     RequestParams * params = new RequestParams(DELETE_TEST_URL);
     Response * resp = Manager::procDelete(params);
 
-    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(LSTR("url"));
 
     QVERIFY2(DELETE_TEST_URL.toString() == url, "Failure");
 }
@@ -161,11 +161,11 @@ void WebManagerTest::testSyncPost() {
     Response * resp = Manager::procPost(params);
 
     Json json = resp -> toJson();
-    QString arg = json[QStringLiteral("form")].string(QStringLiteral("b"));
-    QString url = json.string(QStringLiteral("url"));
+    QString arg = json[LSTR("form")].string(LSTR("b"));
+    QString url = json.string(LSTR("url"));
 
     QVERIFY2(
-        POST_TEST_URL.toString() == url && arg == QStringLiteral("2"),
+        POST_TEST_URL.toString() == url && arg == LSTR("2"),
         "Failure"
     );
 }
@@ -174,11 +174,11 @@ void WebManagerTest::testSyncPut() {
     Response * resp = Manager::procPut(params);
 
     Json json = resp -> toJson();
-    QString arg = json[QStringLiteral("form")].string(QStringLiteral("a"));
-    QString url = json.string(QStringLiteral("url"));
+    QString arg = json[LSTR("form")].string(LSTR("a"));
+    QString url = json.string(LSTR("url"));
 
     QVERIFY2(
-        PUT_TEST_URL.toString() == url && arg == QStringLiteral("1"),
+        PUT_TEST_URL.toString() == url && arg == LSTR("1"),
         "Failure"
     );
 }
@@ -194,7 +194,7 @@ void WebManagerTest::testAsyncGet() {
     Response * resp = manager -> procGet(params);
 
     ASYNC_PROC(manager);
-    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(LSTR("url"));
 
     QVERIFY2(
         GET_TEST_URL.toString() == url,
@@ -208,7 +208,7 @@ void WebManagerTest::testSyncRedirect() {
     );
 
     Response * resp = Manager::procGet(params);
-    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(LSTR("url"));
 
     QVERIFY2(
         url == GET_TEST_URL.toString(),
@@ -232,7 +232,7 @@ void WebManagerTest::testAsyncRedirect() {
     QVariantList l = spy.takeFirst();
 
     Response * resp = Response::fromReply(qvariant_cast<QNetworkReply *>(l[0]));
-    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(LSTR("url"));
 
     QVERIFY2(
         GET_TEST_URL.toString() == url,
@@ -246,7 +246,7 @@ void WebManagerTest::testRelSyncRedirect() {
     );
 
     Response * resp = Manager::procGet(params);
-    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(LSTR("url"));
 
     QVERIFY2(
         url == GET_TEST_URL.toString(),
@@ -270,7 +270,7 @@ void WebManagerTest::testRelAsyncRedirect() {
     QVariantList l = spy.takeFirst();
 
     Response * resp = Response::fromReply(qvariant_cast<QNetworkReply *>(l[0]));
-    QString url = resp -> toJson().string(QStringLiteral("url"));
+    QString url = resp -> toJson().string(LSTR("url"));
 
     QVERIFY2(
         GET_TEST_URL.toString() == url,
@@ -326,10 +326,10 @@ void WebManagerTest::testSyncSetCookie() {
     );
     Response * resp = Manager::procGet(params);
 
-    Json obj = resp -> toJson()[QStringLiteral("cookies")];
+    Json obj = resp -> toJson()[LSTR("cookies")];
 
     QVERIFY2(
-        obj.string(QStringLiteral("na")) == QStringLiteral("me"),
+        obj.string(LSTR("na")) == LSTR("me"),
         "Failure"
     );
 }
@@ -377,7 +377,7 @@ void WebManagerTest::testSyncJsonResponse() {
     Json json = resp -> toJson();
 
     QVERIFY2(
-        json.hasKey(QStringLiteral("ip")),
+        json.hasKey(LSTR("ip")),
         "Failure"
     );
 }

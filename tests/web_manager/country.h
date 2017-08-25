@@ -51,12 +51,12 @@ public:
     }
 
 //    bool convert() {
-//        QFile f(QStringLiteral("F:\\countries.json"));
+//        QFile f(USTR("F:\\countries.json"));
 
 //        if (f.open(QFile::ReadOnly)) {
 //            QJsonArray ar = QJsonDocument::fromJson(f.readAll()).array();
 
-//            QFile fo(QStringLiteral("F:\\countries.txt"));
+//            QFile fo(USTR("F:\\countries.txt"));
 
 //            if (fo.open(QFile::WriteOnly | QFile::Truncate)) {
 //                QTextStream ts(&fo);
@@ -72,7 +72,7 @@ public:
 //                    QString name1 = names.value(QLatin1String("common")).toString();
 //                    QString name2 = names.value(QLatin1String("official")).toString();
 
-//                    QJsonArray borders = ob.value(QStringLiteral("borders")).toArray();
+//                    QJsonArray borders = ob.value(LSTR("borders")).toArray();
 //                    QByteArray borders_list;
 //                    for(QJsonArray::Iterator bord = borders.begin(); bord != borders.end(); bord++) {
 //                        QString border = (*bord).toString();

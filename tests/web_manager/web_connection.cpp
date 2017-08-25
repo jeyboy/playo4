@@ -8,7 +8,7 @@ void WebConnection::checkConnection(QFutureWatcher<void> * checker) {
     Manager * manager = Manager::prepare();
 
     while(!checker -> isCanceled()) {
-        QNetworkReply * reply = manager -> head(QNetworkRequest(QStringLiteral("http://google.com")));
+        QNetworkReply * reply = manager -> head(QNetworkRequest(USTR("http://google.com")));
 
         if (reply -> error() == QNetworkReply::NoError) {
             qDebug() << "~~~ CONNESTION RESTORED";

@@ -10,13 +10,13 @@ namespace Web {
     class WEBMANAGERSHARED_EXPORT Headers : public QHash<QByteArray, QByteArray> {
     public:
         static inline Headers extract(const QString & url) {
-            QStringList heads = url.split(QRegularExpression("%0D%0A|\\r\\n"), QString::SkipEmptyParts);
+            QStringList heads = url.split(QRegularExpression(LSTR("%0D%0A|\\r\\n")), QString::SkipEmptyParts);
             Headers res;
             if (heads.size() > 1) {
                 const_cast<QString &>(url) = heads.takeFirst();
 
                 while(!heads.isEmpty()) {
-                    QStringList parts = heads.takeLast().split(QStringLiteral(": "), QString::SkipEmptyParts);
+                    QStringList parts = heads.takeLast().split(LSTR(": "), QString::SkipEmptyParts);
                     res.insert(parts.first().toUtf8(), parts.last().toUtf8());
                 }
             }

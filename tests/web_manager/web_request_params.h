@@ -81,16 +81,16 @@ namespace Web {
             );
         }
 
-        void attachParam(const QByteArray & name, const QVariant & val) {
+        void attachParam(const QString & name, const QVariant & val) {
             QUrlQuery query = QUrlQuery(url.query());
             query.addQueryItem(name, VariantConvertor::toStr(val));
             url.setQuery(query);
         }
 
-        void attachParams(const std::initializer_list<std::pair<QByteArray, QVariant> > & params) {
+        void attachParams(const std::initializer_list<std::pair<QString, QVariant> > & params) {
             QUrlQuery query = QUrlQuery(url.query());
 
-            for (typename std::initializer_list<std::pair<QByteArray, QVariant> >::const_iterator it = params.begin(); it != params.end(); ++it) {
+            for (typename std::initializer_list<std::pair<QString, QVariant> >::const_iterator it = params.begin(); it != params.end(); ++it) {
                 query.addQueryItem(it -> first, VariantConvertor::toStr(it -> second));
             }
 

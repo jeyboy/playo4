@@ -168,7 +168,7 @@ Json Response::toJson(const QString & wrap, const bool & destroy) { //TODO: enc 
 
     if (rtype == rt_json || rtype == rt_js) {
 //       ar.replace('\'', '"'); // ' wraps responds to errors on parsing // need to replace ' with "
-        if (!wrap.isEmpty()) { ar.prepend(QStringLiteral("{\"%1\":").arg(wrap).toUtf8()); ar.append("}"); }
+        if (!wrap.isEmpty()) { ar.prepend(USTR("{\"%1\":").arg(wrap).toUtf8()); ar.append("}"); }
         if (destroy) deleteLater();
 
         QString err;
