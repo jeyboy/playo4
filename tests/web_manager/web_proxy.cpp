@@ -12,10 +12,10 @@ using namespace Web;
 
 QHash<QLatin1String, bool> Proxy::blacklisted;
 QHash<QString, Proxy::ManagerProxyType> Proxy::type_mapping = {
-    {ASTR("http"), Proxy::pt_http},
-    {ASTR("https"), Proxy::pt_https},
-    {ASTR("socks5"), Proxy::pt_socks5},
-    {ASTR("socks5s"), Proxy::pt_socks5s}
+    {LSTR("http"), Proxy::pt_http},
+    {LSTR("https"), Proxy::pt_https},
+    {LSTR("socks5"), Proxy::pt_socks5},
+    {LSTR("socks5s"), Proxy::pt_socks5s}
 };
 
 
@@ -23,10 +23,10 @@ QHash<QString, Proxy::ManagerProxyType> Proxy::type_mapping = {
 Proxy * Proxy::findinSource1(const ManagerProxyType & ptype, const QByteArray & country) {
     QUrlQuery query;
 
-    query.addQueryItem(ASTR("get"), ASTR("true"));
-    query.addQueryItem(ASTR("post"), ASTR("true"));
-    query.addQueryItem(ASTR("cookies"), ASTR("true"));
-    query.addQueryItem(ASTR("referer"), ASTR("true"));
+    query.addQueryItem(LSTR("get"), LSTR("true"));
+    query.addQueryItem(LSTR("post"), LSTR("true"));
+    query.addQueryItem(LSTR("cookies"), LSTR("true"));
+    query.addQueryItem(LSTR("referer"), LSTR("true"));
 
     ////        user-agent 	true/false 	user-agent header support 	http://gimmeproxy.com/api/getProxy?user-agent=false
     ////        port 	integer 	Proxy port 	http://gimmeproxy.com/api/getProxy?port=80
@@ -35,12 +35,12 @@ Proxy * Proxy::findinSource1(const ManagerProxyType & ptype, const QByteArray & 
 
     if (ptype != pt_any) {
         if (ptype & pt_ssl)
-            query.addQueryItem(ASTR("supportsHttps"), ASTR("true"));
+            query.addQueryItem(LSTR("supportsHttps"), LSTR("true"));
 
         if (ptype & pt_http)
-            query.addQueryItem(ASTR("protocol"), ASTR("http"));
+            query.addQueryItem(LSTR("protocol"), LSTR("http"));
         else if (ptype == pt_socks5)
-            query.addQueryItem(ASTR("protocol"), ASTR("socks5"));
+            query.addQueryItem(LSTR("protocol"), LSTR("socks5"));
         else return 0;
     }
 
@@ -50,7 +50,7 @@ Proxy * Proxy::findinSource1(const ManagerProxyType & ptype, const QByteArray & 
         if (!cell)
             return 0;
 
-        query.addQueryItem(ASTR("country"), cell -> name2letters);
+        query.addQueryItem(LSTR("country"), cell -> name2letters);
     }
 
     QUrl url = QUrl(QLatin1Literal("http://gimmeproxy.com/api/getProxy"));
@@ -63,12 +63,12 @@ Proxy * Proxy::findinSource1(const ManagerProxyType & ptype, const QByteArray & 
     if (json.hasKey(QLatin1Literal("ip"))) {
         return new Proxy(
             (ManagerProxyType)(
-                strToType(json.string(ASTR("type"))) |
-                    (json.boolean(ASTR("supportsHttps")) ? pt_ssl : pt_none)
+                strToType(json.string(LSTR("type"))) |
+                    (json.boolean(LSTR("supportsHttps")) ? pt_ssl : pt_none)
             ),
-            json.string(ASTR("ip")),
-            (quint16)json.string(ASTR("port")).toInt(),
-            json.string(ASTR("country")).toUtf8()
+            json.string(LSTR("ip")),
+            (quint16)json.string(LSTR("port")).toInt(),
+            json.string(LSTR("country")).toUtf8()
         );
     }
     else return  0;
