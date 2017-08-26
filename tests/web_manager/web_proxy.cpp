@@ -216,13 +216,13 @@ Proxy * Proxy::findinSource3(const ManagerProxyType & ptype, const QByteArray & 
 Proxy * Proxy::find(const ManagerProxyType & ptype, const QByteArray & country) {
     Proxy * res = findinSource1(ptype, country);
 
-    if (!res) {
-        res = findinSource2(ptype, country);
+//    if (!res) {
+//        res = findinSource2(ptype, country);
 
-        if (!res) {
-            res = findinSource3(ptype, country);
-        }
-    }
+//        if (!res) {
+//            res = findinSource3(ptype, country);
+//        }
+//    }
 
     return res;
 }

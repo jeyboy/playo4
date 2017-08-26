@@ -403,8 +403,10 @@ void WebManagerTest::testCountriesList() {
 }
 
 void WebManagerTest::testProxyMirror() {
+    Proxy * proxy = Proxy::find();
+
     QVERIFY2(
-        true,
+        !!proxy,
         "Failure"
     );
 }
