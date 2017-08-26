@@ -59,9 +59,9 @@ namespace Web {
 
         static Manager * prepare();
 
-        static Response * procHead(const QUrl & url, const bool & async = true) { return procHead(RequestParams::buildDefaultParams(url, async)); }
-        static Response * procGet(const QUrl & url, const bool & async = true) { return procGet(RequestParams::buildDefaultParams(url, async)); }
-        static Response * procDelete(const QUrl & url, const bool & async = true) { return procDelete(RequestParams::buildDefaultParams(url, async)); }
+        static Response * procHead(const QUrl & url, const bool & async = false) { return procHead(RequestParams::buildDefaultParams(url, async)); }
+        static Response * procGet(const QUrl & url, const bool & async = false) { return procGet(RequestParams::buildDefaultParams(url, async)); }
+        static Response * procDelete(const QUrl & url, const bool & async = false) { return procDelete(RequestParams::buildDefaultParams(url, async)); }
 
         static Response * procHead(RequestParams * params) { return prepare() -> sendSimple(rt_head, params); }
         static Response * procGet(RequestParams * params) { return prepare() -> sendSimple(rt_get, params); }
@@ -70,71 +70,6 @@ namespace Web {
         static Response * procPost(RequestDataParams * params) { return prepare() -> sendData(rt_post, params); }
         static Response * procPut(RequestDataParams * params) { return prepare() -> sendData(rt_put, params); }
 //       static Response * procCustom(RequestDataParams * params) { return prepare() -> sendSimple(rt_custom, params); }
-
-//        inline QJsonObject jsonGet(const QUrl & url, const QString & wrap) { return getFollowed(url) -> toJson(wrap); }
-//        inline QJsonObject jsonGet(const QUrl & url, bool wrap = false) { return getFollowed(url) -> toJson(wrap ? DEF_JSON_FIELD : QString()); }
-//        inline QJsonObject jsonGet(const QUrl & url, const Headers & headers, const QString & wrap) { return getFollowed(url, headers) -> toJson(wrap); }
-//        inline QJsonObject jsonGet(const QUrl & url, const Headers & headers, bool wrap = false) { return getFollowed(url, headers) -> toJson(wrap ? DEF_JSON_FIELD : QString()); }
-//        inline QJsonObject jsonPost(const QUrl & url, const QString & wrap) { return postFollowed(url) -> toJson(wrap); }
-//        inline QJsonObject jsonPost(const QUrl & url, bool wrap = false) { return postFollowed(url) -> toJson(wrap ? DEF_JSON_FIELD : QString()); }
-//        inline QJsonObject jsonPost(const QUrl & url, const Headers & headers, const QString & wrap) { return postFollowed(url, headers) -> toJson(wrap); }
-//        inline QJsonObject jsonPost(const QUrl & url, const Headers & headers, bool wrap = false) { return postFollowed(url, headers) -> toJson(wrap ? DEF_JSON_FIELD : QString()); }
-//        inline QJsonObject jsonPost(const QUrl & url, const Headers & headers, const QString & content_type, const QByteArray & payload, bool wrap = false) {
-//            return postFollowed(url, headers, content_type, payload)
-//                -> toJson(wrap ? DEF_JSON_FIELD : QString());
-//        }
-//        inline QJsonObject jsonPost(const QUrl & url, const Headers & headers, const QJsonValue & payload, bool wrap = false) {
-//            return postFollowed(url, headers, QStringLiteral("application/json"), SERIALIZE_JSON(payload))
-//                -> toJson(wrap ? DEF_JSON_FIELD : QString());
-//        }
-
-//        inline QPixmap pixmapGet(const QUrl & url) { return getFollowed(url) -> toPixmap(); }
-//        inline Response * pixmapGetAsync(const QUrl & url, const Func & response) {
-//            Response * resp = requestTo(url).viaGet(true) -> followByRedirect();
-//            connect(resp, SIGNAL(finished()), this, SLOT(pixmapRequestFinished()));
-//            asyncRequests.insert(resp -> url(), response);
-//            return resp;
-//        }
-
-//        inline Response * getFollowed(const QUrl & url) { return requestTo(url).viaGet() -> followByRedirect(); }
-//        inline Response * getFollowed(const QUrl & url, const Headers & headers) { return requestTo(url).withHeaders(headers).viaGet() -> followByRedirect(); }
-//        inline Response * getFollowedAsync(const QUrl & url, const Func & response) {
-//            Response * resp = requestTo(url).viaGet(true);
-//            connect(resp, SIGNAL(finished()), this, SLOT(requestFinished()));
-//            asyncRequests.insert(resp -> url(), response);
-//            return resp;
-//        }
-
-//        inline Response * postFollowed(const QUrl & url, const QString & content_type = FORM_URLENCODE, const QByteArray & payload = QByteArray()) {
-//            return requestTo(url).viaPost(payload, content_type) -> followByRedirect();
-//        }
-//        inline Response * postFollowed(const QUrl & url, const Headers & headers, const QString & content_type = FORM_URLENCODE, const QByteArray & payload = QByteArray()) {
-//            return requestTo(url).withHeaders(headers).viaPost(payload, content_type) -> followByRedirect();
-//        }
-//        inline Response * postFollowedAsync(const QUrl & url, const Func & response, const Headers & headers, const QString & content_type = FORM_URLENCODE, const QByteArray & payload = QByteArray()) {
-//            Response * resp = requestTo(url).withHeaders(headers).viaPost(payload, content_type, true);
-//            connect(resp, SIGNAL(finished()), this, SLOT(requestFinished()));
-//            asyncRequests.insert(resp -> url(), response);
-//            return resp;
-//        }
-
-//        inline Response * putFollowed(const QUrl & url, const QByteArray & data = QByteArray(), const QString & content_type = FORM_URLENCODE) {
-//            return requestTo(url).viaPut(data, content_type) -> followByRedirect();
-//        }
-//        inline Response * putFollowed(const QUrl & url, const Headers & headers, const QByteArray & data = QByteArray(), const QString & content_type = FORM_URLENCODE) {
-//            return requestTo(url).withHeaders(headers).viaPut(data, content_type) -> followByRedirect();
-//        }
-
-//        inline Response * form(const QUrl & url) { return requestTo(url).viaForm(); }
-//        inline Response * form(const QUrl & url, const Headers & headers) { return requestTo(url).withHeaders(headers).viaForm(); }
-//        inline Response * form(const QUrl & url, const QByteArray & data) { return requestTo(url).viaForm(data); }
-//        inline Response * form(const QUrl & url, const QByteArray & data, const Headers & headers) { return requestTo(url).withHeaders(headers).viaForm(data); }
-
-//        inline Response * formFollowed(const QUrl & url) { return requestTo(url).viaForm() -> followByRedirect(); }
-//        inline Response * formFollowed(const QUrl & url, const QByteArray & data) { return requestTo(url).viaForm(data) -> followByRedirect(); }
-//        inline Response * formFollowed(const QUrl & url, const Headers & headers) { return requestTo(url).withHeaders(headers).viaForm() -> followByRedirect(); }
-//        inline Response * formFollowed(const QUrl & url, const QByteArray & data, const Headers & headers) { return requestTo(url).withHeaders(headers).viaForm(data) -> followByRedirect(); }
-
     public slots:
 //        inline void sendGet(const QString & url) { getFollowed(url) -> deleteLater(); }
 

@@ -352,7 +352,7 @@ void WebManagerTest::testSyncUseCookieSet() {
 }
 
 void WebManagerTest::testSyncHtmlResponse() {
-    Response * resp = Manager::procGet(HTML_TEST_URL, false);
+    Response * resp = Manager::procGet(HTML_TEST_URL);
 
     Html::Page page = resp -> toHtml();
 
@@ -362,7 +362,7 @@ void WebManagerTest::testSyncHtmlResponse() {
     );
 }
 void WebManagerTest::testSyncXmlResponse() {
-    Response * resp = Manager::procGet(XML_CSS_TEST_URL, false);
+    Response * resp = Manager::procGet(XML_CSS_TEST_URL);
 
     Html::Page page = resp -> toHtml();
 
@@ -372,7 +372,7 @@ void WebManagerTest::testSyncXmlResponse() {
     );
 }
 void WebManagerTest::testSyncJsonResponse() {
-    Response * resp = Manager::procGet(JSON_TEST_URL, false);
+    Response * resp = Manager::procGet(JSON_TEST_URL);
 
     Json json = resp -> toJson();
 
@@ -382,7 +382,7 @@ void WebManagerTest::testSyncJsonResponse() {
     );
 }
 void WebManagerTest::testSyncImageResponse() {
-    Response * resp = Manager::procGet(IMAGE_TEST_URL, false);
+    Response * resp = Manager::procGet(IMAGE_TEST_URL);
 
     QImage img = resp -> toImage();
 
